@@ -1,37 +1,41 @@
-import { createDrawerNavigator } from "@react-navigation/drawer"
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { useContext } from "react"
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from "@react-navigation/drawer"
 // Screens
-import { HomeScreen } from "./HomeScreen"
-import { MyClubsScreen } from "./clubs/MyClubsScreen"
-import { MyRidesScreen } from "./rides/MyRidesScreen"
-import { CreateARideScreen } from "./rides/CreateARideScreen"
+import { ProfileScreen } from "./user/ProfileScreen"
+import { TabScreens } from "./TabScreens"
+// Context
+import { AuthContext } from "../../context/authContext"
 
 const Drawer = createDrawerNavigator()
-const Tab = createBottomTabNavigator()
 
-const TabScreens = () => {
+const CustomDrawerContent = (props) => {
+  const { signOut } = useContext(AuthContext)
+
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
-      <Tab.Screen name="MyClubs" component={MyClubsScreen} />
-      <Tab.Screen name="CreateARide" component={CreateARideScreen} />
-      <Tab.Screen name="MyRides" component={MyRidesScreen} />
-    </Tab.Navigator>
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem label="Log out" onPress={() => signOut()} />
+    </DrawerContentScrollView>
   )
 }
 
 export const AutheticatedScreens = () => {
   return (
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+    >
       <Drawer.Screen
         name="Home"
         component={TabScreens}
         options={{ headerTitle: "" }}
       />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
     </Drawer.Navigator>
   )
 }
