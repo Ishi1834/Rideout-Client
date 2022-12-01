@@ -1,9 +1,9 @@
 import { View, Text } from "react-native"
 
-export const FindAClubScreen = () => {
+export const MyClubsScreen = () => {
   return (
     <View>
-      <Text>Find A Club Screen</Text>
+      <Text>My Clubs Screen</Text>
     </View>
   )
 }

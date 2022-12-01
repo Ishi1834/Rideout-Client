@@ -1,22 +1,18 @@
 import { useMemo, useReducer, useEffect } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 // Screens
 import { SignInScreen } from "./screens/authScreens/SignInScreen"
 import { SignUpScreen } from "./screens/authScreens/SignUpScreen"
-import { HomeScreen } from "./screens/authenticatedScreens/HomeScreen"
-import { FindAClubScreen } from "./screens/authenticatedScreens/FindAClubScreen"
-import { MyRidesScreen } from "./screens/authenticatedScreens/MyRidesScreen"
 import { SplashScreen } from "./screens/SplashScreen"
+import { AutheticatedScreens } from "./screens/authenticatedScreens/AutheticatedScreens"
 // State
 import { AuthContext } from "./context/authContext"
 import { authReducer } from "./context/authReducer"
 import { initialState } from "./context/state"
 
 const Stack = createStackNavigator()
-const Tab = createBottomTabNavigator()
 
 export default function App({ navigation }) {
   const [state, dispatch] = useReducer(authReducer, initialState)
@@ -94,8 +90,10 @@ export default function App({ navigation }) {
                 />
               </>
             ) : (
-              // User is signed in
-              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen
+                name="AutheticatedScreens"
+                component={AutheticatedScreens}
+              />
             )}
           </Stack.Navigator>
         </NavigationContainer>
