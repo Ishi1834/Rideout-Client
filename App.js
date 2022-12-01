@@ -1,3 +1,4 @@
+import "react-native-gesture-handler"
 import { useMemo, useReducer, useEffect } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
@@ -93,6 +94,9 @@ export default function App({ navigation }) {
               <Stack.Screen
                 name="AutheticatedScreens"
                 component={AutheticatedScreens}
+                options={{
+                  headerShown: false,
+                }}
               />
             )}
           </Stack.Navigator>
