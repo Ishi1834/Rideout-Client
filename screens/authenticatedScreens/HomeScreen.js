@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { Button, Text, View } from "react-native"
-import { AuthContext } from "../context/authContext"
+import { AuthContext } from "../../context/authContext"
 
 export const HomeScreen = () => {
   const { signOut } = useContext(AuthContext)
