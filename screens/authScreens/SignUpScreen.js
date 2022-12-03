@@ -1,5 +1,8 @@
 import { useContext, useState } from "react"
-import { Button, TextInput, View } from "react-native"
+// UI
+import { View } from "react-native"
+import { TextInput, Button } from "react-native-paper"
+// State
 import { AuthContext } from "../../context/authContext"
 
 export const SignUpScreen = () => {
@@ -44,7 +47,9 @@ export const SignUpScreen = () => {
         }
         secureTextEntry
       />
-      <Button title="Sign up" onPress={() => signUp({ userData })} />
+      <Button mode="contained" onPress={() => signUp({ userData })}>
+        Sign up
+      </Button>
     </View>
   )
 }

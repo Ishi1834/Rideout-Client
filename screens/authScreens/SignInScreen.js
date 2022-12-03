@@ -1,5 +1,8 @@
 import { useContext, useState } from "react"
-import { Button, TextInput, View } from "react-native"
+// UI
+import { View } from "react-native"
+import { TextInput, Button } from "react-native-paper"
+// State
 import { AuthContext } from "../../context/authContext"
 
 export const SignInScreen = ({ navigation }) => {
@@ -21,8 +24,12 @@ export const SignInScreen = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Sign in" onPress={() => signIn({ username, password })} />
-      <Button title="Sign up" onPress={() => navigation.navigate("SignUp")} />
+      <Button mode="contained" onPress={() => signIn({ username, password })}>
+        Sign in
+      </Button>
+      <Button mode="outlined" onPress={() => navigation.navigate("SignUp")}>
+        Sign up
+      </Button>
     </View>
   )
 }
