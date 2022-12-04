@@ -7,7 +7,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context"
 import { SignInScreen } from "./screens/authScreens/SignInScreen"
 import { SignUpScreen } from "./screens/authScreens/SignUpScreen"
 import { SplashScreen } from "./screens/SplashScreen"
-import { AutheticatedScreens } from "./screens/authenticatedScreens/AutheticatedScreens"
+import { DrawerScreens } from "./screens/authenticatedScreens/DrawerScreens"
+import { ClubDetailScreen } from "./screens/authenticatedScreens/clubs/ClubDetailScreen"
 // State
 import { AuthContext } from "./context/authContext"
 import { authReducer } from "./context/authReducer"
@@ -91,13 +92,16 @@ export default function App({ navigation }) {
                 />
               </>
             ) : (
-              <Stack.Screen
-                name="AutheticatedScreens"
-                component={AutheticatedScreens}
-                options={{
-                  headerShown: false,
-                }}
-              />
+              <>
+                <Stack.Screen
+                  name="DrawerScreens"
+                  component={DrawerScreens}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen name="ClubDetail" component={ClubDetailScreen} />
+              </>
             )}
           </Stack.Navigator>
         </NavigationContainer>
