@@ -1,0 +1,30 @@
+[
+  {
+    "_id": "638cc07889b2d48ee18d5e38",
+    "createdBy": {
+      "name": "xalib jamil",
+      "userId": "638cbe8c89b2d48ee18d5e28"
+    },
+    "name": "Beginners laps test",
+    "date": "2022-11-26T07:00:00.000Z",
+    "openRide": false,
+    "club": { "name": "RP riders", "clubId": "638cbfd189b2d48ee18d5e2d" },
+    "startLocation": { "type": "Point", "coordinates": [54.23, 101.93] },
+    "rideType": "Training",
+    "distance": 20,
+    "speed": 14,
+    "cafeStops": "Coffee at the end",
+    "signedUpCyclists": [
+      {
+        "name": "xalib jamil",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "_id": "638cc07889b2d48ee18d5e39"
+      }
+    ],
+    "description": "Take turns, nice and easy :)",
+    "route": "No route given",
+    "createdAt": "2022-12-04T15:44:56.480Z",
+    "updatedAt": "2022-12-04T15:44:56.480Z",
+    "__v": 0
+  }
+]

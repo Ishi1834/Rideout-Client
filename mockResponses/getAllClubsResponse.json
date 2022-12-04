@@ -1,0 +1,74 @@
+[
+  {
+    "_id": "638cbfd189b2d48ee18d5e2d",
+    "name": "RP riders",
+    "location": { "type": "Point", "coordinates": [51.52, -0.151] },
+    "tags": [],
+    "cyclistCount": 1,
+    "activitiesCount": 0,
+    "rides": [],
+    "members": [
+      {
+        "name": "xalib jamil",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "admin",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": "638cbfd189b2d48ee18d5e2d",
+    "name": "Brothers On Bikes",
+    "location": { "type": "Point", "coordinates": [51.52, -0.151] },
+    "tags": [],
+    "cyclistCount": 120,
+    "activitiesCount": 265,
+    "rides": [],
+    "members": [
+      {
+        "name": "xalib jamil",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "admin",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": "638cbfd189b2d48ee18d5e2d",
+    "name": "Clapham RideOn",
+    "location": { "type": "Point", "coordinates": [50.97, -0.01] },
+    "tags": [],
+    "cyclistCount": 10,
+    "activitiesCount": 75,
+    "rides": [],
+    "members": [
+      {
+        "name": "xalib jamil",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "admin",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": "638cbfd189b2d48ee18d5e2d",
+    "name": "Rapha",
+    "location": { "type": "Point", "coordinates": [51.17, -0.112] },
+    "tags": [],
+    "cyclistCount": 643,
+    "activitiesCount": 885,
+    "rides": [],
+    "members": [
+      {
+        "name": "xalib jamil",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "admin",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      }
+    ],
+    "__v": 0
+  }
+]

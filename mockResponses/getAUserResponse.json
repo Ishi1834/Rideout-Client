@@ -1,0 +1,22 @@
+{
+  "_id": "638cbe8c89b2d48ee18d5e28",
+  "username": "tester01",
+  "name": "xalib jamil",
+  "email": "tester01@email.com",
+  "rides": [
+    {
+      "name": "Beginners laps test",
+      "rideId": "638cc07889b2d48ee18d5e38",
+      "_id": "638cc07889b2d48ee18d5e3b"
+    }
+  ],
+  "clubs": [
+    {
+      "name": "RP riders",
+      "authorization": "admin",
+      "clubId": "638cbfd189b2d48ee18d5e2d",
+      "_id": "638cbfd189b2d48ee18d5e30"
+    }
+  ],
+  "__v": 2
+}

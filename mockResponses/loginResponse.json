@@ -1,0 +1,6 @@
+{
+  "authenticated": true,
+  "userId": "638cbe8c89b2d48ee18d5e28",
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzhjYmU4Yzg5YjJkNDhlZTE4ZDVlMjgiLCJ1c2VybmFtZSI6InRlc3RlcjAxIiwiY2x1YnMiOltdLCJpYXQiOjE2NzAxNjgzNDAsImV4cCI6MTY3MDE2OTI0MH0.Dtya1cvBN0qcZX3RAaM1_0mifj26wgszpwBlSu8IaZA",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzhjYmU4Yzg5YjJkNDhlZTE4ZDVlMjgiLCJpYXQiOjE2NzAxNjgzNDAsImV4cCI6MTY3MDI1NDc0MH0.mYbml6pvvitl7o6R8ddCeSJevduf0bNhgcXWFrcahIE"
+}
