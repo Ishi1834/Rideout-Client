@@ -13,6 +13,7 @@ import { ClubDetailScreen } from "./screens/authenticatedScreens/clubs/ClubDetai
 import { AuthContext } from "./context/authContext"
 import { authReducer } from "./context/authReducer"
 import { initialState } from "./context/state"
+import { Provider } from "react-native-paper"
 
 const Stack = createStackNavigator()
 
@@ -66,46 +67,51 @@ export default function App({ navigation }) {
 
   return (
     <AuthContext.Provider value={authContext}>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <Stack.Navigator>
-            {state.isLoading ? (
-              // We haven't finished checking for the token yet
-              <Stack.Screen name="Splash" component={SplashScreen} />
-            ) : state.userToken == null ? (
-              <>
-                <Stack.Screen
-                  name="SignIn"
-                  component={SignInScreen}
-                  options={{
-                    title: "Sign in",
-                    // When logging out, a pop animation feels intuitive
-                    animationTypeForReplace: state.isSignout ? "pop" : "push",
-                  }}
-                />
-                <Stack.Screen
-                  name="SignUp"
-                  component={SignUpScreen}
-                  options={{
-                    title: "Sign up",
-                  }}
-                />
-              </>
-            ) : (
-              <>
-                <Stack.Screen
-                  name="DrawerScreens"
-                  component={DrawerScreens}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen name="ClubDetail" component={ClubDetailScreen} />
-              </>
-            )}
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <Provider>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator>
+              {state.isLoading ? (
+                // We haven't finished checking for the token yet
+                <Stack.Screen name="Splash" component={SplashScreen} />
+              ) : state.userToken == null ? (
+                <>
+                  <Stack.Screen
+                    name="SignIn"
+                    component={SignInScreen}
+                    options={{
+                      title: "Sign in",
+                      // When logging out, a pop animation feels intuitive
+                      animationTypeForReplace: state.isSignout ? "pop" : "push",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="SignUp"
+                    component={SignUpScreen}
+                    options={{
+                      title: "Sign up",
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="DrawerScreens"
+                    component={DrawerScreens}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="ClubDetail"
+                    component={ClubDetailScreen}
+                  />
+                </>
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </Provider>
     </AuthContext.Provider>
   )
 }
