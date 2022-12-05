@@ -9,6 +9,7 @@ import { SignUpScreen } from "./screens/authScreens/SignUpScreen"
 import { SplashScreen } from "./screens/SplashScreen"
 import { DrawerScreens } from "./screens/authenticatedScreens/DrawerScreens"
 import { ClubDetailScreen } from "./screens/authenticatedScreens/clubs/ClubDetailScreen"
+import { RideDetailScreen } from "./screens/authenticatedScreens/rides/RideDetailScreen"
 // State
 import { AuthContext } from "./context/authContext"
 import { authReducer } from "./context/authReducer"
@@ -105,6 +106,10 @@ export default function App({ navigation }) {
                   <Stack.Screen
                     name="ClubDetail"
                     component={ClubDetailScreen}
+                  />
+                  <Stack.Screen
+                    name="RideDetail"
+                    component={RideDetailScreen}
                   />
                 </>
               )}

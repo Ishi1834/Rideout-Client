@@ -6,8 +6,8 @@ import { RideCard } from "../../../components/RideCard"
 export const MyRidesScreen = () => {
   const navigation = useNavigation()
 
-  const navigateToRide = (screen) => {
-    navigation.navigate(screen)
+  const navigateToRide = (screen, rideId) => {
+    navigation.navigate(screen, { rideId })
   }
 
   return (

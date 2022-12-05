@@ -71,7 +71,9 @@ export const RideCard = ({ ride, rideClicked }) => {
       <Divider style={styles.dividerHorizontal} />
 
       <Card.Actions>
-        <Button onPress={() => rideClicked("ClubDetail")}>View Ride</Button>
+        <Button onPress={() => rideClicked("RideDetail", ride._id)}>
+          View Ride
+        </Button>
       </Card.Actions>
     </Card>
   )
