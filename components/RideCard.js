@@ -1,3 +1,4 @@
+import { format } from "date-fns"
 import { useState } from "react"
 import { StyleSheet, Pressable, View } from "react-native"
 import {
@@ -7,7 +8,6 @@ import {
   Chip,
   Divider,
   Menu,
-  Surface,
   Text,
 } from "react-native-paper"
 
@@ -15,6 +15,8 @@ const LeftContent = (props) => <Avatar.Icon {...props} icon="bike" />
 
 export const RideCard = ({ ride, rideClicked }) => {
   const [menuVisible, setMenuVisible] = useState(false)
+
+  const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd-MM-yyyy")
 
   return (
     <Card style={styles.card}>
@@ -28,7 +30,7 @@ export const RideCard = ({ ride, rideClicked }) => {
           {ride.description}
         </Text>
         <View style={styles.stats}>
-          <Chip icon="calendar">{ride.date}</Chip>
+          <Chip icon="calendar">{formatDate()}</Chip>
         </View>
         <View
           style={[
