@@ -17,6 +17,7 @@ export const CreateARideScreen = () => {
     speed: null,
     description: "",
     cafeStops: "",
+    route: "",
   })
 
   const onChange = (event, selectedDate) => {
@@ -47,6 +48,15 @@ export const CreateARideScreen = () => {
               label="Name"
               value={rideData.name}
               onChangeText={(text) => setRideData({ ...rideData, name: text })}
+            />
+          </View>
+          <View style={styles.formInputs}>
+            <TextInput
+              label="Description"
+              value={rideData.description}
+              onChangeText={(text) =>
+                setRideData({ ...rideData, description: text })
+              }
             />
           </View>
           <View style={[styles.formInputs, styles.dateContainer]}>
@@ -95,6 +105,7 @@ export const CreateARideScreen = () => {
           </View>
           <View style={styles.formInputs}>
             <TextInput
+              keyboardType="number-pad"
               label="Distance"
               value={rideData.distance}
               onChangeText={(text) =>
@@ -104,18 +115,10 @@ export const CreateARideScreen = () => {
           </View>
           <View style={styles.formInputs}>
             <TextInput
+              keyboardType="number-pad"
               label="Speed"
               value={rideData.speed}
               onChangeText={(text) => setRideData({ ...rideData, speed: text })}
-            />
-          </View>
-          <View style={styles.formInputs}>
-            <TextInput
-              label="Description"
-              value={rideData.description}
-              onChangeText={(text) =>
-                setRideData({ ...rideData, description: text })
-              }
             />
           </View>
           <View style={styles.formInputs}>
@@ -125,6 +128,13 @@ export const CreateARideScreen = () => {
               onChangeText={(text) =>
                 setRideData({ ...rideData, cafeStops: text })
               }
+            />
+          </View>
+          <View style={styles.formInputs}>
+            <TextInput
+              label="Route"
+              value={rideData.route}
+              onChangeText={(text) => setRideData({ ...rideData, route: text })}
             />
           </View>
         </View>
