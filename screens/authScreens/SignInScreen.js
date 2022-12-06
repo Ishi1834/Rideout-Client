@@ -6,8 +6,10 @@ import { TextInput, Button } from "react-native-paper"
 import { AuthContext } from "../../context/authContext"
 
 export const SignInScreen = ({ navigation }) => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [data, setData] = useState({
+    username: "",
+    password: "",
+  })
 
   const { signIn } = useContext(AuthContext)
 
@@ -15,21 +17,21 @@ export const SignInScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
+          label="Username"
+          value={data.username}
+          onChangeText={(text) => setData({ ...data, username: text })}
         />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
+          label="Password"
+          value={data.password}
+          onChangeText={(text) => setPassword({ ...data, password: text })}
           secureTextEntry
         />
       </View>
       <View style={[styles.buttonContainer, { marginTop: 50 }]}>
-        <Button mode="contained" onPress={() => signIn({ username, password })}>
+        <Button mode="contained" onPress={() => signIn(data)}>
           Sign in
         </Button>
       </View>

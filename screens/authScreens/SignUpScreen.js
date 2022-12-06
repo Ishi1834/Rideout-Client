@@ -6,7 +6,7 @@ import { TextInput, Button } from "react-native-paper"
 import { AuthContext } from "../../context/authContext"
 
 export const SignUpScreen = () => {
-  const [userData, setUserData] = useState({
+  const [data, setData] = useState({
     name: null,
     username: null,
     email: null,
@@ -20,45 +20,44 @@ export const SignUpScreen = () => {
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Name"
-          value={userData.name}
-          onChangeText={(val) => setUserData({ ...userData, name: val })}
+          label="Name"
+          value={data.name}
+          onChangeText={(val) => setData({ ...data, name: val })}
         />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Username"
-          value={userData.username}
-          onChangeText={(val) => setUserData({ ...userData, username: val })}
+          label="Username"
+          value={data.username}
+          onChangeText={(val) => setData({ ...data, username: val })}
         />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Email"
-          value={userData.email}
-          onChangeText={(val) => setUserData({ ...userData, email: val })}
+          label="Email"
+          keyboardType="email-address"
+          value={data.email}
+          onChangeText={(val) => setData({ ...data, email: val })}
         />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Password"
-          value={userData.password}
-          onChangeText={(val) => setUserData({ ...userData, password: val })}
+          label="Password"
+          value={data.password}
+          onChangeText={(val) => setData({ ...data, password: val })}
           secureTextEntry
         />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Confirm Password"
-          value={userData.confirmPassword}
-          onChangeText={(val) =>
-            setUserData({ ...userData, confirmPassword: val })
-          }
+          label="Confirm Password"
+          value={data.confirmPassword}
+          onChangeText={(val) => setData({ ...data, confirmPassword: val })}
           secureTextEntry
         />
       </View>
       <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={() => signUp({ userData })}>
+        <Button mode="contained" onPress={() => signUp({ data })}>
           Sign up
         </Button>
       </View>

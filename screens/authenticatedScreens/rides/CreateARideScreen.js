@@ -7,7 +7,7 @@ import { formatTime, formatDate } from "../../../utils/formatDate"
 
 export const CreateARideScreen = () => {
   const [mode, setMode] = useState("date")
-  const [show, setShow] = useState(true)
+  const [show, setShow] = useState(false)
   const [rideData, setRideData] = useState({
     date: new Date(),
     name: "",
