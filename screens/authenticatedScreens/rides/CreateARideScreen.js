@@ -5,6 +5,8 @@ import { RadioInput } from "../../../components/RadioInput"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import { formatTime, formatDate } from "../../../utils/formatDate"
 
+const rideTypeArray = ["Social", "Training", "Chaingang"]
+
 export const CreateARideScreen = () => {
   const [mode, setMode] = useState("date")
   const [show, setShow] = useState(false)
@@ -87,7 +89,7 @@ export const CreateARideScreen = () => {
           )}
           <View style={styles.formInputs}>
             <RadioInput
-              radioData={["Training", "Casual"]}
+              radioData={rideTypeArray}
               radioLabel="Select Ride Type"
               itemSelected={(item) =>
                 setRideData({ ...rideData, rideType: item })
