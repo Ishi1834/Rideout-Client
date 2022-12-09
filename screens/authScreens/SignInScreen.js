@@ -1,46 +1,67 @@
-import { useContext, useState } from "react"
+import { useContext } from "react"
 // UI
-import { StyleSheet, View } from "react-native"
-import { TextInput, Button } from "react-native-paper"
+import { ScrollView, StyleSheet, View } from "react-native"
+import { TextInput, Button, HelperText } from "react-native-paper"
 // State
 import { AuthContext } from "../../context/authContext"
+// Other
+import { Formik } from "formik"
+import { signInSchema } from "../../static/validationSchema"
 
 export const SignInScreen = ({ navigation }) => {
-  const [data, setData] = useState({
-    username: "",
-    password: "",
-  })
-
   const { signIn } = useContext(AuthContext)
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          label="Username"
-          value={data.username}
-          onChangeText={(text) => setData({ ...data, username: text })}
-        />
+    <ScrollView>
+      <View style={styles.container}>
+        <Formik
+          onSubmit={(values) => signIn(values)}
+          initialValues={{}}
+          validationSchema={signInSchema}
+        >
+          {({ handleChange, handleSubmit, values, errors }) => (
+            <>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  label="Username"
+                  value={values.username}
+                  onChangeText={handleChange("username")}
+                  error={errors.username}
+                />
+                <HelperText type="error" visible={errors.username}>
+                  {errors.username}
+                </HelperText>
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  label="Password"
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  secureTextEntry
+                  error={errors.password}
+                />
+                <HelperText type="error" visible={errors.password}>
+                  {errors.password}
+                </HelperText>
+              </View>
+              <View style={[styles.buttonContainer, { marginTop: 50 }]}>
+                <Button mode="contained" onPress={handleSubmit}>
+                  Sign in
+                </Button>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  mode="outlined"
+                  onPress={() => navigation.navigate("SignUp")}
+                >
+                  Sign up
+                </Button>
+              </View>
+            </>
+          )}
+        </Formik>
       </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          label="Password"
-          value={data.password}
-          onChangeText={(text) => setPassword({ ...data, password: text })}
-          secureTextEntry
-        />
-      </View>
-      <View style={[styles.buttonContainer, { marginTop: 50 }]}>
-        <Button mode="contained" onPress={() => signIn(data)}>
-          Sign in
-        </Button>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button mode="outlined" onPress={() => navigation.navigate("SignUp")}>
-          Sign up
-        </Button>
-      </View>
-    </View>
+    </ScrollView>
   )
 }
 
