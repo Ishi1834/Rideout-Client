@@ -7,6 +7,7 @@ import { AuthContext } from "../../context/authContext"
 // Other
 import { Formik } from "formik"
 import { signUpSchema } from "../../static/validationSchema"
+import { signUpInitialValues } from "../../static/formValues"
 
 export const SignUpScreen = () => {
   const { signUp } = useContext(AuthContext)
@@ -16,19 +17,30 @@ export const SignUpScreen = () => {
       <View style={styles.container}>
         <Formik
           onSubmit={(values) => console.log(values)}
-          initialValues={{}}
+          initialValues={signUpInitialValues}
           validationSchema={signUpSchema}
         >
-          {({ handleChange, handleSubmit, values, errors }) => (
+          {({
+            handleChange,
+            handleSubmit,
+            handleBlur,
+            touched,
+            values,
+            errors,
+          }) => (
             <>
               <View style={styles.inputContainer}>
                 <TextInput
                   label="Name"
                   value={values.name}
                   onChangeText={handleChange("name")}
-                  error={errors.name}
+                  onBlur={handleBlur("name")}
+                  error={touched.name && errors.name}
                 />
-                <HelperText type="error" visible={errors.name}>
+                <HelperText
+                  type="error"
+                  visible={touched.name && errors.name ? true : false}
+                >
                   {errors.name}
                 </HelperText>
               </View>
@@ -37,9 +49,13 @@ export const SignUpScreen = () => {
                   label="Username"
                   value={values.username}
                   onChangeText={handleChange("username")}
-                  error={errors.username}
+                  onBlur={handleBlur("username")}
+                  error={touched.username && errors.username}
                 />
-                <HelperText type="error" visible={errors.username}>
+                <HelperText
+                  type="error"
+                  visible={touched.username && errors.username ? true : false}
+                >
                   {errors.username}
                 </HelperText>
               </View>
@@ -49,9 +65,13 @@ export const SignUpScreen = () => {
                   keyboardType="email-address"
                   value={values.email}
                   onChangeText={handleChange("email")}
-                  error={errors.email}
+                  onBlur={handleBlur("email")}
+                  error={touched.email && errors.email}
                 />
-                <HelperText type="error" visible={errors.email}>
+                <HelperText
+                  type="error"
+                  visible={touched.email && errors.email ? true : false}
+                >
                   {errors.email}
                 </HelperText>
               </View>
@@ -61,9 +81,13 @@ export const SignUpScreen = () => {
                   value={values.password}
                   onChangeText={handleChange("password")}
                   secureTextEntry
-                  error={errors.password}
+                  onBlur={handleBlur("password")}
+                  error={touched.password && errors.password}
                 />
-                <HelperText type="error" visible={errors.password}>
+                <HelperText
+                  type="error"
+                  visible={touched.password && errors.password ? true : false}
+                >
                   {errors.password}
                 </HelperText>
               </View>
@@ -73,9 +97,17 @@ export const SignUpScreen = () => {
                   value={values.confirmPassword}
                   onChangeText={handleChange("confirmPassword")}
                   secureTextEntry
-                  error={errors.confirmPassword}
+                  onBlur={handleBlur("confirmPassword")}
+                  error={touched.confirmPassword && errors.confirmPassword}
                 />
-                <HelperText type="error" visible={errors.confirmPassword}>
+                <HelperText
+                  type="error"
+                  visible={
+                    touched.confirmPassword && errors.confirmPassword
+                      ? true
+                      : false
+                  }
+                >
                   {errors.confirmPassword}
                 </HelperText>
               </View>

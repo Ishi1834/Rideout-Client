@@ -7,6 +7,7 @@ import { AuthContext } from "../../context/authContext"
 // Other
 import { Formik } from "formik"
 import { signInSchema } from "../../static/validationSchema"
+import { signInInitialValues } from "../../static/formValues"
 
 export const SignInScreen = ({ navigation }) => {
   const { signIn } = useContext(AuthContext)
@@ -16,19 +17,30 @@ export const SignInScreen = ({ navigation }) => {
       <View style={styles.container}>
         <Formik
           onSubmit={(values) => signIn(values)}
-          initialValues={{}}
+          initialValues={signInInitialValues}
           validationSchema={signInSchema}
         >
-          {({ handleChange, handleSubmit, values, errors }) => (
+          {({
+            handleChange,
+            handleSubmit,
+            handleBlur,
+            values,
+            errors,
+            touched,
+          }) => (
             <>
               <View style={styles.inputContainer}>
                 <TextInput
                   label="Username"
                   value={values.username}
                   onChangeText={handleChange("username")}
-                  error={errors.username}
+                  onBlur={handleBlur("username")}
+                  error={touched.username && errors.username}
                 />
-                <HelperText type="error" visible={errors.username}>
+                <HelperText
+                  type="error"
+                  visible={touched.username && errors.username ? true : false}
+                >
                   {errors.username}
                 </HelperText>
               </View>
@@ -38,9 +50,13 @@ export const SignInScreen = ({ navigation }) => {
                   value={values.password}
                   onChangeText={handleChange("password")}
                   secureTextEntry
-                  error={errors.password}
+                  onBlur={handleBlur("password")}
+                  error={touched.password && errors.password}
                 />
-                <HelperText type="error" visible={errors.password}>
+                <HelperText
+                  type="error"
+                  visible={touched.password && errors.password ? true : false}
+                >
                   {errors.password}
                 </HelperText>
               </View>

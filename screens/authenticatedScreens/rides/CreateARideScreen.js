@@ -9,6 +9,7 @@ import { formatTime, formatDate } from "../../../utils/formatDate"
 import { Formik } from "formik"
 import { rideTypeArray } from "../../../static/multiSelectOptions"
 import { rideSchema } from "../../../static/validationSchema"
+import { createARideInitialValues } from "../../../static/formValues"
 
 export const CreateARideScreen = () => {
   const [mode, setMode] = useState("date")
@@ -32,19 +33,31 @@ export const CreateARideScreen = () => {
         </Text>
         <Formik
           onSubmit={(values) => console.log(values)}
-          initialValues={{ date: new Date() }}
+          initialValues={createARideInitialValues}
           validationSchema={rideSchema}
         >
-          {({ handleChange, handleSubmit, values, errors, setFieldValue }) => (
+          {({
+            handleChange,
+            handleSubmit,
+            handleBlur,
+            touched,
+            values,
+            errors,
+            setFieldValue,
+          }) => (
             <View style={styles.form}>
               <View style={styles.formInputs}>
                 <TextInput
                   label="Name"
                   value={values.name}
                   onChangeText={handleChange("name")}
-                  error={errors.name}
+                  onBlur={handleBlur("name")}
+                  error={touched.name && errors.name}
                 />
-                <HelperText type="error" visible={errors.name}>
+                <HelperText
+                  type="error"
+                  visible={touched.name && errors.name ? true : false}
+                >
                   {errors.name}
                 </HelperText>
               </View>
@@ -53,9 +66,15 @@ export const CreateARideScreen = () => {
                   label="Description"
                   value={values.description}
                   onChangeText={handleChange("description")}
-                  error={errors.description}
+                  onBlur={handleBlur("description")}
+                  error={touched.description && errors.description}
                 />
-                <HelperText type="error" visible={errors.description}>
+                <HelperText
+                  type="error"
+                  visible={
+                    touched.description && errors.description ? true : false
+                  }
+                >
                   {errors.description}
                 </HelperText>
               </View>
@@ -93,8 +112,12 @@ export const CreateARideScreen = () => {
                   radioData={rideTypeArray}
                   radioLabel="Select Ride Type"
                   itemSelected={handleChange("rideType")}
+                  onBlur={handleBlur("rideType")}
                 />
-                <HelperText type="error" visible={errors.rideType}>
+                <HelperText
+                  type="error"
+                  visible={touched.rideType && errors.rideType ? true : false}
+                >
                   {errors.rideType}
                 </HelperText>
               </View>
@@ -103,9 +126,15 @@ export const CreateARideScreen = () => {
                   label="Start Location"
                   value={values.startLocation}
                   onChangeText={handleChange("startLocation")}
-                  error={errors.startLocation}
+                  onBlur={handleBlur("startLocation")}
+                  error={touched.startLocation && errors.startLocation}
                 />
-                <HelperText type="error" visible={errors.startLocation}>
+                <HelperText
+                  type="error"
+                  visible={
+                    touched.startLocation && errors.startLocation ? true : false
+                  }
+                >
                   {errors.startLocation}
                 </HelperText>
               </View>
@@ -115,9 +144,13 @@ export const CreateARideScreen = () => {
                   label="Distance"
                   value={values.distance}
                   onChangeText={handleChange("distance")}
-                  error={errors.distance}
+                  onBlur={handleBlur("distance")}
+                  error={touched.distance && errors.distance}
                 />
-                <HelperText type="error" visible={errors.distance}>
+                <HelperText
+                  type="error"
+                  visible={touched.distance && errors.distance ? true : false}
+                >
                   {errors.distance}
                 </HelperText>
               </View>
@@ -127,9 +160,13 @@ export const CreateARideScreen = () => {
                   label="Speed"
                   value={values.speed}
                   onChangeText={handleChange("speed")}
-                  error={errors.speed}
+                  onBlur={handleBlur("speed")}
+                  error={touched.speed && errors.speed}
                 />
-                <HelperText type="error" visible={errors.speed}>
+                <HelperText
+                  type="error"
+                  visible={touched.speed && errors.speed ? true : false}
+                >
                   {errors.speed}
                 </HelperText>
               </View>
@@ -138,9 +175,13 @@ export const CreateARideScreen = () => {
                   label="Cafe Stops"
                   value={values.cafeStops}
                   onChangeText={handleChange("cafeStops")}
-                  error={errors.cafeStops}
+                  onBlur={handleBlur("cafeStops")}
+                  error={touched.cafeStops && errors.cafeStops}
                 />
-                <HelperText type="error" visible={errors.cafeStops}>
+                <HelperText
+                  type="error"
+                  visible={touched.cafeStops && errors.cafeStops ? true : false}
+                >
                   {errors.cafeStops}
                 </HelperText>
               </View>
@@ -149,9 +190,13 @@ export const CreateARideScreen = () => {
                   label="Route"
                   value={values.route}
                   onChangeText={handleChange("route")}
-                  error={errors.route}
+                  onBlur={handleBlur("route")}
+                  error={touched.route && errors.route}
                 />
-                <HelperText type="error" visible={errors.route}>
+                <HelperText
+                  type="error"
+                  visible={touched.route && errors.route ? true : false}
+                >
                   {errors.route}
                 </HelperText>
               </View>
