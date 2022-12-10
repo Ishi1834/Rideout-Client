@@ -1,4 +1,5 @@
 import * as yup from "yup"
+import { rideTypeArray } from "./multiSelectOptions"
 
 export const signInSchema = yup.object().shape({
   username: yup.string().required("Username is a required field"),
@@ -17,4 +18,16 @@ export const signUpSchema = yup.object().shape({
       [yup.ref("password")],
       "Confirm Password should match the Password field"
     ),
+})
+
+export const rideSchema = yup.object().shape({
+  date: yup.date().required(),
+  name: yup.string().required(),
+  rideType: yup.string().oneOf(rideTypeArray).required(),
+  startLocation: yup.array().of(yup.number()).required(),
+  distance: yup.number().required(),
+  speed: yup.number().required(),
+  description: yup.string().required(),
+  cafeStops: yup.string(),
+  route: yup.string().url(),
 })
