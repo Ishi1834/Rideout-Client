@@ -32,22 +32,22 @@ export const DrawerScreens = ({ navigation }) => {
     <Drawer.Navigator
       initialRouteName="Home"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{
-        headerRight: ({ tintColor }) => (
-          <MaterialCommunityIcons
-            name="plus"
-            style={{ marginRight: 15 }}
-            size={22}
-            color={tintColor}
-            onPress={() => navigation.navigate("CreateARide")}
-          />
-        ),
-      }}
     >
       <Drawer.Screen
         name="Home"
         component={TabScreens}
-        options={{ headerTitle: "" }}
+        options={{
+          headerTitle: "",
+          headerRight: ({ tintColor }) => (
+            <MaterialCommunityIcons
+              name="plus"
+              style={{ marginRight: 15 }}
+              size={22}
+              color={tintColor}
+              onPress={() => navigation.navigate("CreateARide")}
+            />
+          ),
+        }}
       />
       <Drawer.Screen
         name="FindAClub"

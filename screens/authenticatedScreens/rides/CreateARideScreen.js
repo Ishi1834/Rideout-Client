@@ -1,7 +1,7 @@
 import { useState } from "react"
 // UI
 import { View, StyleSheet, ScrollView } from "react-native"
-import { Button, HelperText, Text, TextInput } from "react-native-paper"
+import { Button, HelperText, TextInput } from "react-native-paper"
 import { RadioInput } from "../../../components/RadioInput"
 import DateTimePicker from "@react-native-community/datetimepicker"
 // Other
