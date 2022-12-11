@@ -10,6 +10,7 @@ import { SplashScreen } from "./screens/SplashScreen"
 import { DrawerScreens } from "./screens/authenticatedScreens/DrawerScreens"
 import { ClubDetailScreen } from "./screens/authenticatedScreens/clubs/ClubDetailScreen"
 import { RideDetailScreen } from "./screens/authenticatedScreens/rides/RideDetailScreen"
+import { CreateARideScreen } from "./screens/authenticatedScreens/rides/CreateARideScreen"
 // State
 import { AuthContext } from "./context/authContext"
 import { authReducer } from "./context/authReducer"
@@ -101,6 +102,13 @@ export default function App({ navigation }) {
                     component={DrawerScreens}
                     options={{
                       headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="CreateARide"
+                    component={CreateARideScreen}
+                    options={{
+                      title: "Create a Ride",
                     }}
                   />
                   <Stack.Screen

@@ -28,9 +28,6 @@ export const CreateARideScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title} variant="headlineLarge">
-          Create a Ride
-        </Text>
         <Formik
           onSubmit={(values) => console.log(values)}
           initialValues={createARideInitialValues}
@@ -219,9 +216,6 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-  },
-  title: {
-    textAlign: "center",
   },
   form: {
     marginTop: 10,

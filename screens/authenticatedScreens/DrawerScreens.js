@@ -9,10 +9,10 @@ import {
 import { ProfileScreen } from "./user/ProfileScreen"
 import { TabScreens } from "./TabScreens"
 import { FindAClubScreen } from "./clubs/FindAClubScreen"
-import { FindARideScreen } from "./rides/FindARideScreen"
 import { CreateAClubScreen } from "./clubs/CreateAClubScreen"
 // Context
 import { AuthContext } from "../../context/authContext"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
 
 const Drawer = createDrawerNavigator()
 
@@ -27,11 +27,22 @@ const CustomDrawerContent = (props) => {
   )
 }
 
-export const DrawerScreens = () => {
+export const DrawerScreens = ({ navigation }) => {
   return (
     <Drawer.Navigator
       initialRouteName="Home"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={{
+        headerRight: ({ tintColor }) => (
+          <MaterialCommunityIcons
+            name="plus"
+            style={{ marginRight: 15 }}
+            size={22}
+            color={tintColor}
+            onPress={() => navigation.navigate("CreateARide")}
+          />
+        ),
+      }}
     >
       <Drawer.Screen
         name="Home"
@@ -44,13 +55,6 @@ export const DrawerScreens = () => {
           title: "Find A Club",
         }}
         component={FindAClubScreen}
-      />
-      <Drawer.Screen
-        name="FindARide"
-        options={{
-          title: "Find A Ride",
-        }}
-        component={FindARideScreen}
       />
       <Drawer.Screen
         name="CreateAClub"

@@ -2,9 +2,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 // Screens
 import { MyClubsScreen } from "./clubs/MyClubsScreen"
 import { MyRidesScreen } from "./rides/MyRidesScreen"
-import { CreateARideScreen } from "./rides/CreateARideScreen"
 // UI
 import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { FindARideScreen } from "./rides/FindARideScreen"
 
 const Tab = createBottomTabNavigator()
 
@@ -30,14 +30,14 @@ export const TabScreens = () => {
         component={MyClubsScreen}
       />
       <Tab.Screen
-        name="CreateARide"
+        name="FindARide"
         options={{
           tabBarIcon: ({ tintColor }) => (
             <MaterialCommunityIcons name="bike" size={22} color={tintColor} />
           ),
-          title: "Create A Ride",
+          title: "Find A Ride",
         }}
-        component={CreateARideScreen}
+        component={FindARideScreen}
       />
       <Tab.Screen
         name="MyRides"
@@ -49,7 +49,7 @@ export const TabScreens = () => {
               color={tintColor}
             />
           ),
-          title: "Rides",
+          title: "My Rides",
         }}
         component={MyRidesScreen}
       />
