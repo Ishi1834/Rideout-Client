@@ -114,6 +114,9 @@ export default function App({ navigation }) {
                   <Stack.Screen
                     name="ClubDetail"
                     component={ClubDetailScreen}
+                    options={{
+                      title: "View Club",
+                    }}
                   />
                   <Stack.Screen
                     name="RideDetail"

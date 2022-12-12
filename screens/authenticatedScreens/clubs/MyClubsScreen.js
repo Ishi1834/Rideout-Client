@@ -8,6 +8,10 @@ const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 export const MyClubsScreen = () => {
   const navigation = useNavigation()
 
+  const navigateToClub = (screen, clubId) => {
+    navigation.navigate(screen, { clubId })
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -15,7 +19,7 @@ export const MyClubsScreen = () => {
           <Card key={index} style={styles.card}>
             <Card.Title
               title={club.name}
-              subtitle={club.location.coordinates}
+              subtitle={club.city}
               left={LeftContent}
             />
             <Card.Content style={styles.countSection}>
@@ -41,7 +45,7 @@ export const MyClubsScreen = () => {
             </Card.Content>
             <Divider style={styles.dividerHorizontal} />
             <Card.Actions>
-              <Button onPress={() => navigation.navigate("ClubDetail")}>
+              <Button onPress={() => navigateToClub("ClubDetail", club._id)}>
                 View Club
               </Button>
             </Card.Actions>

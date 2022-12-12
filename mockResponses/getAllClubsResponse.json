@@ -1,8 +1,9 @@
 [
   {
-    "_id": "638cbfd189b2d48ee18d5e2d",
+    "_id": "638cbfd189b2d48w418d5e2d",
     "name": "RP riders",
     "location": { "type": "Point", "coordinates": [51.52, -0.151] },
+    "city": "London",
     "tags": [],
     "cyclistCount": 1,
     "activitiesCount": 0,
@@ -18,9 +19,10 @@
     "__v": 0
   },
   {
-    "_id": "638cbfd189b2d48ee18d5e2d",
+    "_id": "638cbfd1jvb2d48ee18d5e2z",
     "name": "Brothers On Bikes",
     "location": { "type": "Point", "coordinates": [51.52, -0.151] },
+    "city": "London",
     "tags": [],
     "cyclistCount": 120,
     "activitiesCount": 265,
@@ -36,9 +38,10 @@
     "__v": 0
   },
   {
-    "_id": "638cbfd189b2d48ee18d5e2d",
+    "_id": "638cbfdlb9b2d48ee18d5e23",
     "name": "Clapham RideOn",
     "location": { "type": "Point", "coordinates": [50.97, -0.01] },
+    "city": "London",
     "tags": [],
     "cyclistCount": 10,
     "activitiesCount": 75,
@@ -54,9 +57,10 @@
     "__v": 0
   },
   {
-    "_id": "638cbfd189b2d48ee18d5e2d",
+    "_id": "638cbfd589b2d48ee18d5eso",
     "name": "Rapha",
     "location": { "type": "Point", "coordinates": [51.17, -0.112] },
+    "city": "London",
     "tags": [],
     "cyclistCount": 643,
     "activitiesCount": 885,
