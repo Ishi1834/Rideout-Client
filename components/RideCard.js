@@ -16,7 +16,7 @@ const LeftContent = (props) => <Avatar.Icon {...props} icon="bike" />
 export const RideCard = ({ ride, rideClicked }) => {
   const [menuVisible, setMenuVisible] = useState(false)
 
-  const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd-MM-yyyy")
+  const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd/MM/yyyy")
 
   return (
     <Card style={styles.card}>

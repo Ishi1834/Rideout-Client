@@ -6,8 +6,13 @@ import {
   Divider,
   ActivityIndicator,
   MD2Colors,
+  Button,
+  Chip,
+  Text,
 } from "react-native-paper"
+import { ListMembers } from "../../../components/ListMembers"
 import clubs from "../../../mockResponses/getAllClubsResponse.json"
+import clubRides from "../../../mockResponses/getAllClubRidesResponse.json"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
@@ -29,7 +34,14 @@ export const ClubDetailScreen = ({ route }) => {
             left={LeftContent}
           />
           <Card.Content>
-            {/* Description about the club here */}
+            <Text>The rides we do</Text>
+            <View style={styles.tagContainer}>
+              {club.tags.map((tag, index) => (
+                <Chip key={index} style={styles.tag}>
+                  {tag}
+                </Chip>
+              ))}
+            </View>
             <View style={styles.countSection}>
               <View style={styles.countItem}>
                 <Paragraph>Members</Paragraph>
@@ -56,9 +68,13 @@ export const ClubDetailScreen = ({ route }) => {
                 />
               </View>
             </View>
-            {/* Club activities here */}
+            {/** Component to show upcoming rides */}
+            <ListMembers members={club.members} isEditMembers={true} />
           </Card.Content>
-          {/* Edit actions here for anyone with permission */}
+          <Card.Actions>
+            <Button>Edit members</Button>
+            <Button>Edit rides</Button>
+          </Card.Actions>
         </Card>
       </View>
     </ScrollView>
@@ -73,8 +89,21 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 20,
   },
+  tagContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginHorizontal: 5,
+    marginVertical: 10,
+  },
+  tag: {
+    marginHorizontal: 5,
+    marginVertical: 5,
+  },
   countSection: {
     flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 5,
   },
   avatarText: {
     fontSize: 12,

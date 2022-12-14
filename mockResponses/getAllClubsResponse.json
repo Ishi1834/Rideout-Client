@@ -4,13 +4,79 @@
     "name": "RP riders",
     "location": { "type": "Point", "coordinates": [51.52, -0.151] },
     "city": "London",
-    "tags": [],
+    "tags": ["Road Cycling", "Mountain Biking", "Touring", "Casual"],
     "cyclistCount": 1,
     "activitiesCount": 0,
     "rides": [],
     "members": [
       {
         "name": "xalib jamil",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "admin",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "john",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "editor",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "ahmad",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "editor",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "ibrahim",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "admin",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "mohamad",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "admin",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "nicmo",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "user",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "mohamad",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "user",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "mohamad",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "user",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "xalib jamil",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "user",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "adam",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "user",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "maryam",
+        "userId": "638cbe8c89b2d48ee18d5e28",
+        "authorization": "admin",
+        "_id": "638cbfd189b2d48ee18d5e2e"
+      },
+      {
+        "name": "ikram",
         "userId": "638cbe8c89b2d48ee18d5e28",
         "authorization": "admin",
         "_id": "638cbfd189b2d48ee18d5e2e"
