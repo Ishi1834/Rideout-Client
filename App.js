@@ -118,7 +118,10 @@ export default function App({ navigation }) {
                       title: "Club",
                     }}
                   />
-                  <Stack.Screen name="Ride" component={RideDetailScreen} />
+                  <Stack.Screen
+                    name="RideDetail"
+                    component={RideDetailScreen}
+                  />
                 </>
               )}
             </Stack.Navigator>

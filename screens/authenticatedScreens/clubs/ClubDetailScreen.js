@@ -13,11 +13,13 @@ import {
 import { ListMembers } from "../../../components/ListMembers"
 import clubs from "../../../mockResponses/getAllClubsResponse.json"
 import clubRides from "../../../mockResponses/getAllClubRidesResponse.json"
+import { useState } from "react"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
 export const ClubDetailScreen = ({ route }) => {
   const { clubId } = route.params
+  const [isEditMembers, setIsEditMembers] = useState(false)
 
   const club = clubs.filter((club) => club._id === clubId)[0]
 
@@ -69,10 +71,12 @@ export const ClubDetailScreen = ({ route }) => {
               </View>
             </View>
             {/** Component to show upcoming rides */}
-            <ListMembers members={club.members} isEditMembers={true} />
+            <ListMembers members={club.members} isEditMembers={isEditMembers} />
           </Card.Content>
           <Card.Actions>
-            <Button>Edit members</Button>
+            <Button onPress={() => setIsEditMembers(!isEditMembers)}>
+              {isEditMembers ? "Cancel edit" : "Edit members"}{" "}
+            </Button>
             <Button>Edit rides</Button>
           </Card.Actions>
         </Card>

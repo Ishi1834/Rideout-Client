@@ -34,7 +34,7 @@ export const ListMembers = ({ members, isEditMembers }) => {
                 <DataTable.Cell>
                   <IconButton
                     icon="account-edit-outline"
-                    //iconColor={MD3Colors.error50}
+                    iconColor={MD3Colors.error20}
                     size={20}
                     onPress={() => console.log("Pressed")}
                   />
@@ -44,7 +44,7 @@ export const ListMembers = ({ members, isEditMembers }) => {
                 <DataTable.Cell>
                   <IconButton
                     icon="account-remove-outline"
-                    //iconColor={MD3Colors.error50}
+                    iconColor={MD3Colors.error50}
                     size={20}
                     onPress={() => console.log("Pressed")}
                   />
