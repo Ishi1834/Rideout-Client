@@ -16,7 +16,8 @@ import { AuthContext } from "./context/authContext"
 import { authReducer } from "./context/authReducer"
 import { initialState } from "./context/state"
 import { Provider } from "react-native-paper"
-
+// Other
+import { axios } from "./axiosConfig"
 const Stack = createStackNavigator()
 
 export default function App({ navigation }) {
@@ -51,8 +52,8 @@ export default function App({ navigation }) {
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
         // In the example, we'll use a dummy token
-
-        dispatch({ type: "SIGN_IN", token: "dummy-auth-token" })
+        console.log("data contxt ", data)
+        //dispatch({ type: "SIGN_IN", token: "dummy-auth-token" })
       },
       signOut: () => dispatch({ type: "SIGN_OUT" }),
       signUp: async (data) => {
