@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 // UI
 import { ScrollView, StyleSheet, View } from "react-native"
 import {
@@ -7,6 +7,7 @@ import {
   HelperText,
   ActivityIndicator,
 } from "react-native-paper"
+import { SummaryText } from "../../components/SummaryText"
 // State
 import { AuthContext } from "../../context/authContext"
 // Other
@@ -14,12 +15,16 @@ import { Formik } from "formik"
 import { signInSchema } from "../../static/validationSchema"
 import { signInInitialValues } from "../../static/formValues"
 import axios from "../../axiosConfig"
-import { ErrorText } from "../../components/ErrorText"
 
-export const SignInScreen = ({ navigation }) => {
+export const SignInScreen = ({ navigation, route }) => {
   const [errorMessage, setErrorMessage] = useState("")
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const { signIn } = useContext(AuthContext)
+  const params = route.params
+
+  useEffect(() => {
+    setErrorMessage("")
+  }, [params?.hasRegistered, params?.message])
 
   const loginApiCall = async (data) => {
     setIsSubmittingApi(true)
@@ -58,6 +63,10 @@ export const SignInScreen = ({ navigation }) => {
           }) => (
             <>
               <View style={styles.inputContainer}>
+                {params?.hasRegistered && (
+                  <SummaryText isInfo={true} message={params?.message} />
+                )}
+
                 <TextInput
                   label="Username"
                   value={values.username}
@@ -90,7 +99,7 @@ export const SignInScreen = ({ navigation }) => {
                   {errors.password}
                 </HelperText>
               </View>
-              {errorMessage && <ErrorText errorMessage={errorMessage} />}
+              {errorMessage && <SummaryText message={errorMessage} />}
 
               {isSubmittingApi ? (
                 <ActivityIndicator animating={true} />

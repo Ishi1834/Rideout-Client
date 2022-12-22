@@ -1,22 +1,49 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 // UI
 import { ScrollView, StyleSheet, View } from "react-native"
-import { TextInput, Button, HelperText } from "react-native-paper"
-// State
-import { AuthContext } from "../../context/authContext"
+import {
+  TextInput,
+  Button,
+  HelperText,
+  ActivityIndicator,
+} from "react-native-paper"
+import { ErrorText } from "../../components/SummaryText"
 // Other
 import { Formik } from "formik"
 import { signUpSchema } from "../../static/validationSchema"
 import { signUpInitialValues } from "../../static/formValues"
+import axios from "../../axiosConfig"
 
-export const SignUpScreen = () => {
-  const { signUp } = useContext(AuthContext)
+export const SignUpScreen = ({ navigation }) => {
+  const [errorMessage, setErrorMessage] = useState("")
+  const [isSubmittingApi, setIsSubmittingApi] = useState(false)
 
+  const signupApiCall = async (data) => {
+    setIsSubmittingApi(true)
+    setErrorMessage("")
+    try {
+      const res = await axios.post("/users", data)
+      navigation.navigate("SignIn", {
+        hasRegistered: true,
+        message: res?.data?.message,
+      })
+    } catch (error) {
+      console.log("error ", error)
+      if (error.response) {
+        setErrorMessage(error.response.data.message)
+      } else if (error.request) {
+        // Request made but no response is received from the server.
+      } else {
+        // Error occured while setting up the request
+      }
+    }
+    setIsSubmittingApi(false)
+  }
   return (
     <ScrollView>
       <View style={styles.container}>
         <Formik
-          onSubmit={(values) => console.log(values)}
+          onSubmit={(values) => signupApiCall(values)}
           initialValues={signUpInitialValues}
           validationSchema={signUpSchema}
         >
@@ -36,6 +63,7 @@ export const SignUpScreen = () => {
                   onChangeText={handleChange("name")}
                   onBlur={handleBlur("name")}
                   error={touched.name && errors.name}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -51,6 +79,7 @@ export const SignUpScreen = () => {
                   onChangeText={handleChange("username")}
                   onBlur={handleBlur("username")}
                   error={touched.username && errors.username}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -67,6 +96,7 @@ export const SignUpScreen = () => {
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   error={touched.email && errors.email}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -83,6 +113,7 @@ export const SignUpScreen = () => {
                   secureTextEntry
                   onBlur={handleBlur("password")}
                   error={touched.password && errors.password}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -99,6 +130,7 @@ export const SignUpScreen = () => {
                   secureTextEntry
                   onBlur={handleBlur("confirmPassword")}
                   error={touched.confirmPassword && errors.confirmPassword}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -111,11 +143,18 @@ export const SignUpScreen = () => {
                   {errors.confirmPassword}
                 </HelperText>
               </View>
-              <View style={styles.buttonContainer}>
-                <Button mode="contained" onPress={handleSubmit}>
-                  Sign up
-                </Button>
-              </View>
+
+              {errorMessage && <ErrorText errorMessage={errorMessage} />}
+
+              {isSubmittingApi ? (
+                <ActivityIndicator animating={true} />
+              ) : (
+                <View style={styles.buttonContainer}>
+                  <Button mode="contained" onPress={handleSubmit}>
+                    Sign up
+                  </Button>
+                </View>
+              )}
             </>
           )}
         </Formik>
@@ -134,5 +173,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingVertical: 25,
+  },
+  success: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "green",
   },
 })
