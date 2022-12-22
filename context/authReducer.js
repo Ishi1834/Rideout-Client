@@ -3,20 +3,20 @@ export const authReducer = (state, action) => {
     case "RESTORE_TOKEN":
       return {
         ...state,
-        userToken: action.token,
+        authToken: action.token,
         isLoading: false,
       }
     case "SIGN_IN":
       return {
         ...state,
         isSignout: false,
-        userToken: action.token,
+        authToken: action.token,
       }
     case "SIGN_OUT":
       return {
         ...state,
         isSignout: true,
-        userToken: null,
+        authToken: null,
       }
   }
 }

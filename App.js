@@ -17,29 +17,35 @@ import { authReducer } from "./context/authReducer"
 import { initialState } from "./context/state"
 import { Provider } from "react-native-paper"
 // Other
-import { axios } from "./axiosConfig"
+import axios from "./axiosConfig"
+import * as SecureStore from "expo-secure-store"
+
 const Stack = createStackNavigator()
 
-export default function App({ navigation }) {
+export default function App() {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      let userToken
+      let authToken
 
       try {
-        // Restore token stored in `SecureStore` or any other encrypted storage
-        // userToken = await SecureStore.getItemAsync('userToken');
-      } catch (e) {
-        // Restoring token failed
+        // Get refreshTokenfrom SecureStore
+        refreshToken = await SecureStore.getItemAsync("refreshToken")
+        // Get new authToken from backend
+        const res = await axios.post("auth/refresh", { refreshToken })
+        if (res.status === 200) {
+          await SecureStore.setItemAsync("refreshToken", res.data.refreshToken)
+          authToken = res.data.authToken
+          // Set Token header for all axios requests
+          axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`
+        }
+      } catch (error) {
+        console.log("Error ", error)
       }
 
-      // After restoring token, we may need to validate it in production apps
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: "RESTORE_TOKEN", token: userToken })
+      dispatch({ type: "RESTORE_TOKEN", token: authToken })
     }
 
     bootstrapAsync()
@@ -48,21 +54,13 @@ export default function App({ navigation }) {
   const authContext = useMemo(
     () => ({
       signIn: async (data) => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
-        // In the example, we'll use a dummy token
-        console.log("data contxt ", data)
-        //dispatch({ type: "SIGN_IN", token: "dummy-auth-token" })
+        await SecureStore.setItemAsync("refreshToken", data.refreshToken)
+
+        dispatch({ type: "SIGN_IN", token: data.authToken })
       },
-      signOut: () => dispatch({ type: "SIGN_OUT" }),
-      signUp: async (data) => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
-        // In the example, we'll use a dummy token
-        console.log("data contxt ", data)
-        //dispatch({ type: "SIGN_IN", token: "dummy-auth-token" })
+      signOut: async () => {
+        await SecureStore.deleteItemAsync("refreshToken")
+        dispatch({ type: "SIGN_OUT" })
       },
     }),
     []
@@ -77,7 +75,7 @@ export default function App({ navigation }) {
               {state.isLoading ? (
                 // We haven't finished checking for the token yet
                 <Stack.Screen name="Splash" component={SplashScreen} />
-              ) : state.userToken == null ? (
+              ) : state.authToken == null ? (
                 <>
                   <Stack.Screen
                     name="SignIn"
