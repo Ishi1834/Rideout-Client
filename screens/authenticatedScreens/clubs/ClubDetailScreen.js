@@ -14,12 +14,14 @@ import { ListMembers } from "../../../components/ListMembers"
 import clubs from "../../../mockResponses/getAllClubsResponse.json"
 import clubRides from "../../../mockResponses/getAllClubRidesResponse.json"
 import { useState } from "react"
+import { RideCard } from "../../../components/RideCard"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
 export const ClubDetailScreen = ({ route }) => {
   const { clubId } = route.params
   const [isEditMembers, setIsEditMembers] = useState(false)
+  const [showClubRides, setShowClubRides] = useState(false)
 
   const club = clubs.filter((club) => club._id === clubId)[0]
 
@@ -77,9 +79,19 @@ export const ClubDetailScreen = ({ route }) => {
             <Button onPress={() => setIsEditMembers(!isEditMembers)}>
               {isEditMembers ? "Cancel edit" : "Edit members"}{" "}
             </Button>
-            <Button>Edit rides</Button>
+            <Button onPress={() => setShowClubRides(!showClubRides)}>
+              {showClubRides ? "Hide Rides" : "Show Rides"}
+            </Button>
           </Card.Actions>
         </Card>
+        {showClubRides &&
+          clubRides.map((ride, index) => (
+            <RideCard
+              key={index}
+              ride={ride}
+              rideClicked={() => console.log("clicked")}
+            />
+          ))}
       </View>
     </ScrollView>
   )
