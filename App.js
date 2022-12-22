@@ -29,6 +29,7 @@ export default function App() {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
       let authToken
+      let userId
 
       try {
         // Get refreshTokenfrom SecureStore
@@ -38,6 +39,7 @@ export default function App() {
         if (res.status === 200) {
           await SecureStore.setItemAsync("refreshToken", res.data.refreshToken)
           authToken = res.data.authToken
+          userId = res.data.userId
           // Set Token header for all axios requests
           axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`
         }
@@ -45,7 +47,7 @@ export default function App() {
         console.log("Error ", error)
       }
 
-      dispatch({ type: "RESTORE_TOKEN", token: authToken })
+      dispatch({ type: "RESTORE_TOKEN", token: authToken, userId })
     }
 
     bootstrapAsync()
@@ -56,7 +58,11 @@ export default function App() {
       signIn: async (data) => {
         await SecureStore.setItemAsync("refreshToken", data.refreshToken)
 
-        dispatch({ type: "SIGN_IN", token: data.authToken })
+        dispatch({
+          type: "SIGN_IN",
+          token: data.authToken,
+          userId: data.userId,
+        })
       },
       signOut: async () => {
         await SecureStore.deleteItemAsync("refreshToken")

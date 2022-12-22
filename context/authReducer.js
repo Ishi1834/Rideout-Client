@@ -4,6 +4,7 @@ export const authReducer = (state, action) => {
       return {
         ...state,
         authToken: action.token,
+        userId: action.userId,
         isLoading: false,
       }
     case "SIGN_IN":
@@ -11,6 +12,7 @@ export const authReducer = (state, action) => {
         ...state,
         isSignout: false,
         authToken: action.token,
+        userId: action.userId,
       }
     case "SIGN_OUT":
       return {
