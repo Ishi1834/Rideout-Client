@@ -1,12 +1,16 @@
+// UI
 import { View, StyleSheet, ScrollView } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { Avatar, Button, Card, Paragraph, Divider } from "react-native-paper"
-import clubs from "../../../mockResponses/getAllClubsResponse.json"
+// State
+import { useSelector } from "react-redux"
+// Other
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
 export const MyClubsScreen = () => {
   const navigation = useNavigation()
+  const clubs = useSelector((state) => state.user.clubs)
 
   const navigateToClub = (screen, clubId) => {
     navigation.navigate(screen, { clubId })

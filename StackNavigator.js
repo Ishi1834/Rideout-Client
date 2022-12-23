@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { restoreToken } from "./state/authSlice"
+import { addUserDetails } from "./state/userSlice"
 // Screens
 import { SignInScreen } from "./screens/authScreens/SignInScreen"
 import { SignUpScreen } from "./screens/authScreens/SignUpScreen"
@@ -48,6 +49,16 @@ export const StackNavigator = () => {
 
     checkTokenExists()
   }, [])
+
+  useEffect(() => {
+    if (authState.userId) {
+      axios.get(`users/${authState.userId}`).then((res) => {
+        if (res.status === 200) {
+          dispatch(addUserDetails(res.data))
+        }
+      })
+    }
+  }, [authState.authToken])
 
   return (
     <Stack.Navigator>
