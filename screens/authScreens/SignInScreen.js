@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import * as SecureStore from "expo-secure-store"
 // UI
 import { ScrollView, StyleSheet, View } from "react-native"
 import {
@@ -9,7 +10,8 @@ import {
 } from "react-native-paper"
 import { SummaryText } from "../../components/SummaryText"
 // State
-import { AuthContext } from "../../context/authContext"
+import { useDispatch } from "react-redux"
+import { signIn } from "../../state/authSlice"
 // Other
 import { Formik } from "formik"
 import { signInSchema } from "../../static/validationSchema"
@@ -17,9 +19,9 @@ import { signInInitialValues } from "../../static/formValues"
 import axios from "../../axiosConfig"
 
 export const SignInScreen = ({ navigation, route }) => {
+  const dispatch = useDispatch()
   const [errorMessage, setErrorMessage] = useState("")
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
-  const { signIn } = useContext(AuthContext)
   const params = route.params
 
   useEffect(() => {
@@ -32,7 +34,13 @@ export const SignInScreen = ({ navigation, route }) => {
     try {
       const res = await axios.post("/auth", data)
       if (res?.data?.authToken) {
-        signIn(res.data)
+        await SecureStore.setItemAsync("refreshToken", res?.data?.refreshToken)
+        dispatch(
+          signIn({
+            authToken: res?.data?.authToken,
+            userId: res?.data?.userId,
+          })
+        )
       }
     } catch (error) {
       if (error.response) {

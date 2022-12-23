@@ -1,28 +1,35 @@
-import { useContext } from "react"
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
   DrawerItem,
 } from "@react-navigation/drawer"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
 // Screens
 import { ProfileScreen } from "./user/ProfileScreen"
 import { TabScreens } from "./TabScreens"
 import { FindAClubScreen } from "./clubs/FindAClubScreen"
 import { CreateAClubScreen } from "./clubs/CreateAClubScreen"
-// Context
-import { AuthContext } from "../../context/authContext"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+// State
+import { useDispatch } from "react-redux"
+import { signOut } from "../../state/authSlice"
+// Other
+import * as SecureStore from "expo-secure-store"
 
 const Drawer = createDrawerNavigator()
 
 const CustomDrawerContent = (props) => {
-  const { signOut } = useContext(AuthContext)
+  const dispatch = useDispatch()
+
+  const logout = async () => {
+    await SecureStore.deleteItemAsync("refreshToken")
+    dispatch(signOut())
+  }
 
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
-      <DrawerItem label="Log out" onPress={() => signOut()} />
+      <DrawerItem label="Log out" onPress={() => logout()} />
     </DrawerContentScrollView>
   )
 }
