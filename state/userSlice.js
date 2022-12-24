@@ -23,6 +23,15 @@ export const userSlice = createSlice({
     updateClubs: (state, action) => {
       state.clubs = action.payload
     },
+    updateClubRides: (state, action) => {
+      const clubId = action.payload.clubId
+      state.clubs = state.clubs.map((club) => {
+        if (club._id === clubId) {
+          club.rides = action.payload.rides
+        }
+        return club
+      })
+    },
     clearUserDetails: (state) => {
       state.username = null
       state.name = null
@@ -34,7 +43,11 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addUserDetails, updateClubs, clearUserDetails } =
-  userSlice.actions
+export const {
+  addUserDetails,
+  updateClubs,
+  updateClubRides,
+  clearUserDetails,
+} = userSlice.actions
 
 export default userSlice.reducer

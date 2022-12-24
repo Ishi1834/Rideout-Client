@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 // UI
 import { View, ScrollView, StyleSheet } from "react-native"
 import {
@@ -15,18 +15,37 @@ import {
 import { ListMembers } from "../../../components/ListMembers"
 import { RideCard } from "../../../components/RideCard"
 // State
-import { useSelector } from "react-redux"
-import clubRides from "../../../mockResponses/getAllClubRidesResponse.json"
+import { useSelector, useDispatch } from "react-redux"
+// Other
+import axios from "../../../axiosConfig"
+import { updateClubRides } from "../../../state/userSlice"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
 export const ClubDetailScreen = ({ route }) => {
   const { clubId } = route.params
+  const dispatch = useDispatch()
   const clubs = useSelector((state) => state.user.clubs)
   const [isEditMembers, setIsEditMembers] = useState(false)
   const [showClubRides, setShowClubRides] = useState(false)
+  const [clubRides, setClubRides] = useState(null)
 
   const club = clubs.filter((club) => club._id === clubId)[0]
+
+  useEffect(() => {
+    const getClubRides = async () => {
+      try {
+        const res = await axios.get(`rides/${club._id}`)
+        if (res.status === 200) {
+          setClubRides(res.data)
+          dispatch(updateClubRides({ clubId: club._id, rides: res.data }))
+        }
+      } catch (error) {
+        console.log("Error here ", error)
+      }
+    }
+    getClubRides()
+  }, [])
 
   if (!club) {
     return <ActivityIndicator animating={true} color={MD2Colors.red800} />
@@ -88,12 +107,16 @@ export const ClubDetailScreen = ({ route }) => {
           </Card.Actions>
         </Card>
         {showClubRides &&
-          clubRides.map((ride, index) => (
-            <RideCard
-              key={index}
-              ride={ride}
-              rideClicked={() => console.log("clicked")}
-            />
+          (clubRides ? (
+            clubRides.map((ride, index) => (
+              <RideCard
+                key={index}
+                ride={ride}
+                rideClicked={() => console.log("clicked")}
+              />
+            ))
+          ) : (
+            <ActivityIndicator animating={true} color={MD2Colors.red800} />
           ))}
       </View>
     </ScrollView>
