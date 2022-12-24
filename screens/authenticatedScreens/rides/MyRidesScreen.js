@@ -1,10 +1,13 @@
-import { View, ScrollView, StyleSheet } from "react-native"
 import { useNavigation } from "@react-navigation/native"
-import rides from "../../../mockResponses/getAllClubRidesResponse.json"
+// UI
+import { View, ScrollView, StyleSheet } from "react-native"
 import { RideCard } from "../../../components/RideCard"
+// State
+import { useSelector } from "react-redux"
 
 export const MyRidesScreen = () => {
   const navigation = useNavigation()
+  const rides = useSelector((state) => state.user.rides)
 
   const navigateToRide = (screen, rideId) => {
     navigation.navigate(screen, { rideId })

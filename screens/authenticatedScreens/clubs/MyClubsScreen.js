@@ -1,12 +1,9 @@
+import { useNavigation } from "@react-navigation/native"
 // UI
 import { View, StyleSheet, ScrollView } from "react-native"
-import { useNavigation } from "@react-navigation/native"
-import { Avatar, Button, Card, Paragraph, Divider } from "react-native-paper"
+import { ClubCard } from "../../../components/ClubCard"
 // State
 import { useSelector } from "react-redux"
-// Other
-
-const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
 export const MyClubsScreen = () => {
   const navigation = useNavigation()
@@ -20,40 +17,7 @@ export const MyClubsScreen = () => {
     <ScrollView>
       <View style={styles.container}>
         {clubs.map((club, index) => (
-          <Card key={index} style={styles.card}>
-            <Card.Title
-              title={club.name}
-              subtitle={club.city}
-              left={LeftContent}
-            />
-            <Card.Content style={styles.countSection}>
-              <View style={styles.countItem}>
-                <Paragraph>Members</Paragraph>
-                <Avatar.Text
-                  size={30}
-                  labelStyle={styles.avatarText}
-                  label={club.cyclistCount}
-                />
-              </View>
-              <Divider
-                style={[styles.countItem, { width: 1, height: "100%" }]}
-              />
-              <View style={styles.countItem}>
-                <Paragraph>Activities</Paragraph>
-                <Avatar.Text
-                  size={30}
-                  labelStyle={styles.avatarText}
-                  label={club.activitiesCount}
-                />
-              </View>
-            </Card.Content>
-            <Divider style={styles.dividerHorizontal} />
-            <Card.Actions>
-              <Button onPress={() => navigateToClub("ClubDetail", club._id)}>
-                View Club
-              </Button>
-            </Card.Actions>
-          </Card>
+          <ClubCard key={index} club={club} clubClicked={navigateToClub} />
         ))}
       </View>
     </ScrollView>
@@ -64,19 +28,5 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-  },
-  card: {
-    marginBottom: 20,
-  },
-  countSection: {
-    flexDirection: "row",
-  },
-  avatarText: {
-    fontSize: 12,
-  },
-  countItem: { marginRight: 10, alignItems: "center" },
-  dividerHorizontal: {
-    marginTop: 15,
-    height: 1,
   },
 })

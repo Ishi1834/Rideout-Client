@@ -16,9 +16,9 @@ export const userSlice = createSlice({
       state.username = action.payload.username
       state.name = action.payload.name
       state.email = action.payload.email
-      // Mongoose Populate uses clubId to populate
+      // Mongoose Populate uses clubId, rideId to populate
       state.clubs = action.payload.clubs.map((club) => club.clubId)
-      state.rides = action.payload.rides
+      state.rides = action.payload.rides.map((ride) => ride.rideId)
     },
     updateClubs: (state, action) => {
       state.clubs = action.payload
