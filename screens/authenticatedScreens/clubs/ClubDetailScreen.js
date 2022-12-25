@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigation } from "@react-navigation/native"
 // UI
 import { View, ScrollView, StyleSheet } from "react-native"
 import {
@@ -11,26 +12,44 @@ import {
   Button,
   Chip,
   Text,
+  Portal,
+  Modal,
 } from "react-native-paper"
 import { ListMembers } from "../../../components/ListMembers"
 import { RideCard } from "../../../components/RideCard"
 // State
 import { useSelector, useDispatch } from "react-redux"
+import { updateClubRides } from "../../../state/userSlice"
 // Other
 import axios from "../../../axiosConfig"
-import { updateClubRides } from "../../../state/userSlice"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
 export const ClubDetailScreen = ({ route }) => {
   const { clubId } = route.params
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   const clubs = useSelector((state) => state.user.clubs)
   const [isEditMembers, setIsEditMembers] = useState(false)
   const [showClubRides, setShowClubRides] = useState(false)
+  const [showDeleteClub, setShowDeleteClub] = useState(false)
   const [clubRides, setClubRides] = useState(null)
 
   const club = clubs.filter((club) => club._id === clubId)[0]
+
+  const deleteClubApiCall = async () => {
+    try {
+      const res = await axios.delete(`/clubs/${club._id}`)
+      if (res.status === 200) {
+        setShowDeleteClub(false)
+        navigation.navigate("MyClubs", {
+          message: res?.data?.message,
+        })
+      }
+    } catch (error) {
+      console.log("Error here ", error)
+    }
+  }
 
   useEffect(() => {
     const getClubRides = async () => {
@@ -53,6 +72,28 @@ export const ClubDetailScreen = ({ route }) => {
   return (
     <ScrollView>
       <View style={styles.container}>
+        <Portal>
+          <Modal
+            visible={showDeleteClub}
+            onDismiss={() => setShowDeleteClub(false)}
+            contentContainerStyle={styles.modalStyle}
+          >
+            <Text style={styles.modalText}>
+              Are you sure you want to delete this club?
+            </Text>
+            <Card.Actions>
+              <Button
+                mode="contained"
+                buttonColor={MD2Colors.redA200}
+                onPress={deleteClubApiCall}
+              >
+                Yes
+              </Button>
+              <Button onPress={() => setShowDeleteClub(false)}>No</Button>
+            </Card.Actions>
+          </Modal>
+        </Portal>
+
         <Card style={styles.card}>
           <Card.Title
             title={club.name}
@@ -105,6 +146,16 @@ export const ClubDetailScreen = ({ route }) => {
               {showClubRides ? "Hide Rides" : "Show Rides"}
             </Button>
           </Card.Actions>
+          <Card.Actions>
+            <Button
+              mode="contained"
+              onPress={() => {
+                setShowDeleteClub(true)
+              }}
+            >
+              Delete Club
+            </Button>
+          </Card.Actions>
         </Card>
         {showClubRides &&
           (clubRides ? (
@@ -130,6 +181,12 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 20,
+  },
+  modalStyle: { backgroundColor: "white", padding: 20, marginHorizontal: 20 },
+  modalText: {
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    fontSize: 15,
   },
   tagContainer: {
     flexDirection: "row",
