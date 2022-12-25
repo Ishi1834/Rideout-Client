@@ -19,3 +19,9 @@ export const createARideInitialValues = {
   cafeStops: "",
   route: "",
 }
+
+export const createAClubInitialValues = {
+  clubName: "",
+  city: "",
+  location: null,
+}

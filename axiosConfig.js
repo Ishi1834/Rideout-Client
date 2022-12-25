@@ -14,7 +14,7 @@ axios.interceptors.response.use(
       const { authToken } = res.data
       axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`
     }
-    return error
+    return Promise.reject(error)
   }
 )
 export default axios
