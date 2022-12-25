@@ -52,11 +52,15 @@ export const StackNavigator = () => {
 
   useEffect(() => {
     if (authState.userId) {
-      axios.get(`users/${authState.userId}`).then((res) => {
-        if (res.status === 200) {
-          dispatch(addUserDetails(res.data))
-        }
-      })
+      try {
+        axios.get(`users/${authState.userId}`).then((res) => {
+          if (res.status === 200) {
+            dispatch(addUserDetails(res.data))
+          }
+        })
+      } catch (error) {
+        console.log("Error here ", error)
+      }
     }
   }, [authState.authToken])
 
@@ -96,9 +100,11 @@ export const StackNavigator = () => {
           <Stack.Screen
             name="CreateARide"
             component={CreateARideScreen}
-            options={{
-              title: "Create a Ride",
-            }}
+            options={({ route }) => ({
+              title: route.params?.clubName
+                ? `Create an ${route.params?.clubName} group ride`
+                : "Create an Open Ride",
+            })}
           />
           <Stack.Screen
             name="ClubDetail"

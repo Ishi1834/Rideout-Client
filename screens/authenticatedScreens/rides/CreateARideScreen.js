@@ -1,7 +1,12 @@
 import { useState } from "react"
 // UI
 import { View, StyleSheet, ScrollView } from "react-native"
-import { Button, HelperText, TextInput } from "react-native-paper"
+import {
+  Button,
+  HelperText,
+  TextInput,
+  ActivityIndicator,
+} from "react-native-paper"
 import { RadioInput } from "../../../components/RadioInput"
 import DateTimePicker from "@react-native-community/datetimepicker"
 // Other
@@ -10,10 +15,35 @@ import { Formik } from "formik"
 import { rideTypeArray } from "../../../static/multiSelectOptions"
 import { rideSchema } from "../../../static/validationSchema"
 import { createARideInitialValues } from "../../../static/formValues"
+import axios from "../../../axiosConfig"
+import { SummaryText } from "../../../components/SummaryText"
 
-export const CreateARideScreen = () => {
+export const CreateARideScreen = ({ navigation, route }) => {
+  const params = route.params
+  const [isSubmittingApi, setIsSubmittingApi] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const [mode, setMode] = useState("date")
   const [show, setShow] = useState(false)
+
+  const createARideApiCall = async (data) => {
+    setErrorMessage("")
+    setIsSubmittingApi(true)
+    const clubId = params?.clubId
+    let endPoint = "/rides"
+    if (clubId) {
+      endPoint = `${endPoint}/${clubId}`
+    }
+    try {
+      const res = await axios.post(endPoint, data)
+      if (res.status === 201) {
+        navigation.navigate("MyRides", { message: res?.data?.message })
+      }
+    } catch (error) {
+      console.log("Error here ", error)
+      setErrorMessage(error.response.data.message)
+    }
+    setIsSubmittingApi(false)
+  }
 
   const showDatepicker = () => {
     setMode("date")
@@ -29,7 +59,7 @@ export const CreateARideScreen = () => {
     <ScrollView>
       <View style={styles.container}>
         <Formik
-          onSubmit={(values) => console.log(values)}
+          onSubmit={(values) => createARideApiCall(values)}
           initialValues={createARideInitialValues}
           validationSchema={rideSchema}
         >
@@ -50,6 +80,7 @@ export const CreateARideScreen = () => {
                   onChangeText={handleChange("name")}
                   onBlur={handleBlur("name")}
                   error={touched.name && errors.name}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -65,6 +96,7 @@ export const CreateARideScreen = () => {
                   onChangeText={handleChange("description")}
                   onBlur={handleBlur("description")}
                   error={touched.description && errors.description}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -81,6 +113,7 @@ export const CreateARideScreen = () => {
                   style={styles.dateButton}
                   onPress={showDatepicker}
                   icon="calendar-outline"
+                  disabled={isSubmittingApi && true}
                 >
                   {formatDate(values.date)}
                 </Button>
@@ -89,6 +122,7 @@ export const CreateARideScreen = () => {
                   style={styles.dateButton}
                   onPress={showTimepicker}
                   icon="calendar-clock-outline"
+                  disabled={isSubmittingApi && true}
                 >
                   {formatTime(values.date)}
                 </Button>
@@ -110,6 +144,7 @@ export const CreateARideScreen = () => {
                   radioLabel="Select Ride Type"
                   itemSelected={handleChange("rideType")}
                   onBlur={handleBlur("rideType")}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -125,6 +160,7 @@ export const CreateARideScreen = () => {
                   onChangeText={handleChange("startLocation")}
                   onBlur={handleBlur("startLocation")}
                   error={touched.startLocation && errors.startLocation}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -143,6 +179,7 @@ export const CreateARideScreen = () => {
                   onChangeText={handleChange("distance")}
                   onBlur={handleBlur("distance")}
                   error={touched.distance && errors.distance}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -159,6 +196,7 @@ export const CreateARideScreen = () => {
                   onChangeText={handleChange("speed")}
                   onBlur={handleBlur("speed")}
                   error={touched.speed && errors.speed}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -174,6 +212,7 @@ export const CreateARideScreen = () => {
                   onChangeText={handleChange("cafeStops")}
                   onBlur={handleBlur("cafeStops")}
                   error={touched.cafeStops && errors.cafeStops}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -189,6 +228,7 @@ export const CreateARideScreen = () => {
                   onChangeText={handleChange("route")}
                   onBlur={handleBlur("route")}
                   error={touched.route && errors.route}
+                  disabled={isSubmittingApi && true}
                 />
                 <HelperText
                   type="error"
@@ -197,13 +237,20 @@ export const CreateARideScreen = () => {
                   {errors.route}
                 </HelperText>
               </View>
-              <Button
-                style={styles.button}
-                mode="contained"
-                onPress={handleSubmit}
-              >
-                Submit
-              </Button>
+
+              {errorMessage && <SummaryText message={errorMessage} />}
+
+              {isSubmittingApi ? (
+                <ActivityIndicator animating={true} />
+              ) : (
+                <Button
+                  style={styles.button}
+                  mode="contained"
+                  onPress={handleSubmit}
+                >
+                  Submit
+                </Button>
+              )}
             </View>
           )}
         </Formik>

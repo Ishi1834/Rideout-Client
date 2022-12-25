@@ -2,7 +2,12 @@ import { useEffect, useState } from "react"
 import { View, StyleSheet } from "react-native"
 import { Button, RadioButton } from "react-native-paper"
 
-export const RadioInput = ({ radioData, radioLabel, itemSelected }) => {
+export const RadioInput = ({
+  radioData,
+  radioLabel,
+  itemSelected,
+  disabled,
+}) => {
   const [showRadio, setShowRadio] = useState(false)
   const [selectedItem, setSelectedItem] = useState("")
 
@@ -20,6 +25,7 @@ export const RadioInput = ({ radioData, radioLabel, itemSelected }) => {
         style={styles.button}
         contentStyle={styles.buttonContent}
         onPress={() => setShowRadio(!showRadio)}
+        disabled={disabled}
       >
         {!selectedItem ? radioLabel : selectedItem}
       </Button>

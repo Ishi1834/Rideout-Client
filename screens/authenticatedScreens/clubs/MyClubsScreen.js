@@ -27,13 +27,22 @@ export const MyClubsScreen = () => {
     navigation.navigate(screen, { clubId })
   }
 
+  const navigateToCreateARide = (screen, clubName, clubId) => {
+    navigation.navigate(screen, { clubName, clubId })
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
         {message && <SummaryText isInfo={true} message={message} />}
 
         {clubs.map((club, index) => (
-          <ClubCard key={index} club={club} clubClicked={navigateToClub} />
+          <ClubCard
+            key={index}
+            club={club}
+            clubClicked={navigateToClub}
+            createRideClicked={navigateToCreateARide}
+          />
         ))}
       </View>
     </ScrollView>
