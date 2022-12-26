@@ -23,11 +23,11 @@ export const ridesSlice = createSlice({
     },
     removeAUserRide: (state, action) => {
       const rideId = action.payload
-      state.userRides.filter((ride) => ride._id !== rideId)
+      state.userRides = state.userRides.filter((ride) => ride._id !== rideId)
     },
     removeAClubRide: (state, action) => {
       const rideId = action.payload
-      state.clubRides.filter((ride) => ride._id !== rideId)
+      state.clubRides = state.clubRides.filter((ride) => ride._id !== rideId)
     },
   },
 })

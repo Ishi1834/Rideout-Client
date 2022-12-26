@@ -15,6 +15,8 @@ import { CreateARideScreen } from "./screens/authenticatedScreens/rides/CreateAR
 // Other
 import axios from "./axiosConfig"
 import * as SecureStore from "expo-secure-store"
+import { setUpClubs } from "./state/clubsSlice"
+import { setUpUserRides } from "./state/ridesSlice"
 
 const Stack = createStackNavigator()
 
@@ -56,6 +58,11 @@ export const StackNavigator = () => {
         axios.get(`users/${authState.userId}`).then((res) => {
           if (res.status === 200) {
             dispatch(addUserDetails(res.data))
+            // Extract club, ride populated by MongoDB
+            const clubs = res.data.clubs.map((club) => club.clubId)
+            const rides = res.data.rides.map((ride) => ride.rideId)
+            dispatch(setUpClubs(clubs))
+            dispatch(setUpUserRides(rides))
           }
         })
       } catch (error) {

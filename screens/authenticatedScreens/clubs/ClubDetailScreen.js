@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
 import { View, ScrollView, StyleSheet } from "react-native"
@@ -16,10 +16,9 @@ import {
   Modal,
 } from "react-native-paper"
 import { ListMembers } from "../../../components/ListMembers"
-import { RideCard } from "../../../components/RideCard"
 // State
 import { useSelector, useDispatch } from "react-redux"
-import { updateClubRides } from "../../../state/userSlice"
+import { removeAClub } from "../../../state/clubsSlice"
 // Other
 import axios from "../../../axiosConfig"
 
@@ -29,11 +28,9 @@ export const ClubDetailScreen = ({ route }) => {
   const { clubId } = route.params
   const dispatch = useDispatch()
   const navigation = useNavigation()
-  const clubs = useSelector((state) => state.user.clubs)
+  const clubs = useSelector((state) => state.clubs.clubs)
   const [isEditMembers, setIsEditMembers] = useState(false)
-  const [showClubRides, setShowClubRides] = useState(false)
   const [showDeleteClub, setShowDeleteClub] = useState(false)
-  const [clubRides, setClubRides] = useState(null)
 
   const club = clubs.filter((club) => club._id === clubId)[0]
 
@@ -45,26 +42,13 @@ export const ClubDetailScreen = ({ route }) => {
         navigation.navigate("MyClubs", {
           message: res?.data?.message,
         })
+        dispatch(removeAClub(club._id))
+        // dispatch call below to remove club rides
       }
     } catch (error) {
       console.log("Error here ", error)
     }
   }
-
-  useEffect(() => {
-    const getClubRides = async () => {
-      try {
-        const res = await axios.get(`rides/${club._id}`)
-        if (res.status === 200) {
-          setClubRides(res.data)
-          dispatch(updateClubRides({ clubId: club._id, rides: res.data }))
-        }
-      } catch (error) {
-        console.log("Error here ", error)
-      }
-    }
-    getClubRides()
-  }, [])
 
   if (!club) {
     return <ActivityIndicator animating={true} color={MD2Colors.red800} />
@@ -135,15 +119,11 @@ export const ClubDetailScreen = ({ route }) => {
                 />
               </View>
             </View>
-            {/** Component to show upcoming rides */}
             <ListMembers members={club.members} isEditMembers={isEditMembers} />
           </Card.Content>
           <Card.Actions>
             <Button onPress={() => setIsEditMembers(!isEditMembers)}>
               {isEditMembers ? "Cancel edit" : "Edit members"}{" "}
-            </Button>
-            <Button onPress={() => setShowClubRides(!showClubRides)}>
-              {showClubRides ? "Hide Rides" : "Show Rides"}
             </Button>
           </Card.Actions>
           <Card.Actions>
@@ -157,18 +137,6 @@ export const ClubDetailScreen = ({ route }) => {
             </Button>
           </Card.Actions>
         </Card>
-        {showClubRides &&
-          (clubRides ? (
-            clubRides.map((ride, index) => (
-              <RideCard
-                key={index}
-                ride={ride}
-                rideClicked={() => console.log("clicked")}
-              />
-            ))
-          ) : (
-            <ActivityIndicator animating={true} color={MD2Colors.red800} />
-          ))}
       </View>
     </ScrollView>
   )

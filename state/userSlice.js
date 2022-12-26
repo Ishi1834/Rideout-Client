@@ -4,8 +4,6 @@ const initialState = {
   username: null,
   name: null,
   email: null,
-  clubs: [],
-  rides: [],
 }
 
 export const userSlice = createSlice({
@@ -16,38 +14,16 @@ export const userSlice = createSlice({
       state.username = action.payload.username
       state.name = action.payload.name
       state.email = action.payload.email
-      // Mongoose Populate uses clubId, rideId to populate
-      state.clubs = action.payload.clubs.map((club) => club.clubId)
-      state.rides = action.payload.rides.map((ride) => ride.rideId)
-    },
-    updateClubs: (state, action) => {
-      state.clubs = action.payload
-    },
-    updateClubRides: (state, action) => {
-      const clubId = action.payload.clubId
-      state.clubs = state.clubs.map((club) => {
-        if (club._id === clubId) {
-          club.rides = action.payload.rides
-        }
-        return club
-      })
     },
     clearUserDetails: (state) => {
       state.username = null
       state.name = null
       state.email = null
-      state.clubs = []
-      state.rides = []
     },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const {
-  addUserDetails,
-  updateClubs,
-  updateClubRides,
-  clearUserDetails,
-} = userSlice.actions
+export const { addUserDetails, clearUserDetails } = userSlice.actions
 
 export default userSlice.reducer

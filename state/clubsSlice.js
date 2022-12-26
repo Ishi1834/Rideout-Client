@@ -16,7 +16,7 @@ export const clubsSlice = createSlice({
     },
     removeAClub: (state, action) => {
       const clubId = action.payload
-      state.clubs.filter((club) => clubId !== club._id)
+      state.clubs = state.clubs.filter((club) => clubId !== club._id)
     },
   },
 })
