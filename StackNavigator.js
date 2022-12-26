@@ -61,7 +61,15 @@ export const StackNavigator = () => {
             // Extract club, ride populated by MongoDB
             const clubs = res.data.clubs.map((club) => club.clubId)
             const rides = res.data.rides.map((ride) => ride.rideId)
-            dispatch(setUpClubs(clubs))
+            // Get authorization for the clubs
+            const authorization = res.data.clubs.map((club) => {
+              return {
+                clubName: club.name,
+                authorization: club.authorization,
+                clubId: club.clubId._id,
+              }
+            })
+            dispatch(setUpClubs({ clubs, authorization }))
             dispatch(setUpUserRides(rides))
           }
         })

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
   clubs: [],
+  authorization: [],
 }
 
 export const clubsSlice = createSlice({
@@ -9,14 +10,25 @@ export const clubsSlice = createSlice({
   initialState,
   reducers: {
     setUpClubs: (state, action) => {
-      state.clubs = action.payload
+      const { clubs, authorization } = action.payload
+      state.clubs = clubs
+      state.authorization = authorization
     },
     addAClub: (state, action) => {
-      state.clubs.push(action.payload)
+      const club = action.payload
+      state.clubs.push(club)
+      state.authorization.push({
+        clubName: club.name,
+        authorization: "admin",
+        clubId: club._id,
+      })
     },
     removeAClub: (state, action) => {
       const clubId = action.payload
       state.clubs = state.clubs.filter((club) => clubId !== club._id)
+      state.authorization = state.authorization.filter(
+        (club) => clubId !== club.clubId
+      )
     },
   },
 })
