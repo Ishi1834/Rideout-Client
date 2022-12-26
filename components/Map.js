@@ -4,7 +4,9 @@ import { View, StyleSheet } from "react-native"
 // Other
 import MapView from "react-native-maps"
 
-export const Map = () => {
+export const Map = ({ allLocations }) => {
+  console.log("all locations ", allLocations)
+
   return (
     <View style={styles.mapContainer}>
       <MapView style={styles.map} />
@@ -15,6 +17,9 @@ export const Map = () => {
 const styles = StyleSheet.create({
   mapContainer: {
     height: "50%",
+    borderColor: "black",
+    borderWidth: 1,
+    marginVertical: 10,
   },
   map: {
     width: "100%",

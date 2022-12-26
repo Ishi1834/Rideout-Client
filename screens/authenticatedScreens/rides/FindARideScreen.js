@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
-import { ScrollView, View, StyleSheet } from "react-native"
-import { ActivityIndicator, Button, List } from "react-native-paper"
+import { View, StyleSheet, FlatList } from "react-native"
+import { ActivityIndicator, Button } from "react-native-paper"
 import { RideCard } from "../../../components/RideCard"
 import { Map } from "../../../components/Map"
-import { Switch } from "../../../components/Switch"
+import { FilterRides } from "../../../components/FilterRides"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
 // Other
 import axios from "../../../axiosConfig"
-import { FilterRides } from "../../../components/FilterRides"
 
 export const FindARideScreen = () => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const clubs = useSelector((state) => state.clubs)
   const ridesState = useSelector((state) => state.rides)
+  const clubRides = ridesState?.clubRides
+  const openRides = ridesState?.openRides.rides
+  const [allRides, setAllRides] = useState([...clubRides, ...openRides])
   const [showFilter, setShowFilter] = useState(false)
   const [filterMap, setFilterMap] = useState({
     name: "Show Map",
@@ -33,8 +35,9 @@ export const FindARideScreen = () => {
     selected: null,
   })
 
-  const clubRides = ridesState?.clubRides
-  const openRides = ridesState?.openRides
+  useEffect(() => {
+    console.log("filter requested")
+  }, [filterRides[0].isChecked, filterRides[1].isChecked, filterClubs.selected])
 
   useEffect(() => {
     const clubsArray = clubs.authorization.map((club) => {
@@ -43,7 +46,6 @@ export const FindARideScreen = () => {
         value: club.clubId,
       }
     })
-    console.log("clubs ", clubsArray)
     setFilterClubs({ ...filterClubs, data: clubsArray })
   }, [])
 
@@ -91,8 +93,20 @@ export const FindARideScreen = () => {
     getAllOpenRides()
   }, [])
 
+  const renderRideCard = ({ item }) => (
+    <RideCard ride={item} rideClicked={navigateToRide} />
+  )
+
   const navigateToRide = (screen, rideId) => {
     navigation.navigate(screen, { rideId })
+  }
+
+  const getLocationAndIdFromRides = (rides) => {
+    if (rides.length) {
+      return rides.map((ride) => {
+        return { id: ride._id, location: ride.startLocation.coordinates }
+      })
+    }
   }
 
   return (
@@ -111,65 +125,16 @@ export const FindARideScreen = () => {
         </Button>
       )}
 
-      {/* 
-
-      {!showOpenRides && (
-        <List.Section title="Filter by clubs">
-          <List.Accordion
-            title={
-              filterByClub
-                ? clubs.authorization.find(
-                    (club) => club.clubId === filterByClub
-                  ).clubName
-                : "Show all rides"
-            }
-          >
-            {filterByClub && (
-              <List.Item
-                title="Show all rides"
-                onPress={() => setFilterByClub("")}
-              />
-            )}
-            {clubs.authorization.map((club, index) => (
-              <List.Item
-                key={index}
-                title={club.clubName}
-                onPress={() => setFilterByClub(club.clubId)}
-              />
-            ))}
-          </List.Accordion>
-        </List.Section>
-      )} */}
-      <Map />
-      <ScrollView>
-        {/* <View style={styles.listRides}>
-          {!showOpenRides &&
-            (!clubRides ? (
-              <ActivityIndicator animating={true} />
-            ) : (
-              clubRides.map((ride, index) => (
-                <RideCard
-                  key={index}
-                  ride={ride}
-                  rideClicked={navigateToRide}
-                />
-              ))
-            ))}
-
-          {showOpenRides &&
-            (!openRides ? (
-              <ActivityIndicator animating={true} />
-            ) : (
-              openRides.rides.map((ride, index) => (
-                <RideCard
-                  key={index}
-                  ride={ride}
-                  rideClicked={navigateToRide}
-                />
-              ))
-            ))}
-        </View> */}
-      </ScrollView>
+      <Map allLocations={getLocationAndIdFromRides(allRides)} />
+      {allRides.length === 0 ? (
+        <ActivityIndicator animating={true} />
+      ) : (
+        <FlatList
+          data={allRides}
+          renderItem={renderRideCard}
+          keyExtractor={(item) => item._id}
+        />
+      )}
     </View>
   )
 }
@@ -177,7 +142,7 @@ export const FindARideScreen = () => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingTop: 10,
     flex: 1,
   },
   listRides: {
