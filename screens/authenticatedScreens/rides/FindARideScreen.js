@@ -19,7 +19,7 @@ export const FindARideScreen = () => {
   const ridesState = useSelector((state) => state.rides)
   const clubRides = ridesState?.clubRides
   const openRides = ridesState?.openRides.rides
-  const [allRides, setAllRides] = useState([...clubRides, ...openRides])
+  const [allRides, setAllRides] = useState([])
   const [showFilter, setShowFilter] = useState(false)
   const [filterMap, setFilterMap] = useState({
     name: "Show Map",
@@ -34,6 +34,10 @@ export const FindARideScreen = () => {
     data: null,
     selected: null,
   })
+
+  useEffect(() => {
+    setAllRides([...clubRides, ...openRides])
+  }, [clubRides.length, openRides.length])
 
   useEffect(() => {
     console.log("filter requested")

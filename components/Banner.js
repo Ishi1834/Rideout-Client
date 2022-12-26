@@ -5,7 +5,8 @@ export const Banner = ({ info, actions, buttonClicked }) => {
   const actionsArray = actions.map((action) => {
     return {
       label: action.label,
-      onPress: () => buttonClicked(action.screen),
+      onPress: () =>
+        buttonClicked(action?.screen ? action.screen : action.label),
     }
   })
 
