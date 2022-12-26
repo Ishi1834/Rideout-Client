@@ -1,20 +1,24 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
 import { ScrollView, View, StyleSheet } from "react-native"
+import { ActivityIndicator, List } from "react-native-paper"
 import { RideCard } from "../../../components/RideCard"
+import { Map } from "../../../components/Map"
+import { Switch } from "../../../components/Switch"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
 // Other
 import axios from "../../../axiosConfig"
-import { ActivityIndicator } from "react-native-paper"
 
 export const FindARideScreen = () => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const clubs = useSelector((state) => state.clubs)
   const ridesState = useSelector((state) => state.rides)
+  const [showOpenRides, setShowOpenRides] = useState(true)
+  const [filterByClub, setFilterByClub] = useState("")
 
   const clubRides = ridesState?.clubRides
   const openRides = ridesState?.openRides
@@ -68,31 +72,81 @@ export const FindARideScreen = () => {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        {!clubRides ? (
-          <ActivityIndicator animating={true} />
-        ) : (
-          clubRides.map((ride, index) => (
-            <RideCard key={index} ride={ride} rideClicked={navigateToRide} />
-          ))
-        )}
+    <View style={styles.container}>
+      <Switch
+        handleChange={setShowOpenRides}
+        value={showOpenRides}
+        data={["Open Rides", "Club Rides"]}
+      />
 
-        {!openRides ? (
-          <ActivityIndicator animating={true} />
-        ) : (
-          openRides.rides.map((ride, index) => (
-            <RideCard key={index} ride={ride} rideClicked={navigateToRide} />
-          ))
-        )}
-      </View>
-    </ScrollView>
+      {!showOpenRides && (
+        <List.Section title="Filter by clubs">
+          <List.Accordion
+            title={
+              filterByClub
+                ? clubs.authorization.find(
+                    (club) => club.clubId === filterByClub
+                  ).clubName
+                : "Show all rides"
+            }
+          >
+            {filterByClub && (
+              <List.Item
+                title="Show all rides"
+                onPress={() => setFilterByClub("")}
+              />
+            )}
+            {clubs.authorization.map((club, index) => (
+              <List.Item
+                key={index}
+                title={club.clubName}
+                onPress={() => setFilterByClub(club.clubId)}
+              />
+            ))}
+          </List.Accordion>
+        </List.Section>
+      )}
+      <Map />
+      <ScrollView>
+        <View style={styles.listRides}>
+          {!showOpenRides &&
+            (!clubRides ? (
+              <ActivityIndicator animating={true} />
+            ) : (
+              clubRides.map((ride, index) => (
+                <RideCard
+                  key={index}
+                  ride={ride}
+                  rideClicked={navigateToRide}
+                />
+              ))
+            ))}
+
+          {showOpenRides &&
+            (!openRides ? (
+              <ActivityIndicator animating={true} />
+            ) : (
+              openRides.rides.map((ride, index) => (
+                <RideCard
+                  key={index}
+                  ride={ride}
+                  rideClicked={navigateToRide}
+                />
+              ))
+            ))}
+        </View>
+      </ScrollView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 10,
+    flex: 1,
+  },
+  listRides: {
+    paddingVertical: 10,
   },
 })
