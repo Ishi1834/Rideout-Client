@@ -1,17 +1,20 @@
+import { useState, useEffect } from "react"
 import { useNavigation, useRoute } from "@react-navigation/native"
 // UI
 import { View, StyleSheet, ScrollView } from "react-native"
 import { ClubCard } from "../../../components/ClubCard"
+import { Banner } from "../../../components/Banner"
+import { SummaryText } from "../../../components/SummaryText"
 // State
 import { useSelector } from "react-redux"
-import { SummaryText } from "../../../components/SummaryText"
-import { useState, useEffect } from "react"
+// Other
+import { noClubsBanner } from "../../../static/bannerData"
 
 export const MyClubsScreen = () => {
   const [message, setMessage] = useState(null)
   const navigation = useNavigation()
   const route = useRoute()
-  const clubs = useSelector((state) => state.user.clubs)
+  const clubs = useSelector((state) => state.clubs.clubs)
   const params = route.params
 
   useEffect(() => {
@@ -36,14 +39,22 @@ export const MyClubsScreen = () => {
       <View style={styles.container}>
         {message && <SummaryText isInfo={true} message={message} />}
 
-        {clubs.map((club, index) => (
-          <ClubCard
-            key={index}
-            club={club}
-            clubClicked={navigateToClub}
-            createRideClicked={navigateToCreateARide}
+        {clubs.length === 0 ? (
+          <Banner
+            info={noClubsBanner.info}
+            actions={noClubsBanner.actions}
+            buttonClicked={(screen) => navigation.navigate(screen)}
           />
-        ))}
+        ) : (
+          clubs.map((club, index) => (
+            <ClubCard
+              key={index}
+              club={club}
+              clubClicked={navigateToClub}
+              createRideClicked={navigateToCreateARide}
+            />
+          ))
+        )}
       </View>
     </ScrollView>
   )
