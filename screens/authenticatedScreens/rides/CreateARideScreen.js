@@ -9,6 +9,10 @@ import {
 } from "react-native-paper"
 import { RadioInput } from "../../../components/RadioInput"
 import DateTimePicker from "@react-native-community/datetimepicker"
+import { SummaryText } from "../../../components/SummaryText"
+// State
+import { useDispatch } from "react-redux"
+import { addAClubRide, addAUserRide } from "../../../state/ridesSlice"
 // Other
 import { formatTime, formatDate } from "../../../utils/formatDate"
 import { Formik } from "formik"
@@ -16,9 +20,9 @@ import { rideTypeArray } from "../../../static/multiSelectOptions"
 import { rideSchema } from "../../../static/validationSchema"
 import { createARideInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
-import { SummaryText } from "../../../components/SummaryText"
 
 export const CreateARideScreen = ({ navigation, route }) => {
+  const dispatch = useDispatch()
   const params = route.params
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -36,6 +40,11 @@ export const CreateARideScreen = ({ navigation, route }) => {
     try {
       const res = await axios.post(endPoint, data)
       if (res.status === 201) {
+        const ride = res.data.ride
+        dispatch(addAUserRide(ride))
+        if (ride?.club) {
+          dispatch(addAClubRide(ride))
+        }
         navigation.navigate("MyRides", { message: res?.data?.message })
       }
     } catch (error) {

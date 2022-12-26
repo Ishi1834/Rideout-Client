@@ -9,6 +9,9 @@ import {
   ActivityIndicator,
 } from "react-native-paper"
 import { SummaryText } from "../../../components/SummaryText"
+// State
+import { useDispatch } from "react-redux"
+import { addAClub } from "../../../state/clubsSlice"
 // Other
 import { Formik } from "formik"
 import { createAClubSchema } from "../../../static/validationSchema"
@@ -17,6 +20,7 @@ import axios from "../../../axiosConfig"
 
 export const CreateAClubScreen = () => {
   const navigation = useNavigation()
+  const dispatch = useDispatch()
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
@@ -27,6 +31,7 @@ export const CreateAClubScreen = () => {
     try {
       const res = await axios.post("/clubs", data)
       if (res.status === 201) {
+        dispatch(addAClub(res.data.club))
         navigation.navigate("MyClubs", {
           message: res?.data?.message,
         })
