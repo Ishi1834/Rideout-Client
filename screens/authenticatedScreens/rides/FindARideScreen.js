@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
 import { ScrollView, View, StyleSheet } from "react-native"
-import { ActivityIndicator, List } from "react-native-paper"
+import { ActivityIndicator, Button, List } from "react-native-paper"
 import { RideCard } from "../../../components/RideCard"
 import { Map } from "../../../components/Map"
 import { Switch } from "../../../components/Switch"
@@ -11,17 +11,41 @@ import { useSelector, useDispatch } from "react-redux"
 import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
 // Other
 import axios from "../../../axiosConfig"
+import { FilterRides } from "../../../components/FilterRides"
 
 export const FindARideScreen = () => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const clubs = useSelector((state) => state.clubs)
   const ridesState = useSelector((state) => state.rides)
-  const [showOpenRides, setShowOpenRides] = useState(true)
-  const [filterByClub, setFilterByClub] = useState("")
+  const [showFilter, setShowFilter] = useState(false)
+  const [filterMap, setFilterMap] = useState({
+    name: "Show Map",
+    showMap: true,
+  })
+  const [filterRides, setFilterRides] = useState([
+    { label: "Open Rides", isChecked: true },
+    { label: "Club Rides", isChecked: true },
+  ])
+  const [filterClubs, setFilterClubs] = useState({
+    label: "Filter rides by club",
+    data: null,
+    selected: null,
+  })
 
   const clubRides = ridesState?.clubRides
   const openRides = ridesState?.openRides
+
+  useEffect(() => {
+    const clubsArray = clubs.authorization.map((club) => {
+      return {
+        label: club.clubName,
+        value: club.clubId,
+      }
+    })
+    console.log("clubs ", clubsArray)
+    setFilterClubs({ ...filterClubs, data: clubsArray })
+  }, [])
 
   useEffect(() => {
     const getAllOpenRides = async () => {
@@ -73,11 +97,21 @@ export const FindARideScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Switch
-        handleChange={setShowOpenRides}
-        value={showOpenRides}
-        data={["Open Rides", "Club Rides"]}
-      />
+      {showFilter ? (
+        <FilterRides
+          visible={showFilter}
+          hideModal={() => setShowFilter(false)}
+          filterMap={filterMap}
+          filterRides={filterRides}
+          filterClubs={filterClubs}
+        />
+      ) : (
+        <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>
+          Filter rides
+        </Button>
+      )}
+
+      {/* 
 
       {!showOpenRides && (
         <List.Section title="Filter by clubs">
@@ -105,10 +139,10 @@ export const FindARideScreen = () => {
             ))}
           </List.Accordion>
         </List.Section>
-      )}
+      )} */}
       <Map />
       <ScrollView>
-        <View style={styles.listRides}>
+        {/* <View style={styles.listRides}>
           {!showOpenRides &&
             (!clubRides ? (
               <ActivityIndicator animating={true} />
@@ -134,7 +168,7 @@ export const FindARideScreen = () => {
                 />
               ))
             ))}
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   )
