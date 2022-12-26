@@ -3,6 +3,10 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
   userRides: [],
   clubRides: [],
+  openRides: {
+    range: null,
+    rides: [],
+  },
 }
 
 export const ridesSlice = createSlice({
@@ -14,6 +18,10 @@ export const ridesSlice = createSlice({
     },
     setUpClubRides: (state, action) => {
       state.clubRides = action.payload
+    },
+    setUpOpenRides: (state, action) => {
+      const { range, rides } = action.payload
+      state.openRides = { range, rides }
     },
     addAUserRide: (state, action) => {
       state.userRides.push(action.payload)
@@ -35,6 +43,7 @@ export const ridesSlice = createSlice({
 export const {
   setUpUserRides,
   setUpClubRides,
+  setUpOpenRides,
   addAUserRide,
   addAClubRide,
   removeAUserRide,
