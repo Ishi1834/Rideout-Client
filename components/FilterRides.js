@@ -10,6 +10,7 @@ export const FilterRides = ({
   filterMap,
   filterRides,
   filterClubs,
+  setFilter,
 }) => {
   return (
     <Portal>
@@ -21,7 +22,7 @@ export const FilterRides = ({
         <Text>Filter here</Text>
 
         <Switch
-          handleChange={(val) => console.log("map ", val)}
+          handleChange={(val) => setFilter("map", val)}
           value={filterMap.showMap}
           label={filterMap.name}
         />
@@ -31,14 +32,14 @@ export const FilterRides = ({
             label={item.label}
             key={index}
             isChecked={item.isChecked}
-            handleCheckChange={(val) => console.log("index ", index, val)}
+            handleCheckChange={(val) => setFilter("checkbox", index, val)}
           />
         ))}
 
         <RadioInput
           radioData={filterClubs.data}
           radioLabel={filterClubs.label}
-          itemSelected={(item) => console.log("item ", item)}
+          itemSelected={(item) => setFilter("setClub", item)}
         />
       </Modal>
     </Portal>

@@ -36,12 +36,54 @@ export const FindARideScreen = () => {
   })
 
   useEffect(() => {
+    // for changes in clubRides, openRides length
     setAllRides([...clubRides, ...openRides])
   }, [clubRides.length, openRides.length])
 
   useEffect(() => {
-    console.log("filter requested")
-  }, [filterRides[0].isChecked, filterRides[1].isChecked, filterClubs.selected])
+    if (filterClubs.selected) {
+      const newFilterClubs = clubs?.authorization.map((club) => {
+        if (club.clubId !== filterClubs.selected) {
+          return {
+            label: club.clubName,
+            value: club.clubId,
+          }
+        } else {
+          return {
+            label: "Show all Clubs",
+            value: null,
+          }
+        }
+      })
+      setFilterClubs({ ...filterClubs, data: newFilterClubs })
+    }
+  }, [filterClubs.selected])
+
+  useEffect(() => {
+    // for change in showing open rides
+    if (filterRides[0].isChecked) {
+      setAllRides([...clubRides, ...openRides])
+    } else {
+      if (filterRides[1].isChecked) {
+        setAllRides(clubRides)
+      } else {
+        setAllRides([])
+      }
+    }
+  }, [filterRides[0].isChecked])
+
+  useEffect(() => {
+    // for change in showing club rides
+    if (filterRides[1].isChecked) {
+      setAllRides([...clubRides, ...openRides])
+    } else {
+      if (filterRides[0].isChecked) {
+        setAllRides(openRides)
+      } else {
+        setAllRides([])
+      }
+    }
+  }, [filterRides[1].isChecked])
 
   useEffect(() => {
     const clubsArray = clubs.authorization.map((club) => {
@@ -113,6 +155,42 @@ export const FindARideScreen = () => {
     }
   }
 
+  const setRidesFilter = (filter, ...changes) => {
+    if (filter === "map") {
+      setFilterMap({ ...filterMap, showMap: changes[0] })
+    } else if (filter === "checkbox") {
+      const newRides = filterRides.map((ride, index) => {
+        if (index === changes[0]) {
+          ride.isChecked = changes[1]
+        }
+        return ride
+      })
+      setFilterRides(newRides)
+    } else if (filter === "setClub") {
+      const club = filterClubs.data.find((club) => club.value === changes[0])
+      if (club) {
+        setFilterClubs({
+          ...filterClubs,
+          label: club.label,
+          selected: club.value,
+        })
+      } else {
+        const newFilterClubs = clubs.authorization.map((club) => {
+          return {
+            label: club.clubName,
+            value: club.clubId,
+          }
+        })
+
+        setFilterClubs({
+          label: "Filter rides by club",
+          data: newFilterClubs,
+          selected: null,
+        })
+      }
+    }
+  }
+
   return (
     <View style={styles.container}>
       {showFilter ? (
@@ -122,6 +200,7 @@ export const FindARideScreen = () => {
           filterMap={filterMap}
           filterRides={filterRides}
           filterClubs={filterClubs}
+          setFilter={setRidesFilter}
         />
       ) : (
         <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>
@@ -129,7 +208,10 @@ export const FindARideScreen = () => {
         </Button>
       )}
 
-      <Map allLocations={getLocationAndIdFromRides(allRides)} />
+      <Map
+        allLocations={getLocationAndIdFromRides(allRides)}
+        showMap={filterMap.showMap}
+      />
       {allRides.length === 0 ? (
         <ActivityIndicator animating={true} />
       ) : (

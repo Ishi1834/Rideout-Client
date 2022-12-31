@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react"
 // UI
 import { View, StyleSheet } from "react-native"
-import { SummaryText } from "./SummaryText"
 // Other
-import MapView from "react-native-maps"
+import MapView, { Marker } from "react-native-maps"
 import * as Location from "expo-location"
 import { Banner } from "./Banner"
 
-export const Map = ({ allLocations }) => {
+export const Map = ({ allLocations, showMap }) => {
   const [userLocation, setUserLocation] = useState(null)
   const [mapRegion, setMapRegion] = useState({
     latitude: 37.78825,
@@ -36,7 +35,7 @@ export const Map = ({ allLocations }) => {
   }
 
   return (
-    <View style={styles.mapContainer}>
+    <View style={showMap ? styles.mapContainer : styles.mapHiddenContainer}>
       {errorMessage && (
         <Banner
           info={errorMessage}
@@ -48,13 +47,30 @@ export const Map = ({ allLocations }) => {
           buttonClicked={requestLocationAccess}
         />
       )}
-      <View style={styles.mapView}>
-        <MapView
-          style={styles.map}
-          region={mapRegion}
-          onRegionChange={(region) => setMapRegion(region)}
-        />
-      </View>
+
+      {showMap && (
+        <View style={styles.mapView}>
+          <MapView
+            style={styles.map}
+            region={mapRegion}
+            onRegionChange={(region) => setMapRegion(region)}
+            zoomEnabled={true}
+            zoomControlEnabled={true}
+          >
+            {allLocations &&
+              allLocations.map((ride, index) => (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude: ride.location[0],
+                    longitude: ride.location[1],
+                  }}
+                  title={ride.id}
+                />
+              ))}
+          </MapView>
+        </View>
+      )}
     </View>
   )
 }
@@ -62,6 +78,9 @@ export const Map = ({ allLocations }) => {
 const styles = StyleSheet.create({
   mapContainer: {
     height: "50%",
+    marginVertical: 10,
+  },
+  mapHiddenContainer: {
     marginVertical: 10,
   },
   mapView: {
