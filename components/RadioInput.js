@@ -19,6 +19,9 @@ export const RadioInput = ({
       if (label) {
         setGroupLabel(label)
       }
+    } else {
+      itemSelected(radioLabel)
+      setGroupLabel(radioLabel)
     }
   }, [selectedItem])
 
