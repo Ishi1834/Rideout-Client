@@ -56,13 +56,22 @@ export const FindARideScreen = () => {
         }
       })
       setFilterClubs({ ...filterClubs, data: newFilterClubs })
+      // filterRides
+      const selectedClubRides = clubRides.filter(
+        (club) => club.club.clubId === filterClubs.selected
+      )
+      setAllRides(selectedClubRides)
     }
   }, [filterClubs.selected])
 
   useEffect(() => {
     // for change in showing open rides
     if (filterRides[0].isChecked) {
-      setAllRides([...clubRides, ...openRides])
+      if (filterRides[1].isChecked) {
+        setAllRides([...clubRides, ...openRides])
+      } else {
+        setAllRides(openRides)
+      }
     } else {
       if (filterRides[1].isChecked) {
         setAllRides(clubRides)
@@ -75,7 +84,11 @@ export const FindARideScreen = () => {
   useEffect(() => {
     // for change in showing club rides
     if (filterRides[1].isChecked) {
-      setAllRides([...clubRides, ...openRides])
+      if (filterRides[0].isChecked) {
+        setAllRides([...clubRides, ...openRides])
+      } else {
+        setAllRides(clubRides)
+      }
     } else {
       if (filterRides[0].isChecked) {
         setAllRides(openRides)
