@@ -20,7 +20,7 @@ export const Map = ({ allLocations, showMap, userLocation }) => {
           <MapView
             style={styles.map}
             region={mapRegion}
-            onRegionChange={(region) => setMapRegion(region)}
+            onRegionChangeComplete={(region) => setMapRegion(region)}
             zoomEnabled={true}
             zoomControlEnabled={true}
           >
