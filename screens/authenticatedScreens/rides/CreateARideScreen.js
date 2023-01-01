@@ -130,7 +130,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
                 </View>
                 <View style={[styles.formInputs, styles.dateContainer]}>
                   <Button
-                    mode="contained"
+                    mode="contained-tonal"
                     style={styles.dateButton}
                     onPress={showDatepicker}
                     icon="calendar-outline"
@@ -139,7 +139,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
                     {formatDate(values.date)}
                   </Button>
                   <Button
-                    mode="contained"
+                    mode="contained-tonal"
                     style={styles.dateButton}
                     onPress={showTimepicker}
                     icon="calendar-clock-outline"
@@ -175,7 +175,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
                 </View>
                 <View style={styles.formInputs}>
                   <Button
-                    mode="contained"
+                    mode="contained-tonal"
                     onPress={() => {
                       setShowMap(true)
                     }}

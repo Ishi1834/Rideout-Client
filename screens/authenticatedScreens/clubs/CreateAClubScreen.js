@@ -17,12 +17,14 @@ import { Formik } from "formik"
 import { createAClubSchema } from "../../../static/validationSchema"
 import { createAClubInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
+import { DropPinMap } from "../../../components/DropPinMap"
 
 export const CreateAClubScreen = () => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [showMap, setShowMap] = useState(false)
 
   const createClubApiCall = async (data) => {
     setErrorMessage("")
@@ -43,89 +45,101 @@ export const CreateAClubScreen = () => {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Formik
-          onSubmit={(values) => createClubApiCall(values)}
-          initialValues={createAClubInitialValues}
-          validationSchema={createAClubSchema}
-        >
-          {({
-            handleChange,
-            handleSubmit,
-            handleBlur,
-            touched,
-            values,
-            errors,
-          }) => (
-            <View style={styles.form}>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="Club Name"
-                  value={values.clubName}
-                  onChangeText={handleChange("clubName")}
-                  onBlur={handleBlur("clubName")}
-                  error={touched.clubName && errors.clubName}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.clubName && errors.clubName ? true : false}
-                >
-                  {errors.clubName}
-                </HelperText>
-              </View>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="City"
-                  value={values.city}
-                  onChangeText={handleChange("city")}
-                  onBlur={handleBlur("city")}
-                  error={touched.city && errors.city}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.city && errors.city ? true : false}
-                >
-                  {errors.city}
-                </HelperText>
-              </View>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="Club Location"
-                  value={values.location}
-                  onChangeText={handleChange("location")}
-                  onBlur={handleBlur("location")}
-                  error={touched.location && errors.location}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.location && errors.location ? true : false}
-                >
-                  {errors.location}
-                </HelperText>
-              </View>
+    <Formik
+      onSubmit={(values) => createClubApiCall(values)}
+      initialValues={createAClubInitialValues}
+      validationSchema={createAClubSchema}
+    >
+      {({
+        handleChange,
+        handleSubmit,
+        handleBlur,
+        setFieldValue,
+        touched,
+        values,
+        errors,
+      }) =>
+        showMap ? (
+          <DropPinMap
+            onSelectLocation={(location) => {
+              setFieldValue("location", [location.longitude, location.latitude])
+              setShowMap(false)
+            }}
+            preselectedLocation={values.location}
+          />
+        ) : (
+          <ScrollView>
+            <View style={styles.container}>
+              <View style={styles.form}>
+                <View style={styles.formInputs}>
+                  <TextInput
+                    label="Club Name"
+                    value={values.clubName}
+                    onChangeText={handleChange("clubName")}
+                    onBlur={handleBlur("clubName")}
+                    error={touched.clubName && errors.clubName}
+                    disabled={isSubmittingApi && true}
+                  />
+                  <HelperText
+                    type="error"
+                    visible={touched.clubName && errors.clubName ? true : false}
+                  >
+                    {errors.clubName}
+                  </HelperText>
+                </View>
+                <View style={styles.formInputs}>
+                  <TextInput
+                    label="City"
+                    value={values.city}
+                    onChangeText={handleChange("city")}
+                    onBlur={handleBlur("city")}
+                    error={touched.city && errors.city}
+                    disabled={isSubmittingApi && true}
+                  />
+                  <HelperText
+                    type="error"
+                    visible={touched.city && errors.city ? true : false}
+                  >
+                    {errors.city}
+                  </HelperText>
+                </View>
+                <View style={styles.formInputs}>
+                  <Button
+                    mode="contained-tonal"
+                    onPress={() => {
+                      setShowMap(true)
+                    }}
+                    disabled={isSubmittingApi && true}
+                  >
+                    Select Club Location on Map
+                  </Button>
+                  <HelperText
+                    type="error"
+                    visible={touched.location && errors.location ? true : false}
+                  >
+                    {errors.location}
+                  </HelperText>
+                </View>
 
-              {errorMessage && <SummaryText message={errorMessage} />}
+                {errorMessage && <SummaryText message={errorMessage} />}
 
-              {isSubmittingApi ? (
-                <ActivityIndicator animating={true} />
-              ) : (
-                <Button
-                  style={styles.button}
-                  mode="contained"
-                  onPress={handleSubmit}
-                >
-                  Submit
-                </Button>
-              )}
+                {isSubmittingApi ? (
+                  <ActivityIndicator animating={true} />
+                ) : (
+                  <Button
+                    style={styles.button}
+                    mode="contained"
+                    onPress={handleSubmit}
+                  >
+                    Submit
+                  </Button>
+                )}
+              </View>
             </View>
-          )}
-        </Formik>
-      </View>
-    </ScrollView>
+          </ScrollView>
+        )
+      }
+    </Formik>
   )
 }
 
