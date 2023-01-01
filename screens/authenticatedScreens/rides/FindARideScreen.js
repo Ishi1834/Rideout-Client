@@ -5,12 +5,14 @@ import { View, StyleSheet, FlatList } from "react-native"
 import { ActivityIndicator, Button } from "react-native-paper"
 import { RideCard } from "../../../components/RideCard"
 import { Map } from "../../../components/Map"
+import { Banner } from "../../../components/Banner"
 import { FilterRides } from "../../../components/FilterRides"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
 // Other
 import axios from "../../../axiosConfig"
+import * as Location from "expo-location"
 
 export const FindARideScreen = () => {
   const dispatch = useDispatch()
@@ -19,6 +21,8 @@ export const FindARideScreen = () => {
   const ridesState = useSelector((state) => state.rides)
   const clubRides = ridesState?.clubRides
   const openRides = ridesState?.openRides.rides
+  const [userLocation, setUserLocation] = useState(null)
+  const [locationError, setLocationError] = useState(null)
   const [allRides, setAllRides] = useState([])
   const [showFilter, setShowFilter] = useState(false)
   const [filterMap, setFilterMap] = useState({
@@ -34,6 +38,10 @@ export const FindARideScreen = () => {
     data: null,
     selected: null,
   })
+
+  useEffect(() => {
+    requestLocationAccess()
+  }, [])
 
   useEffect(() => {
     // for changes in clubRides, openRides length
@@ -152,6 +160,33 @@ export const FindARideScreen = () => {
     getAllOpenRides()
   }, [])
 
+  const requestLocationAccess = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync()
+
+    if (status !== "granted") {
+      setLocationError("Permission to access location was denied")
+      return
+    }
+
+    let location = await Location.getCurrentPositionAsync({})
+
+    const { latitude, longitude } = location.coords
+
+    // remove below when done
+    setUserLocation({
+      latitude: 51.464967,
+      longitude: -0.180209,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    })
+    /* setUserLocation({
+      latitude,
+      longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    }) */
+  }
+
   const renderRideCard = ({ item }) => (
     <RideCard ride={item} rideClicked={navigateToRide} />
   )
@@ -221,9 +256,21 @@ export const FindARideScreen = () => {
         </Button>
       )}
 
+      {locationError && (
+        <Banner
+          info={locationError}
+          actions={[
+            {
+              label: "Get location",
+            },
+          ]}
+          buttonClicked={requestLocationAccess}
+        />
+      )}
       <Map
         allLocations={getLocationAndIdFromRides(allRides)}
         showMap={filterMap.showMap}
+        userLocation={userLocation}
       />
       {allRides.length === 0 ? (
         <ActivityIndicator animating={true} />
@@ -232,6 +279,13 @@ export const FindARideScreen = () => {
           data={allRides}
           renderItem={renderRideCard}
           keyExtractor={(item) => item._id}
+          /* onMomentumScrollEnd={(event) => {
+            const index = Math.floor(
+              Math.floor(event.nativeEvent.contentOffset.x) /
+                Math.floor(event.nativeEvent.layoutMeasurement.width)
+            )
+            console.log("current index ", index)
+          }} */
         />
       )}
     </View>

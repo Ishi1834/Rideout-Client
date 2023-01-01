@@ -3,51 +3,18 @@ import React, { useEffect, useState } from "react"
 import { View, StyleSheet } from "react-native"
 // Other
 import MapView, { Marker } from "react-native-maps"
-import * as Location from "expo-location"
-import { Banner } from "./Banner"
 
-export const Map = ({ allLocations, showMap }) => {
-  const [userLocation, setUserLocation] = useState(null)
-  const [mapRegion, setMapRegion] = useState({
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  })
-  const [errorMessage, setErrorMessage] = useState(null)
+export const Map = ({ allLocations, showMap, userLocation }) => {
+  const [mapRegion, setMapRegion] = useState(null)
 
   useEffect(() => {
-    requestLocationAccess()
-  }, [])
-
-  const requestLocationAccess = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync()
-
-    if (status !== "granted") {
-      setErrorMessage("Permission to access location was denied")
-      return
+    if (userLocation) {
+      setMapRegion(userLocation)
     }
-
-    let location = await Location.getCurrentPositionAsync({})
-
-    setUserLocation(location.coords)
-    setMapRegion(location.coords)
-  }
+  }, [userLocation?.latitude, userLocation?.longitude])
 
   return (
     <View style={showMap ? styles.mapContainer : styles.mapHiddenContainer}>
-      {errorMessage && (
-        <Banner
-          info={errorMessage}
-          actions={[
-            {
-              label: "Get location",
-            },
-          ]}
-          buttonClicked={requestLocationAccess}
-        />
-      )}
-
       {showMap && (
         <View style={styles.mapView}>
           <MapView
