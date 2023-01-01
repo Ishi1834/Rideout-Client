@@ -23,6 +23,7 @@ export const Map = ({ allLocations, showMap, userLocation }) => {
             onRegionChangeComplete={(region) => setMapRegion(region)}
             zoomEnabled={true}
             zoomControlEnabled={true}
+            showsUserLocation={true}
           >
             {allLocations &&
               allLocations.map((ride, index) => (
