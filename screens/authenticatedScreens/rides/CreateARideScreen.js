@@ -6,10 +6,13 @@ import {
   HelperText,
   TextInput,
   ActivityIndicator,
+  Portal,
+  Modal,
 } from "react-native-paper"
 import { RadioInput } from "../../../components/RadioInput"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import { SummaryText } from "../../../components/SummaryText"
+import { DropPinMap } from "../../../components/DropPinMap"
 // State
 import { useDispatch } from "react-redux"
 import { addAClubRide, addAUserRide } from "../../../state/ridesSlice"
@@ -27,7 +30,8 @@ export const CreateARideScreen = ({ navigation, route }) => {
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [mode, setMode] = useState("date")
-  const [show, setShow] = useState(false)
+  const [datepickerShow, setDatepickerShow] = useState(false)
+  const [showMap, setShowMap] = useState(false)
 
   const createARideApiCall = async (data) => {
     setErrorMessage("")
@@ -56,215 +60,217 @@ export const CreateARideScreen = ({ navigation, route }) => {
 
   const showDatepicker = () => {
     setMode("date")
-    setShow(true)
+    setDatepickerShow(true)
   }
 
   const showTimepicker = () => {
     setMode("time")
-    setShow(true)
+    setDatepickerShow(true)
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Formik
-          onSubmit={(values) => createARideApiCall(values)}
-          initialValues={createARideInitialValues}
-          validationSchema={rideSchema}
-        >
-          {({
-            handleChange,
-            handleSubmit,
-            handleBlur,
-            touched,
-            values,
-            errors,
-            setFieldValue,
-          }) => (
-            <View style={styles.form}>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="Name"
-                  value={values.name}
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  error={touched.name && errors.name}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.name && errors.name ? true : false}
-                >
-                  {errors.name}
-                </HelperText>
-              </View>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="Description"
-                  value={values.description}
-                  onChangeText={handleChange("description")}
-                  onBlur={handleBlur("description")}
-                  error={touched.description && errors.description}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={
-                    touched.description && errors.description ? true : false
-                  }
-                >
-                  {errors.description}
-                </HelperText>
-              </View>
-              <View style={[styles.formInputs, styles.dateContainer]}>
-                <Button
-                  mode="contained"
-                  style={styles.dateButton}
-                  onPress={showDatepicker}
-                  icon="calendar-outline"
-                  disabled={isSubmittingApi && true}
-                >
-                  {formatDate(values.date)}
-                </Button>
-                <Button
-                  mode="contained"
-                  style={styles.dateButton}
-                  onPress={showTimepicker}
-                  icon="calendar-clock-outline"
-                  disabled={isSubmittingApi && true}
-                >
-                  {formatTime(values.date)}
-                </Button>
-              </View>
-              {show && (
-                <DateTimePicker
-                  value={values.date}
-                  mode={mode}
-                  is24Hour={true}
-                  onChange={(e, date) => {
-                    setShow(false)
-                    setFieldValue("date", date)
-                  }}
-                />
-              )}
-              <View style={styles.formInputs}>
-                <RadioInput
-                  radioData={rideTypeArray}
-                  radioLabel="Select Ride Type"
-                  itemSelected={handleChange("rideType")}
-                  onBlur={handleBlur("rideType")}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.rideType && errors.rideType ? true : false}
-                >
-                  {errors.rideType}
-                </HelperText>
-              </View>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="Start Location"
-                  value={values.startLocation}
-                  onChangeText={handleChange("startLocation")}
-                  onBlur={handleBlur("startLocation")}
-                  error={touched.startLocation && errors.startLocation}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={
-                    touched.startLocation && errors.startLocation ? true : false
-                  }
-                >
-                  {errors.startLocation}
-                </HelperText>
-              </View>
-              <View style={styles.formInputs}>
-                <TextInput
-                  keyboardType="number-pad"
-                  label="Distance"
-                  value={values.distance}
-                  onChangeText={handleChange("distance")}
-                  onBlur={handleBlur("distance")}
-                  error={touched.distance && errors.distance}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.distance && errors.distance ? true : false}
-                >
-                  {errors.distance}
-                </HelperText>
-              </View>
-              <View style={styles.formInputs}>
-                <TextInput
-                  keyboardType="number-pad"
-                  label="Speed"
-                  value={values.speed}
-                  onChangeText={handleChange("speed")}
-                  onBlur={handleBlur("speed")}
-                  error={touched.speed && errors.speed}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.speed && errors.speed ? true : false}
-                >
-                  {errors.speed}
-                </HelperText>
-              </View>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="Cafe Stops"
-                  value={values.cafeStops}
-                  onChangeText={handleChange("cafeStops")}
-                  onBlur={handleBlur("cafeStops")}
-                  error={touched.cafeStops && errors.cafeStops}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.cafeStops && errors.cafeStops ? true : false}
-                >
-                  {errors.cafeStops}
-                </HelperText>
-              </View>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="Route"
-                  value={values.route}
-                  onChangeText={handleChange("route")}
-                  onBlur={handleBlur("route")}
-                  error={touched.route && errors.route}
-                  disabled={isSubmittingApi && true}
-                />
-                <HelperText
-                  type="error"
-                  visible={touched.route && errors.route ? true : false}
-                >
-                  {errors.route}
-                </HelperText>
-              </View>
+    <Formik
+      onSubmit={(values) => createARideApiCall(values)}
+      initialValues={createARideInitialValues}
+      validationSchema={rideSchema}
+    >
+      {({
+        handleChange,
+        handleSubmit,
+        handleBlur,
+        touched,
+        values,
+        errors,
+        setFieldValue,
+      }) =>
+        showMap ? (
+          <DropPinMap
+            onSelectLocation={(location) => {
+              setFieldValue("startLocation", [
+                location.longitude,
+                location.latitude,
+              ])
+              setShowMap(false)
+            }}
+            preselectedLocation={values.startLocation}
+          />
+        ) : (
+          <ScrollView>
+            <View style={styles.container}>
+              <View style={styles.form}>
+                <View style={styles.formInputs}>
+                  <TextInput
+                    label="Name"
+                    value={values.name}
+                    onChangeText={handleChange("name")}
+                    onBlur={handleBlur("name")}
+                    error={touched.name && errors.name}
+                    disabled={isSubmittingApi && true}
+                  />
+                  {touched.name && errors.name && (
+                    <HelperText type="error" visible={true}>
+                      {errors.name}
+                    </HelperText>
+                  )}
+                </View>
+                <View style={styles.formInputs}>
+                  <TextInput
+                    label="Description"
+                    value={values.description}
+                    onChangeText={handleChange("description")}
+                    onBlur={handleBlur("description")}
+                    error={touched.description && errors.description}
+                    disabled={isSubmittingApi && true}
+                  />
+                  {touched.description && errors.description && (
+                    <HelperText type="error" visible={true}>
+                      {errors.description}
+                    </HelperText>
+                  )}
+                </View>
+                <View style={[styles.formInputs, styles.dateContainer]}>
+                  <Button
+                    mode="contained"
+                    style={styles.dateButton}
+                    onPress={showDatepicker}
+                    icon="calendar-outline"
+                    disabled={isSubmittingApi && true}
+                  >
+                    {formatDate(values.date)}
+                  </Button>
+                  <Button
+                    mode="contained"
+                    style={styles.dateButton}
+                    onPress={showTimepicker}
+                    icon="calendar-clock-outline"
+                    disabled={isSubmittingApi && true}
+                  >
+                    {formatTime(values.date)}
+                  </Button>
+                </View>
+                {datepickerShow && (
+                  <DateTimePicker
+                    value={values.date}
+                    mode={mode}
+                    is24Hour={true}
+                    onChange={(e, date) => {
+                      setDatepickerShow(false)
+                      setFieldValue("date", date)
+                    }}
+                  />
+                )}
+                <View style={styles.formInputs}>
+                  <RadioInput
+                    radioData={rideTypeArray}
+                    radioLabel="Select Ride Type"
+                    itemSelected={handleChange("rideType")}
+                    onBlur={handleBlur("rideType")}
+                    disabled={isSubmittingApi && true}
+                  />
+                  {touched.rideType && errors.rideType && (
+                    <HelperText type="error" visible={true}>
+                      {errors.rideType}
+                    </HelperText>
+                  )}
+                </View>
+                <View style={styles.formInputs}>
+                  <Button
+                    mode="contained"
+                    onPress={() => {
+                      setShowMap(true)
+                    }}
+                    disabled={isSubmittingApi && true}
+                  >
+                    Select start Location on Map
+                  </Button>
+                  {touched.startLocation && errors.startLocation && (
+                    <HelperText type="error" visible={true}>
+                      {errors.startLocation}
+                    </HelperText>
+                  )}
+                </View>
+                <View style={styles.formInputs}>
+                  <TextInput
+                    keyboardType="number-pad"
+                    label="Distance"
+                    value={values.distance}
+                    onChangeText={handleChange("distance")}
+                    onBlur={handleBlur("distance")}
+                    error={touched.distance && errors.distance}
+                    disabled={isSubmittingApi && true}
+                  />
+                  {touched.distance && errors.distance && (
+                    <HelperText type="error" visible={true}>
+                      {errors.distance}
+                    </HelperText>
+                  )}
+                </View>
+                <View style={styles.formInputs}>
+                  <TextInput
+                    keyboardType="number-pad"
+                    label="Speed"
+                    value={values.speed}
+                    onChangeText={handleChange("speed")}
+                    onBlur={handleBlur("speed")}
+                    error={touched.speed && errors.speed}
+                    disabled={isSubmittingApi && true}
+                  />
+                  {touched.speed && errors.speed && (
+                    <HelperText type="error" visible={true}>
+                      {errors.speed}
+                    </HelperText>
+                  )}
+                </View>
+                <View style={styles.formInputs}>
+                  <TextInput
+                    label="Cafe Stops"
+                    value={values.cafeStops}
+                    onChangeText={handleChange("cafeStops")}
+                    onBlur={handleBlur("cafeStops")}
+                    error={touched.cafeStops && errors.cafeStops}
+                    disabled={isSubmittingApi && true}
+                  />
+                  {touched.cafeStops && errors.cafeStops && (
+                    <HelperText type="error" visible={true}>
+                      {errors.cafeStops}
+                    </HelperText>
+                  )}
+                </View>
+                <View style={styles.formInputs}>
+                  <TextInput
+                    label="Route"
+                    value={values.route}
+                    onChangeText={handleChange("route")}
+                    onBlur={handleBlur("route")}
+                    error={touched.route && errors.route}
+                    disabled={isSubmittingApi && true}
+                  />
+                  {touched.route && errors.route && (
+                    <HelperText type="error" visible={true}>
+                      {errors.route}
+                    </HelperText>
+                  )}
+                </View>
 
-              {errorMessage && <SummaryText message={errorMessage} />}
+                {errorMessage && <SummaryText message={errorMessage} />}
 
-              {isSubmittingApi ? (
-                <ActivityIndicator animating={true} />
-              ) : (
-                <Button
-                  style={styles.button}
-                  mode="contained"
-                  onPress={handleSubmit}
-                >
-                  Submit
-                </Button>
-              )}
+                {isSubmittingApi ? (
+                  <ActivityIndicator animating={true} />
+                ) : (
+                  <Button
+                    style={styles.button}
+                    mode="contained"
+                    onPress={handleSubmit}
+                  >
+                    Submit
+                  </Button>
+                )}
+              </View>
             </View>
-          )}
-        </Formik>
-      </View>
-    </ScrollView>
+          </ScrollView>
+        )
+      }
+    </Formik>
   )
 }
 
@@ -286,6 +292,11 @@ const styles = StyleSheet.create({
   },
   dateButton: {
     width: "45%",
+  },
+  mapModal: {
+    backgroundColor: "white",
+    paddingVertical: 30,
+    paddingHorizontal: 20,
   },
   button: {
     marginTop: 10,
