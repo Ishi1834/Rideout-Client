@@ -32,7 +32,7 @@ export const Map = ({ allLocations, showMap, userLocation }) => {
                     latitude: ride.location[0],
                     longitude: ride.location[1],
                   }}
-                  title={ride.id}
+                  title={ride.name}
                 />
               ))}
           </MapView>

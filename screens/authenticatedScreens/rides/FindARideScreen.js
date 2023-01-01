@@ -198,7 +198,11 @@ export const FindARideScreen = () => {
   const getLocationAndIdFromRides = (rides) => {
     if (rides.length) {
       return rides.map((ride) => {
-        return { id: ride._id, location: ride.startLocation.coordinates }
+        return {
+          id: ride._id,
+          name: ride.name,
+          location: ride.startLocation.coordinates,
+        }
       })
     }
   }
