@@ -29,10 +29,16 @@ export const StackNavigator = () => {
     const checkTokenExists = async () => {
       let authToken
       let userId
+      let refreshToken
 
       try {
         // Get refreshTokenfrom SecureStore
         refreshToken = await SecureStore.getItemAsync("refreshToken")
+      } catch (error) {
+        console.log("Error getting refresh token")
+      }
+
+      try {
         // Get new authToken from backend
         const res = await axios.post("auth/refresh", { refreshToken })
         if (res.status === 200) {
