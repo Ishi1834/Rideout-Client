@@ -13,7 +13,6 @@ import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
 // Other
 import axios from "../../../axiosConfig"
 import * as Location from "expo-location"
-import { SummaryText } from "../../../components/SummaryText"
 
 export const FindARideScreen = () => {
   const dispatch = useDispatch()
@@ -120,15 +119,24 @@ export const FindARideScreen = () => {
   useEffect(() => {
     const getAllOpenRides = async () => {
       try {
-        const res = await axios.get("/rides")
+        const res = await axios.get(
+          `/rides?lng=${userLocation.longitude}&lat=${userLocation.latitude}`
+        )
         if (res.status === 200) {
           dispatch(setUpOpenRides({ range: null, rides: res.data }))
         }
       } catch (error) {
         console.log("Error here ", error)
+        console.log(error.response.data.message)
       }
     }
 
+    if (userLocation) {
+      getAllOpenRides()
+    }
+  }, [userLocation?.latitude, userLocation?.longitude])
+
+  useEffect(() => {
     const getClubRides = async (clubId) => {
       try {
         const res = await axios.get(`rides/${clubId}`)
@@ -158,7 +166,6 @@ export const FindARideScreen = () => {
     }
 
     getAllClubRides()
-    getAllOpenRides()
   }, [])
 
   const requestLocationAccess = async () => {
