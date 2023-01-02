@@ -39,7 +39,8 @@ export const RideDetailScreen = ({ route }) => {
         navigation.goBack()
       }
     } catch (error) {
-      console.log("Error here ", error.response.data)
+      console.log("Error - RideDetailScreen.js")
+      console.log(error.response.data.message)
     }
   }
   return (

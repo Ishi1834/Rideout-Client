@@ -26,7 +26,7 @@ export const FindAClubScreen = () => {
           setClubs(res.data)
         }
       } catch (error) {
-        console.log("Error ", error.status)
+        console.log("Error - FindAClub.js ")
         console.log(error.response.data.message)
       }
       setIsMakingApiRequest(false)
@@ -65,7 +65,7 @@ export const FindAClubScreen = () => {
   }
 
   const getLocationAndIdFromClubs = (givenClubs) => {
-    if (givenClubs.length) {
+    if (givenClubs?.length) {
       return givenClubs.map((club) => {
         return {
           id: club._id,

@@ -43,6 +43,7 @@ export const SignInScreen = ({ navigation, route }) => {
         )
       }
     } catch (error) {
+      console.log("Error - SignInScreen.js")
       if (error.response) {
         setErrorMessage(error.response.data.message)
       } else if (error.request) {

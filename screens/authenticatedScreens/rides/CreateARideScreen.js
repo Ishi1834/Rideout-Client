@@ -52,7 +52,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
         navigation.navigate("MyRides", { message: res?.data?.message })
       }
     } catch (error) {
-      console.log("Error here ", error)
+      console.log("Error - CreateARideScreen.js")
       setErrorMessage(error.response.data.message)
     }
     setIsSubmittingApi(false)

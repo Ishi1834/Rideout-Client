@@ -35,12 +35,14 @@ export const StackNavigator = () => {
         // Get refreshTokenfrom SecureStore
         refreshToken = await SecureStore.getItemAsync("refreshToken")
       } catch (error) {
-        console.log("Error getting refresh token")
+        console.log("Error - StackNavigator.js")
+        console.log(error)
       }
 
       try {
         // Get new authToken from backend
         const res = await axios.post("auth/refresh", { refreshToken })
+
         if (res.status === 200) {
           await SecureStore.setItemAsync("refreshToken", res.data.refreshToken)
           authToken = res.data.authToken
@@ -49,7 +51,8 @@ export const StackNavigator = () => {
           axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`
         }
       } catch (error) {
-        console.log("Error ", error)
+        console.log("Error - StackNavigator.js")
+        console.log(error)
       }
 
       dispatch(restoreToken({ authToken, userId }))
@@ -80,7 +83,8 @@ export const StackNavigator = () => {
           }
         })
       } catch (error) {
-        console.log("Error here ", error)
+        console.log("Error - StackNavigator.js")
+        console.log(error)
       }
     }
   }, [authState.authToken])

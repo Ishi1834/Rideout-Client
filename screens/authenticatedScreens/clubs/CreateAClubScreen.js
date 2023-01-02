@@ -39,6 +39,7 @@ export const CreateAClubScreen = () => {
         })
       }
     } catch (error) {
+      console.log("Error - CreateAClubScreen.js")
       setErrorMessage(error.response.data.message)
     }
     setIsSubmittingApi(false)

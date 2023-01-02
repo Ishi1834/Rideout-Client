@@ -28,7 +28,7 @@ export const SignUpScreen = ({ navigation }) => {
         message: res?.data?.message,
       })
     } catch (error) {
-      console.log("error ", error)
+      console.log("Error - SignUpScreen.js")
       if (error.response) {
         setErrorMessage(error.response.data.message)
       } else if (error.request) {

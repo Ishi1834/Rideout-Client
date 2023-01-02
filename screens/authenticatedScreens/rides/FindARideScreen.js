@@ -126,7 +126,7 @@ export const FindARideScreen = () => {
           dispatch(setUpOpenRides({ range: null, rides: res.data }))
         }
       } catch (error) {
-        console.log("Error here ", error)
+        console.log("Error - FindARideScreen.js")
         console.log(error.response.data.message)
       }
     }
@@ -144,7 +144,8 @@ export const FindARideScreen = () => {
           return res.data
         }
       } catch (error) {
-        console.log("Error here ", error)
+        console.log("Error - FindARideScreen.js")
+        console.log(error.response.data.message)
       }
     }
 
@@ -161,7 +162,8 @@ export const FindARideScreen = () => {
         })
         dispatch(setUpClubRides(allClubRidesArray))
       } catch (error) {
-        console.log("Error here ", error)
+        console.log("Error - FindARideScreen.js")
+        console.log(error.response.data.message)
       }
     }
 

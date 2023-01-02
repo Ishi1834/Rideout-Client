@@ -47,7 +47,8 @@ export const ClubDetailScreen = ({ route }) => {
         // dispatch call below to remove club rides
       }
     } catch (error) {
-      console.log("Error here ", error)
+      console.log("Error - ClubDeatilScreen.js")
+      console.log(error)
     }
   }
 
