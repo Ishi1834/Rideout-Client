@@ -4,7 +4,12 @@ import { Avatar, Button, Card, Paragraph, Divider } from "react-native-paper"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
-export const ClubCard = ({ club, clubClicked, createRideClicked }) => {
+export const ClubCard = ({
+  club,
+  clubClicked,
+  createRideClicked,
+  hideCreateRide = false,
+}) => {
   return (
     <Card style={styles.card}>
       <Card.Title title={club.name} subtitle={club.city} left={LeftContent} />
@@ -29,11 +34,15 @@ export const ClubCard = ({ club, clubClicked, createRideClicked }) => {
       </Card.Content>
       <Divider style={styles.dividerHorizontal} />
       <Card.Actions>
-        <Button
-          onPress={() => createRideClicked("CreateARide", club.name, club._id)}
-        >
-          Create a club ride
-        </Button>
+        {!hideCreateRide && (
+          <Button
+            onPress={() =>
+              createRideClicked("CreateARide", club.name, club._id)
+            }
+          >
+            Create a club ride
+          </Button>
+        )}
         <Button onPress={() => clubClicked("ClubDetail", club._id)}>
           View Club
         </Button>
