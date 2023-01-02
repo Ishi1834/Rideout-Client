@@ -21,6 +21,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { removeAClub } from "../../../state/clubsSlice"
 // Other
 import axios from "../../../axiosConfig"
+import { PreviewMap } from "../../../components/PreviewMap"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
@@ -92,6 +93,11 @@ export const ClubDetailScreen = ({ route }) => {
                   {tag}
                 </Chip>
               ))}
+            </View>
+            <View style={styles.mapContainer}>
+              {club.location.coordinates && (
+                <PreviewMap location={club.location.coordinates} />
+              )}
             </View>
             <View style={styles.countSection}>
               <View style={styles.countItem}>
@@ -166,6 +172,12 @@ const styles = StyleSheet.create({
   tag: {
     marginHorizontal: 5,
     marginVertical: 5,
+  },
+  mapContainer: {
+    height: 300,
+    borderColor: "black",
+    borderWidth: 1,
+    marginVertical: 10,
   },
   countSection: {
     flexDirection: "row",
