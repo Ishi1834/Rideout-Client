@@ -13,6 +13,7 @@ import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
 // Other
 import axios from "../../../axiosConfig"
 import * as Location from "expo-location"
+import { SummaryText } from "../../../components/SummaryText"
 
 export const FindARideScreen = () => {
   const dispatch = useDispatch()
@@ -277,7 +278,10 @@ export const FindARideScreen = () => {
         userLocation={userLocation}
       />
       {allRides.length === 0 ? (
-        <ActivityIndicator animating={true} />
+        <Banner
+          info="There are no rides for the choosen filters"
+          actions={[]}
+        />
       ) : (
         <FlatList
           data={allRides}

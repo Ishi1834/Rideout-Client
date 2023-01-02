@@ -19,8 +19,6 @@ export const FilterRides = ({
         onDismiss={hideModal}
         contentContainerStyle={styles.modalStyle}
       >
-        <Text>Filter here</Text>
-
         <Switch
           handleChange={(val) => setFilter("map", val)}
           value={filterMap.showMap}

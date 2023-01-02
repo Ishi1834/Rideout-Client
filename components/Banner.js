@@ -4,9 +4,9 @@ import { Banner as BannerBase } from "react-native-paper"
 export const Banner = ({ info, actions, buttonClicked }) => {
   const actionsArray = actions.map((action) => {
     return {
-      label: action.label,
+      label: action?.label,
       onPress: () =>
-        buttonClicked(action?.screen ? action.screen : action.label),
+        buttonClicked(action?.screen ? action.screen : action?.label),
     }
   })
 

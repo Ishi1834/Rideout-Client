@@ -30,8 +30,8 @@ export const Map = ({ allLocations, showMap, userLocation }) => {
                 <Marker
                   key={index}
                   coordinate={{
-                    latitude: ride.location[0],
-                    longitude: ride.location[1],
+                    longitude: ride.location[0],
+                    latitude: ride.location[1],
                   }}
                   title={ride.name}
                 />
