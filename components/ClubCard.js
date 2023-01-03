@@ -17,7 +17,7 @@ export const ClubCard = ({
   createRideClicked,
   hideCreateRide = false,
 }) => {
-  const distanceInKm = (club.distanceToClub / 1000).toFixed(2)
+  const distanceInKm = (club?.distanceToClub / 1000).toFixed(2)
 
   return (
     <Card style={styles.card}>
@@ -42,7 +42,7 @@ export const ClubCard = ({
         </View>
       </Card.Content>
       <Divider style={styles.dividerHorizontal} />
-      {club.distanceToClub && (
+      {club?.distanceToClub && (
         <View style={styles.distanceChip}>
           <Chip icon="map-marker-distance">{distanceInKm} Km from you</Chip>
         </View>

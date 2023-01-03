@@ -17,6 +17,7 @@ export const RideCard = ({ ride, rideClicked }) => {
   const [menuVisible, setMenuVisible] = useState(false)
 
   const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd/MM/yyyy")
+  const distanceInKm = (ride?.distanceToStart / 1000).toFixed(2)
 
   return (
     <Card style={styles.card}>
@@ -69,7 +70,11 @@ export const RideCard = ({ ride, rideClicked }) => {
         </View>
       </Card.Content>
       <Divider style={styles.dividerHorizontal} />
-
+      {ride?.distanceToStart && (
+        <View style={styles.distanceChip}>
+          <Chip icon="map-marker-distance">{distanceInKm} km from you</Chip>
+        </View>
+      )}
       <Card.Actions>
         <Button onPress={() => rideClicked("RideDetail", ride?._id)}>
           View Ride
@@ -96,6 +101,11 @@ export const styles = StyleSheet.create({
   },
   avatarText: {
     fontSize: 12,
+  },
+  distanceChip: {
+    flexDirection: "row",
+    marginHorizontal: 10,
+    marginTop: 10,
   },
   statsItem: { marginRight: 10, alignItems: "center" },
   dividerHorizontal: {
