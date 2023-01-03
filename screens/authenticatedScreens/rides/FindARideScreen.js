@@ -7,6 +7,7 @@ import { RideCard } from "../../../components/RideCard"
 import { Map } from "../../../components/Map"
 import { Banner } from "../../../components/Banner"
 import { FilterRides } from "../../../components/FilterRides"
+import { DropPinMap } from "../../../components/DropPinMap"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
@@ -21,6 +22,9 @@ export const FindARideScreen = () => {
   const ridesState = useSelector((state) => state.rides)
   const clubRides = ridesState?.clubRides
   const openRides = ridesState?.openRides.rides
+  const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
+  const [showDropPinMap, setShowDropPinMap] = useState(false)
+  const [userHasSelectedLocation, setUserHasSelectedLocation] = useState(false)
   const [userLocation, setUserLocation] = useState(null)
   const [locationError, setLocationError] = useState(null)
   const [allRides, setAllRides] = useState([])
@@ -150,6 +154,7 @@ export const FindARideScreen = () => {
     }
 
     const getAllClubRides = async () => {
+      setIsMakingApiRequest(true)
       try {
         const allClubRidesArray = []
         const allRidesByClub = await Promise.all(
@@ -165,6 +170,7 @@ export const FindARideScreen = () => {
         console.log("Error - FindARideScreen.js")
         console.log(error.response.data.message)
       }
+      setIsMakingApiRequest(false)
     }
 
     getAllClubRides()
@@ -253,6 +259,24 @@ export const FindARideScreen = () => {
     }
   }
 
+  const handleLocationSelect = (location) => {
+    setUserLocation({
+      ...location,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    })
+    setUserHasSelectedLocation(true)
+    setShowDropPinMap(false)
+  }
+
+  if (showDropPinMap) {
+    return (
+      <DropPinMap
+        preselectedLocation={[userLocation?.longitude, userLocation?.latitude]}
+        onSelectLocation={handleLocationSelect}
+      />
+    )
+  }
   return (
     <View style={styles.container}>
       {showFilter ? (
@@ -281,16 +305,30 @@ export const FindARideScreen = () => {
           buttonClicked={requestLocationAccess}
         />
       )}
+      <Button
+        mode="contained"
+        onPress={() => {
+          setShowDropPinMap(true)
+        }}
+        style={{ marginTop: 10 }}
+      >
+        Select Location on Map
+      </Button>
       <Map
         allLocations={getLocationAndIdFromRides(allRides)}
         showMap={filterMap.showMap}
         userLocation={userLocation}
+        userHasSelectedLocation={userHasSelectedLocation}
       />
-      {allRides.length === 0 ? (
-        <Banner
-          info="There are no rides for the choosen filters"
-          actions={[]}
-        />
+      {allRides?.length === 0 ? (
+        isMakingApiRequest ? (
+          <ActivityIndicator />
+        ) : (
+          <Banner
+            info="There are no rides for the choosen filters"
+            actions={[]}
+          />
+        )
       ) : (
         <FlatList
           data={allRides}

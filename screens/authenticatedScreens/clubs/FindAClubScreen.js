@@ -108,7 +108,7 @@ export const FindAClubScreen = () => {
   if (showDropPinMap) {
     return (
       <DropPinMap
-        preselectedLocation={[userLocation.longitude, userLocation.latitude]}
+        preselectedLocation={[userLocation?.longitude, userLocation?.latitude]}
         onSelectLocation={handleLocationSelect}
       />
     )
@@ -132,7 +132,7 @@ export const FindAClubScreen = () => {
           setShowDropPinMap(true)
         }}
       >
-        Select Club Location on Map
+        Select Location on Map
       </Button>
       <Map
         allLocations={getLocationAndIdFromClubs(clubs)}
