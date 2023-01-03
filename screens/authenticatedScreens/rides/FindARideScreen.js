@@ -54,13 +54,16 @@ export const FindARideScreen = () => {
   }, [clubRides.length, openRides.length])
 
   useEffect(() => {
-    const getAllOpenRides = async () => {
+    // re-calculate distance to start location whenever user location changes
+    const getAllOpenRides = async (updatedDistanceClubRides) => {
       try {
         const res = await axios.get(
           `/rides?lng=${userLocation.longitude}&lat=${userLocation.latitude}`
         )
         if (res.status === 200) {
           dispatch(setUpOpenRides({ range: null, rides: res.data }))
+          dispatch(setUpClubRides(updatedDistanceClubRides))
+          setAllRides([...updatedDistanceClubRides, ...res.data])
         }
       } catch (error) {
         console.log("Error - FindARideScreen.js")
@@ -68,15 +71,7 @@ export const FindARideScreen = () => {
       }
     }
     if (userLocation) {
-      getAllOpenRides()
-      setAllRides([...clubRides, ...openRides])
-    }
-  }, [userLocation?.latitude, userLocation?.longitude])
-
-  useEffect(() => {
-    // re-calculate distance to start location whenever user location changes
-    if (userLocation) {
-      const clubRidesWithDistanceToStart = clubRides.map((ride) => {
+      const updatedDistanceClubRides = clubRides.map((ride) => {
         const [longitude, latitude] = ride.startLocation.coordinates
         const distanceToStart = getDistance(
           { longitude, latitude },
@@ -84,10 +79,9 @@ export const FindARideScreen = () => {
         )
         return { ...ride, distanceToStart }
       })
-      dispatch(setUpClubRides(clubRidesWithDistanceToStart))
+      getAllOpenRides(updatedDistanceClubRides)
     }
-    setAllRides([...clubRides, ...openRides])
-  }, [userLocation?.longitude, userLocation?.latitude])
+  }, [userLocation?.latitude, userLocation?.longitude])
 
   useEffect(() => {
     if (filterClubs.selected) {
