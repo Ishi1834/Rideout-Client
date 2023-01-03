@@ -14,10 +14,10 @@ export const FindAClubScreen = () => {
   const [clubs, setClubs] = useState([])
 
   useEffect(() => {
+    setIsMakingApiRequest(true)
     requestLocationAccess()
 
     const findAClub = async () => {
-      setIsMakingApiRequest(true)
       try {
         const res = await axios.get(
           `/clubs?lng=${userLocation.longitude}&lat=${userLocation.latitude}`

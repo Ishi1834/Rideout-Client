@@ -1,6 +1,13 @@
 // UI
 import { View, StyleSheet } from "react-native"
-import { Avatar, Button, Card, Paragraph, Divider } from "react-native-paper"
+import {
+  Avatar,
+  Button,
+  Card,
+  Paragraph,
+  Divider,
+  Chip,
+} from "react-native-paper"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
@@ -10,6 +17,8 @@ export const ClubCard = ({
   createRideClicked,
   hideCreateRide = false,
 }) => {
+  const distanceInKm = (club.distanceToClub / 1000).toFixed(2)
+
   return (
     <Card style={styles.card}>
       <Card.Title title={club.name} subtitle={club.city} left={LeftContent} />
@@ -33,6 +42,11 @@ export const ClubCard = ({
         </View>
       </Card.Content>
       <Divider style={styles.dividerHorizontal} />
+      {club.distanceToClub && (
+        <View style={styles.distanceChip}>
+          <Chip icon="map-marker-distance">{distanceInKm} Km from you</Chip>
+        </View>
+      )}
       <Card.Actions>
         {!hideCreateRide && (
           <Button
@@ -60,6 +74,11 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontSize: 12,
+  },
+  distanceChip: {
+    flexDirection: "row",
+    marginHorizontal: 10,
+    marginTop: 10,
   },
   countItem: { marginRight: 10, alignItems: "center" },
   dividerHorizontal: {
