@@ -1,23 +1,33 @@
 import { useEffect, useState } from "react"
+import { useNavigation } from "@react-navigation/native"
+// UI
 import { View, StyleSheet, FlatList } from "react-native"
-import axios from "../../../axiosConfig"
-import * as Location from "expo-location"
+import { ActivityIndicator, Button } from "react-native-paper"
 import { Map } from "../../../components/Map"
 import { ClubCard } from "../../../components/ClubCard"
 import { Banner } from "../../../components/Banner"
-import { ActivityIndicator } from "react-native-paper"
+import { DropPinMap } from "../../../components/DropPinMap"
+// Other
+import axios from "../../../axiosConfig"
+import * as Location from "expo-location"
 
 export const FindAClubScreen = () => {
+  const navigation = useNavigation()
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
+  const [showDropPinMap, setShowDropPinMap] = useState(false)
+  const [userHasSelectedLocation, setUserHasSelectedLocation] = useState(false)
   const [userLocation, setUserLocation] = useState(null)
   const [locationError, setLocationError] = useState(null)
   const [clubs, setClubs] = useState([])
 
   useEffect(() => {
-    setIsMakingApiRequest(true)
     requestLocationAccess()
+  }, [])
 
-    const findAClub = async () => {
+  useEffect(() => {
+    setIsMakingApiRequest(true)
+
+    const findClubsNearLocation = async () => {
       try {
         const res = await axios.get(
           `/clubs?lng=${userLocation.longitude}&lat=${userLocation.latitude}`
@@ -33,7 +43,8 @@ export const FindAClubScreen = () => {
     }
 
     if (userLocation) {
-      findAClub()
+      setClubs([])
+      findClubsNearLocation()
     }
   }, [userLocation?.latitude, userLocation?.longitude])
 
@@ -77,13 +88,31 @@ export const FindAClubScreen = () => {
   }
 
   const renderClubCard = ({ item }) => (
-    <ClubCard
-      club={item}
-      clubClicked={(val) => console.log("clicky ", val)}
-      hideCreateRide={true}
-    />
+    <ClubCard club={item} clubClicked={navigateToClub} hideCreateRide={true} />
   )
 
+  const navigateToClub = (screen, clubId) => {
+    navigation.navigate(screen, { clubId })
+  }
+
+  const handleLocationSelect = (location) => {
+    setUserLocation({
+      ...location,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    })
+    setUserHasSelectedLocation(true)
+    setShowDropPinMap(false)
+  }
+
+  if (showDropPinMap) {
+    return (
+      <DropPinMap
+        preselectedLocation={[userLocation.longitude, userLocation.latitude]}
+        onSelectLocation={handleLocationSelect}
+      />
+    )
+  }
   return (
     <View style={styles.container}>
       {locationError && (
@@ -97,10 +126,19 @@ export const FindAClubScreen = () => {
           buttonClicked={requestLocationAccess}
         />
       )}
+      <Button
+        mode="contained-tonal"
+        onPress={() => {
+          setShowDropPinMap(true)
+        }}
+      >
+        Select Club Location on Map
+      </Button>
       <Map
         allLocations={getLocationAndIdFromClubs(clubs)}
         showMap={true}
         userLocation={userLocation}
+        userHasSelectedLocation={userHasSelectedLocation}
       />
 
       {clubs?.length === 0 ? (

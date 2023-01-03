@@ -4,7 +4,12 @@ import { View, StyleSheet } from "react-native"
 // Other
 import MapView, { Marker } from "react-native-maps"
 
-export const Map = ({ allLocations, showMap, userLocation }) => {
+export const Map = ({
+  allLocations,
+  showMap,
+  userLocation,
+  userHasSelectedLocation = false,
+}) => {
   const [mapRegion, setMapRegion] = useState(null)
 
   useEffect(() => {
@@ -23,8 +28,13 @@ export const Map = ({ allLocations, showMap, userLocation }) => {
             onRegionChangeComplete={(region) => setMapRegion(region)}
             zoomEnabled={true}
             zoomControlEnabled={true}
-            showsUserLocation={true}
+            showsUserLocation={userHasSelectedLocation ? false : true}
+            loadingEnabled={true}
           >
+            {userHasSelectedLocation && (
+              <Marker coordinate={userLocation} pinColor={"green"} />
+            )}
+
             {allLocations &&
               allLocations.map((ride, index) => (
                 <Marker
