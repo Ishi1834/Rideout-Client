@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native"
-import { Portal, Modal, Text } from "react-native-paper"
+import { Portal, Modal } from "react-native-paper"
 import { Checkbox } from "./Checkbox"
+import { NumberSelector } from "./NumberSelector"
 import { RadioInput } from "./RadioInput"
 import { Switch } from "./Switch"
 
@@ -11,6 +12,8 @@ export const FilterRides = ({
   filterRides,
   filterClubs,
   setFilter,
+  maxDistance,
+  onMaxDistanceChange,
 }) => {
   return (
     <Portal>
@@ -24,7 +27,12 @@ export const FilterRides = ({
           value={filterMap.showMap}
           label={filterMap.name}
         />
-
+        {/* Implement debounce for max distance selection */}
+        <NumberSelector
+          label="Max Distance"
+          initialNumber={maxDistance}
+          handleNumberChange={(number) => onMaxDistanceChange(number)}
+        />
         {filterRides.map((item, index) => (
           <Checkbox
             label={item.label}

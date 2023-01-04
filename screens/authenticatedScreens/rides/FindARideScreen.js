@@ -28,6 +28,7 @@ export const FindARideScreen = () => {
   const [userHasSelectedLocation, setUserHasSelectedLocation] = useState(false)
   const [userLocation, setUserLocation] = useState(null)
   const [locationError, setLocationError] = useState(null)
+  const [maxDistance, setMaxDistance] = useState(10)
   const [allRides, setAllRides] = useState([])
   const [showFilter, setShowFilter] = useState(false)
   const [filterMap, setFilterMap] = useState({
@@ -300,6 +301,8 @@ export const FindARideScreen = () => {
           filterRides={filterRides}
           filterClubs={filterClubs}
           setFilter={setRidesFilter}
+          maxDistance={maxDistance}
+          onMaxDistanceChange={(distance) => setMaxDistance(distance)}
         />
       ) : (
         <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>

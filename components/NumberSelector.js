@@ -13,7 +13,7 @@ export const NumberSelector = ({
   const [selectedNumber, setSelectedNumber] = useState(initialNumber)
 
   const numberSchema = yup.object().shape({
-    number: yup.number().required(),
+    number: yup.number().required().min(1).max(100),
   })
 
   const checkNumberIsValid = async (number) => {
