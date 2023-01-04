@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { StyleSheet } from "react-native"
 import { Portal, Modal } from "react-native-paper"
 import { Checkbox } from "./Checkbox"
@@ -15,11 +16,15 @@ export const FilterRides = ({
   maxDistance,
   onMaxDistanceChange,
 }) => {
+  const [selectedNumber, setSelectedNumber] = useState(null)
   return (
     <Portal>
       <Modal
         visible={visible}
-        onDismiss={hideModal}
+        onDismiss={() => {
+          onMaxDistanceChange(selectedNumber)
+          hideModal()
+        }}
         contentContainerStyle={styles.modalStyle}
       >
         <Switch
@@ -31,7 +36,9 @@ export const FilterRides = ({
         <NumberSelector
           label="Max Distance"
           initialNumber={maxDistance}
-          handleNumberChange={(number) => onMaxDistanceChange(number)}
+          handleNumberChange={(number) => {
+            setSelectedNumber(number)
+          }}
         />
         {filterRides.map((item, index) => (
           <Checkbox

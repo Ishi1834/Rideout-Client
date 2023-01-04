@@ -58,8 +58,9 @@ export const FindARideScreen = () => {
     // re-calculate distance to start location whenever user location changes
     const getAllOpenRides = async (updatedDistanceClubRides) => {
       try {
+        const maxDistanceInM = maxDistance * 1000
         const res = await axios.get(
-          `/rides?lng=${userLocation.longitude}&lat=${userLocation.latitude}`
+          `/rides?lng=${userLocation.longitude}&lat=${userLocation.latitude}&maxDistance=${maxDistanceInM}`
         )
         if (res.status === 200) {
           dispatch(setUpOpenRides({ range: null, rides: res.data }))
@@ -84,7 +85,7 @@ export const FindARideScreen = () => {
       })
       getAllOpenRides(updatedDistanceClubRides)
     }
-  }, [userLocation?.latitude, userLocation?.longitude])
+  }, [userLocation?.latitude, userLocation?.longitude, maxDistance])
 
   useEffect(() => {
     if (filterClubs.selected) {
