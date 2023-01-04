@@ -66,7 +66,9 @@ export const FindARideScreen = () => {
           setAllRides([...updatedDistanceClubRides, ...res.data])
         }
       } catch (error) {
-        console.log("Error - FindARideScreen.js")
+        dispatch(setUpOpenRides({ range: null, rides: [] }))
+        dispatch(setUpClubRides(updatedDistanceClubRides))
+        setAllRides([...updatedDistanceClubRides])
         console.log(error.response.data.message)
       }
     }
@@ -336,7 +338,7 @@ export const FindARideScreen = () => {
           <ActivityIndicator />
         ) : (
           <Banner
-            info="There are no rides for the choosen filters"
+            info="There are no rides for the chosen filters"
             actions={[]}
           />
         )
