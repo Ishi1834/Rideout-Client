@@ -1,5 +1,5 @@
 import * as yup from "yup"
-import { rideTypeArray } from "./multiSelectOptions"
+import { rideTypeValues } from "./multiSelectOptions"
 
 export const signInSchema = yup.object().shape({
   username: yup.string().required("Username is a required field"),
@@ -23,7 +23,7 @@ export const signUpSchema = yup.object().shape({
 export const rideSchema = yup.object().shape({
   date: yup.date().required(),
   name: yup.string().required(),
-  rideType: yup.string().oneOf(rideTypeArray).required(),
+  rideType: yup.string().oneOf(rideTypeValues).required(),
   startLocation: yup.array().of(yup.number()).required(),
   distance: yup.number().required(),
   speed: yup.number().required(),

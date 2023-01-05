@@ -164,7 +164,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
                   <RadioInput
                     radioData={rideTypeArray}
                     radioLabel="Select Ride Type"
-                    itemSelected={handleChange("rideType")}
+                    itemSelected={(item) => setFieldValue("rideType", item)}
                     onBlur={handleBlur("rideType")}
                     disabled={isSubmittingApi && true}
                   />

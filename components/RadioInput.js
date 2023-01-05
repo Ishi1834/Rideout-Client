@@ -14,14 +14,9 @@ export const RadioInput = ({
 
   useEffect(() => {
     if (selectedItem) {
+      const label = radioData.find((obj) => obj.value === selectedItem).label
+      setGroupLabel(label)
       itemSelected(selectedItem)
-      const label = radioData.find((obj) => obj?.value === selectedItem)?.label
-      if (label) {
-        setGroupLabel(label)
-      }
-    } else {
-      itemSelected(radioLabel)
-      setGroupLabel(radioLabel)
     }
   }, [selectedItem])
 
@@ -35,7 +30,7 @@ export const RadioInput = ({
         onPress={() => setShowRadio(!showRadio)}
         disabled={disabled}
       >
-        {!selectedItem ? radioLabel : groupLabel ? groupLabel : selectedItem}
+        {selectedItem ? groupLabel : radioLabel}
       </Button>
       {showRadio && (
         <RadioButton.Group
@@ -48,8 +43,8 @@ export const RadioInput = ({
           {radioData.map((item, index) => (
             <RadioButton.Item
               key={index}
-              label={item?.label ? item.label : item}
-              value={item?.value ? item.value : item}
+              label={item.label}
+              value={item.value}
             />
           ))}
         </RadioButton.Group>
