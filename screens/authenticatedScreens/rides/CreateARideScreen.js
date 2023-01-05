@@ -23,6 +23,7 @@ import { rideTypeArray } from "../../../static/multiSelectOptions"
 import { rideSchema } from "../../../static/validationSchema"
 import { createARideInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
+import { NumberSelector } from "../../../components/NumberSelector"
 
 export const CreateARideScreen = ({ navigation, route }) => {
   const dispatch = useDispatch()
@@ -189,37 +190,31 @@ export const CreateARideScreen = ({ navigation, route }) => {
                     </HelperText>
                   )}
                 </View>
-                <View style={styles.formInputs}>
-                  <TextInput
-                    keyboardType="number-pad"
+                <View style={styles.numberSelectors}>
+                  <NumberSelector
+                    max={500}
+                    min={0}
+                    noValadationRequired={true}
                     label="Distance"
-                    value={values.distance}
-                    onChangeText={handleChange("distance")}
-                    onBlur={handleBlur("distance")}
+                    initialNumber={values.distance}
+                    disabled={isSubmittingApi && true}
                     error={touched.distance && errors.distance}
-                    disabled={isSubmittingApi && true}
+                    handleNumberChange={(number) =>
+                      setFieldValue("distance", number)
+                    }
                   />
-                  {touched.distance && errors.distance && (
-                    <HelperText type="error" visible={true}>
-                      {errors.distance}
-                    </HelperText>
-                  )}
-                </View>
-                <View style={styles.formInputs}>
-                  <TextInput
-                    keyboardType="number-pad"
+                  <NumberSelector
+                    max={60}
+                    min={0}
+                    noValadationRequired={true}
                     label="Speed"
-                    value={values.speed}
-                    onChangeText={handleChange("speed")}
-                    onBlur={handleBlur("speed")}
-                    error={touched.speed && errors.speed}
+                    initialNumber={values.speed}
                     disabled={isSubmittingApi && true}
+                    error={touched.speed && errors.speed}
+                    handleNumberChange={(number) =>
+                      setFieldValue("speed", number)
+                    }
                   />
-                  {touched.speed && errors.speed && (
-                    <HelperText type="error" visible={true}>
-                      {errors.speed}
-                    </HelperText>
-                  )}
                 </View>
                 <View style={styles.formInputs}>
                   <TextInput
@@ -284,6 +279,12 @@ const styles = StyleSheet.create({
   },
   formInputs: {
     marginBottom: 10,
+  },
+  numberSelectors: {
+    marginBottom: 10,
+    marginHorizontal: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   dateContainer: {
     flexDirection: "row",

@@ -9,11 +9,15 @@ export const NumberSelector = ({
   initialNumber = 0,
   label = "",
   handleNumberChange,
+  min = 1,
+  max = 100,
+  error = false,
+  disabled = false,
 }) => {
   const [selectedNumber, setSelectedNumber] = useState(initialNumber)
 
   const numberSchema = yup.object().shape({
-    number: yup.number().required().min(1).max(100),
+    number: yup.number().required().min(min).max(max),
   })
 
   const checkNumberIsValid = async (number) => {
@@ -50,7 +54,12 @@ export const NumberSelector = ({
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
       <View style={styles.numberContainer}>
-        <Button icon="minus" style={styles.button} onPress={handleMinus} />
+        <Button
+          icon="minus"
+          style={styles.button}
+          onPress={handleMinus}
+          disabled={disabled}
+        />
 
         <TextInput
           style={styles.input}
@@ -58,9 +67,18 @@ export const NumberSelector = ({
           value={`${selectedNumber}`}
           mode="outlined"
           onChangeText={(number) => handleChange(number)}
+          // if 1 character, return 0
+          /*  onKeyPress={({ nativeEvent }) => console.log(nativeEvent)} */
+          error={error}
+          disabled={disabled}
         />
 
-        <Button icon="plus" style={styles.button} onPress={handleAdd} />
+        <Button
+          icon="plus"
+          style={styles.button}
+          onPress={handleAdd}
+          disabled={disabled}
+        />
       </View>
     </View>
   )

@@ -14,8 +14,8 @@ export const createARideInitialValues = {
   date: new Date(),
   rideType: "",
   startLocation: null,
-  distance: null,
-  speed: null,
+  distance: 10,
+  speed: 10,
   cafeStops: "",
   route: "",
 }
