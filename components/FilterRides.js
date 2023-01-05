@@ -22,7 +22,9 @@ export const FilterRides = ({
       <Modal
         visible={visible}
         onDismiss={() => {
-          onMaxDistanceChange(selectedNumber)
+          if (selectedNumber) {
+            onMaxDistanceChange(selectedNumber)
+          }
           hideModal()
         }}
         contentContainerStyle={styles.modalStyle}
@@ -32,7 +34,6 @@ export const FilterRides = ({
           value={filterMap.showMap}
           label={filterMap.name}
         />
-        {/* Implement debounce for max distance selection */}
         <NumberSelector
           label="Max Distance"
           initialNumber={maxDistance}
