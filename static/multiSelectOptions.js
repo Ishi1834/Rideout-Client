@@ -5,3 +5,23 @@ export const rideTypeArray = [
 ]
 
 export const rideTypeValues = ["Social", "Training", "Chaingang"]
+
+export const sortRidesArray = [
+  // sorting to be worked on later
+  {
+    label: "Sort by date",
+    value: "date",
+  },
+  {
+    label: "Sort by ride distance",
+    value: "rideDistance",
+  },
+  {
+    label: "Sort by speed",
+    value: "speed",
+  },
+  {
+    label: "Sort by distance to start",
+    value: "startDistance",
+  },
+]
