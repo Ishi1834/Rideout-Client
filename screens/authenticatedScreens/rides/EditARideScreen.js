@@ -15,13 +15,12 @@ import { SummaryText } from "../../../components/SummaryText"
 import { DropPinMap } from "../../../components/DropPinMap"
 // State
 import { useDispatch } from "react-redux"
-import { addAClubRide, addAUserRide } from "../../../state/ridesSlice"
+import { updateAUserRide, updateAClubRide } from "../../../state/ridesSlice"
 // Other
 import { formatTime, formatDate } from "../../../utils/formatDate"
 import { Formik } from "formik"
 import { rideTypeArray } from "../../../static/multiSelectOptions"
 import { rideSchema } from "../../../static/validationSchema"
-import { createARideInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
 import { NumberSelector } from "../../../components/NumberSelector"
 
@@ -52,18 +51,17 @@ export const EditARideScreen = ({ navigation, route }) => {
 
     try {
       const res = await axios.patch(endPoint, { ...data, rideId: data._id })
-      console.log("res ", res)
-      console.log("data ", res.data)
+
       if (res.status === 200) {
-        /* const ride = res.data.ride
-        dispatch(addAUserRide(ride)) */
-        /* if (ride?.club) {
-          dispatch(addAClubRide(ride))
-        } */
+        const ride = res.data.ride
+        dispatch(updateAUserRide(ride))
+        if (ride?.club) {
+          dispatch(updateAClubRide(ride))
+        }
         navigation.navigate("MyRides", { message: res?.data?.message })
       }
     } catch (error) {
-      console.log("Error - CreateARideScreen.js")
+      console.log("Error - EditARideScreen.js")
       setErrorMessage(error.response.data.message)
     }
     setIsSubmittingApi(false)
@@ -122,21 +120,6 @@ export const EditARideScreen = ({ navigation, route }) => {
               </Portal>
             )}
             <View style={styles.form}>
-              <View style={styles.formInputs}>
-                <TextInput
-                  label="Name"
-                  value={values.name}
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  error={touched.name && errors.name}
-                  disabled={isSubmittingApi && true}
-                />
-                {touched.name && errors.name && (
-                  <HelperText type="error" visible={true}>
-                    {errors.name}
-                  </HelperText>
-                )}
-              </View>
               <View style={styles.formInputs}>
                 <TextInput
                   label="Description"

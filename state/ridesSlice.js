@@ -29,6 +29,20 @@ export const ridesSlice = createSlice({
     addAClubRide: (state, action) => {
       state.clubRides.push(action.payload)
     },
+    updateAUserRide: (state, action) => {
+      const updatedRide = action.payload
+      state.userRides = state.userRides.filter(
+        (ride) => ride._id !== updatedRide._id
+      )
+      state.userRides.push(updatedRide)
+    },
+    updateAClubRide: (state, action) => {
+      const updatedRide = action.payload
+      state.clubRides = state.clubRides.filter(
+        (ride) => ride._id !== updatedRide._id
+      )
+      state.clubRides.push(updatedRide)
+    },
     removeAUserRide: (state, action) => {
       const rideId = action.payload
       state.userRides = state.userRides.filter((ride) => ride._id !== rideId)
@@ -46,6 +60,8 @@ export const {
   setUpOpenRides,
   addAUserRide,
   addAClubRide,
+  updateAUserRide,
+  updateAClubRide,
   removeAUserRide,
   removeAClubRide,
 } = ridesSlice.actions

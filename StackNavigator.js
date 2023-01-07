@@ -143,7 +143,8 @@ export const StackNavigator = () => {
             name="EditARide"
             component={EditARideScreen}
             options={({ route }) => ({
-              title: `Edit ${route.params?.rideName} ride`,
+              title: `${route.params?.rideName}`,
+              headerBackTitle: "",
             })}
           />
           <Stack.Screen name="RideDetail" component={RideDetailScreen} />
