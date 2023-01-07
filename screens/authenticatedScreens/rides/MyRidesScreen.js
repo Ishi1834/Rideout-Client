@@ -26,8 +26,8 @@ export const MyRidesScreen = () => {
     }
   }, [params?.message])
 
-  const navigateToRide = (screen, rideId) => {
-    navigation.navigate(screen, { rideId })
+  const navigateToRide = (screen, ride, rideName) => {
+    navigation.navigate(screen, { ride, rideName })
   }
 
   const navigateToEdit = (screen, ride, rideName) => {

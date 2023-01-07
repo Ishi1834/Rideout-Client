@@ -147,7 +147,14 @@ export const StackNavigator = () => {
               headerBackTitle: "",
             })}
           />
-          <Stack.Screen name="RideDetail" component={RideDetailScreen} />
+          <Stack.Screen
+            name="RideDetail"
+            component={RideDetailScreen}
+            options={({ route }) => ({
+              title: `${route.params?.rideName}`,
+              headerBackTitle: "",
+            })}
+          />
         </>
       )}
     </Stack.Navigator>

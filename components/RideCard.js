@@ -79,7 +79,7 @@ export const RideCard = ({ ride, rideClicked, editClicked }) => {
         <Button onPress={() => editClicked("EditARide", ride, ride?.name)}>
           Edit Ride
         </Button>
-        <Button onPress={() => rideClicked("RideDetail", ride?._id)}>
+        <Button onPress={() => rideClicked("RideDetail", ride, ride?.name)}>
           View Ride
         </Button>
       </Card.Actions>
