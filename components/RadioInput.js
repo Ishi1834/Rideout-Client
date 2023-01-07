@@ -7,10 +7,20 @@ export const RadioInput = ({
   radioLabel,
   itemSelected,
   disabled,
+  preSelectedLabel,
 }) => {
   const [showRadio, setShowRadio] = useState(false)
   const [groupLabel, setGroupLabel] = useState()
   const [selectedItem, setSelectedItem] = useState("")
+
+  useEffect(() => {
+    if (preSelectedLabel) {
+      const item = radioData.find((obj) => obj.label === preSelectedLabel)
+
+      setGroupLabel(item.label)
+      setSelectedItem(item.value)
+    }
+  }, [])
 
   useEffect(() => {
     if (selectedItem) {
