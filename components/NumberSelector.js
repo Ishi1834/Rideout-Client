@@ -54,12 +54,7 @@ export const NumberSelector = ({
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
       <View style={styles.numberContainer}>
-        <Button
-          icon="minus"
-          style={styles.button}
-          onPress={handleMinus}
-          disabled={disabled}
-        />
+        <Button icon="minus" onPress={handleMinus} disabled={disabled} />
 
         <TextInput
           style={styles.input}
@@ -73,12 +68,7 @@ export const NumberSelector = ({
           disabled={disabled}
         />
 
-        <Button
-          icon="plus"
-          style={styles.button}
-          onPress={handleAdd}
-          disabled={disabled}
-        />
+        <Button icon="plus" onPress={handleAdd} disabled={disabled} />
       </View>
     </View>
   )
@@ -96,9 +86,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-  },
-  button: {
-    width: 40,
   },
   input: {
     textAlign: "center",
