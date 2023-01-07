@@ -30,6 +30,10 @@ export const MyRidesScreen = () => {
     navigation.navigate(screen, { rideId })
   }
 
+  const navigateToEdit = (screen, ride, rideName) => {
+    navigation.navigate(screen, { ride, rideName })
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -43,7 +47,12 @@ export const MyRidesScreen = () => {
           />
         ) : (
           rides.map((ride, index) => (
-            <RideCard key={index} ride={ride} rideClicked={navigateToRide} />
+            <RideCard
+              key={index}
+              ride={ride}
+              rideClicked={navigateToRide}
+              editClicked={navigateToEdit}
+            />
           ))
         )}
       </View>

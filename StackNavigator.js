@@ -12,6 +12,7 @@ import { DrawerScreens } from "./screens/authenticatedScreens/DrawerScreens"
 import { ClubDetailScreen } from "./screens/authenticatedScreens/clubs/ClubDetailScreen"
 import { RideDetailScreen } from "./screens/authenticatedScreens/rides/RideDetailScreen"
 import { CreateARideScreen } from "./screens/authenticatedScreens/rides/CreateARideScreen"
+import { EditARideScreen } from "./screens/authenticatedScreens/rides/EditARideScreen"
 // Other
 import axios from "./axiosConfig"
 import * as SecureStore from "expo-secure-store"
@@ -137,6 +138,13 @@ export const StackNavigator = () => {
             options={{
               title: "Club",
             }}
+          />
+          <Stack.Screen
+            name="EditARide"
+            component={EditARideScreen}
+            options={({ route }) => ({
+              title: `Edit ${route.params?.rideName} ride`,
+            })}
           />
           <Stack.Screen name="RideDetail" component={RideDetailScreen} />
         </>
