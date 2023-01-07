@@ -48,22 +48,24 @@ export const EditARideScreen = ({ navigation, route }) => {
     let endPoint = "/rides"
     if (clubId) {
       endPoint = `${endPoint}/${clubId}`
-      console.log("endpoint ", endPoint)
     }
-    /* try {
-      const res = await axios.post(endPoint, data)
-      if (res.status === 201) {
-        const ride = res.data.ride
-        dispatch(addAUserRide(ride))
-        if (ride?.club) {
+
+    try {
+      const res = await axios.patch(endPoint, { ...data, rideId: data._id })
+      console.log("res ", res)
+      console.log("data ", res.data)
+      if (res.status === 200) {
+        /* const ride = res.data.ride
+        dispatch(addAUserRide(ride)) */
+        /* if (ride?.club) {
           dispatch(addAClubRide(ride))
-        }
+        } */
         navigation.navigate("MyRides", { message: res?.data?.message })
       }
     } catch (error) {
       console.log("Error - CreateARideScreen.js")
       setErrorMessage(error.response.data.message)
-    }*/
+    }
     setIsSubmittingApi(false)
   }
 
@@ -83,6 +85,7 @@ export const EditARideScreen = ({ navigation, route }) => {
       initialValues={{
         ...params?.ride,
         startLocation: params?.ride?.startLocation?.coordinates,
+        date: new Date(params?.ride?.date),
       }}
       validationSchema={rideSchema}
     >
@@ -152,7 +155,6 @@ export const EditARideScreen = ({ navigation, route }) => {
               <View style={[styles.formInputs, styles.dateContainer]}>
                 <Button
                   mode="contained-tonal"
-                  style={styles.dateButton}
                   onPress={showDatepicker}
                   icon="calendar-outline"
                   disabled={isSubmittingApi && true}
@@ -161,7 +163,6 @@ export const EditARideScreen = ({ navigation, route }) => {
                 </Button>
                 <Button
                   mode="contained-tonal"
-                  style={styles.dateButton}
                   onPress={showTimepicker}
                   icon="calendar-clock-outline"
                   disabled={isSubmittingApi && true}
@@ -302,9 +303,9 @@ const styles = StyleSheet.create({
   },
   numberSelectors: {
     marginBottom: 10,
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
   dateContainer: {
     flexDirection: "row",
