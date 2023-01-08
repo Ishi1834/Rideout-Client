@@ -132,7 +132,6 @@ export const CreateARideScreen = ({ navigation, route }) => {
                 <View style={[styles.formInputs, styles.dateContainer]}>
                   <Button
                     mode="contained-tonal"
-                    style={styles.dateButton}
                     onPress={showDatepicker}
                     icon="calendar-outline"
                     disabled={isSubmittingApi && true}
@@ -141,7 +140,6 @@ export const CreateARideScreen = ({ navigation, route }) => {
                   </Button>
                   <Button
                     mode="contained-tonal"
-                    style={styles.dateButton}
                     onPress={showTimepicker}
                     icon="calendar-clock-outline"
                     disabled={isSubmittingApi && true}
@@ -284,15 +282,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginHorizontal: 20,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
   dateContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-  },
-  dateButton: {
-    width: "45%",
   },
   mapModal: {
     backgroundColor: "white",
