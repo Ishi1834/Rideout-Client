@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux"
 import { addAClub } from "../../../state/clubsSlice"
 // Other
 import { Formik } from "formik"
-import { createAClubSchema } from "../../../static/validationSchema"
+import { clubSchema } from "../../../static/validationSchema"
 import { createAClubInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
 import { DropPinMap } from "../../../components/DropPinMap"
@@ -49,7 +49,7 @@ export const CreateAClubScreen = () => {
     <Formik
       onSubmit={(values) => createClubApiCall(values)}
       initialValues={createAClubInitialValues}
-      validationSchema={createAClubSchema}
+      validationSchema={clubSchema}
     >
       {({
         handleChange,

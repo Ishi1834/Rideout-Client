@@ -32,8 +32,9 @@ export const rideSchema = yup.object().shape({
   route: yup.string().url(),
 })
 
-export const createAClubSchema = yup.object().shape({
+export const clubSchema = yup.object().shape({
   clubName: yup.string().required(),
   city: yup.string().required(),
   location: yup.array().of(yup.number()).required(),
+  description: yup.string(),
 })
