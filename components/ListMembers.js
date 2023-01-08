@@ -3,7 +3,12 @@ import { DataTable, IconButton, MD3Colors } from "react-native-paper"
 
 const numberOfItemsPerPageList = [2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-export const ListMembers = ({ members, isEditMembers }) => {
+export const ListMembers = ({
+  members,
+  label = "Member",
+  isEditMembers,
+  showPermission = false,
+}) => {
   const [page, setPage] = useState(0)
   const [numberOfItemsPerPage, onItemsPerPageChange] = useState(
     numberOfItemsPerPageList[0]
@@ -18,8 +23,8 @@ export const ListMembers = ({ members, isEditMembers }) => {
   return (
     <DataTable>
       <DataTable.Header>
-        <DataTable.Title>Member</DataTable.Title>
-        <DataTable.Title>Permission</DataTable.Title>
+        <DataTable.Title>{label}</DataTable.Title>
+        {showPermission && <DataTable.Title>Permission</DataTable.Title>}
         {isEditMembers && <DataTable.Title>Edit</DataTable.Title>}
         {isEditMembers && <DataTable.Title>Remove</DataTable.Title>}
       </DataTable.Header>
@@ -29,7 +34,9 @@ export const ListMembers = ({ members, isEditMembers }) => {
           return (
             <DataTable.Row key={index}>
               <DataTable.Cell>{member.name}</DataTable.Cell>
-              <DataTable.Cell>{member.authorization}</DataTable.Cell>
+              {showPermission && (
+                <DataTable.Cell>{member.authorization}</DataTable.Cell>
+              )}
               {isEditMembers && (
                 <DataTable.Cell>
                   <IconButton
