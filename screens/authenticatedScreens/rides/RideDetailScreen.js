@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
 import { StyleSheet, View, ScrollView } from "react-native"
@@ -13,18 +13,14 @@ import {
   Portal,
   Modal,
 } from "react-native-paper"
+import { PreviewMap } from "../../../components/PreviewMap"
+import { ListMembers } from "../../../components/ListMembers"
 // State
 import { useDispatch } from "react-redux"
-import {
-  removeAClubRide,
-  removeAUserRide,
-  setUpClubRides,
-} from "../../../state/ridesSlice"
+import { removeAClubRide, removeAUserRide } from "../../../state/ridesSlice"
 // Other
 import { format } from "date-fns"
 import axios from "../../../axiosConfig"
-import { PreviewMap } from "../../../components/PreviewMap"
-import { ListMembers } from "../../../components/ListMembers"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="bike" />
 
@@ -41,9 +37,10 @@ export const RideDetailScreen = ({ route }) => {
     if (ride?.club?.clubId) {
       clubId = ride.club.clubId
     }
-    console.log("delete ", `rides/${clubId}`)
-    /* try {
-      const res = await axios.delete(`rides/${clubId}`, { data: { rideId: ride._id } })
+    try {
+      const res = await axios.delete(`rides/${clubId}`, {
+        data: { rideId: ride._id },
+      })
       if (res.status === 200) {
         dispatch(removeAUserRide(ride._id))
         if (!clubId) {
@@ -54,7 +51,11 @@ export const RideDetailScreen = ({ route }) => {
     } catch (error) {
       console.log("Error - RideDetailScreen.js")
       console.log(error.response.data.message)
-    } */
+    }
+  }
+
+  const navigateToEdit = (screen, ride, rideName) => {
+    navigation.navigate(screen, { ride, rideName })
   }
 
   return (
@@ -129,7 +130,9 @@ export const RideDetailScreen = ({ route }) => {
 
           <Card.Actions>
             <Button onPress={() => setShowDeleteRide(true)}>Delete Ride</Button>
-            <Button onPress={() => editClicked("EditARide", ride, ride?.name)}>
+            <Button
+              onPress={() => navigateToEdit("EditARide", ride, ride?.name)}
+            >
               Edit Ride
             </Button>
           </Card.Actions>
