@@ -23,6 +23,16 @@ export const clubsSlice = createSlice({
         clubId: club._id,
       })
     },
+    updateAClub: (state, action) => {
+      const updatedClub = action.payload
+      state.clubs = state.clubs.map((club) => {
+        if (club._id === updatedClub._id) {
+          return updatedClub
+        } else {
+          return club
+        }
+      })
+    },
     removeAClub: (state, action) => {
       const clubId = action.payload
       state.clubs = state.clubs.filter((club) => clubId !== club._id)
@@ -33,6 +43,7 @@ export const clubsSlice = createSlice({
   },
 })
 
-export const { setUpClubs, addAClub, removeAClub } = clubsSlice.actions
+export const { setUpClubs, addAClub, updateAClub, removeAClub } =
+  clubsSlice.actions
 
 export default clubsSlice.reducer

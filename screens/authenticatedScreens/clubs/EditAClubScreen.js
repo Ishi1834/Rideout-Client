@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 // UI
 import { View, StyleSheet, ScrollView } from "react-native"
 import {
@@ -16,7 +16,7 @@ import { PreviewMap } from "../../../components/PreviewMap"
 import { DropPinMap } from "../../../components/DropPinMap"
 // State
 import { useDispatch } from "react-redux"
-import { addAClub } from "../../../state/clubsSlice"
+import { updateAClub } from "../../../state/clubsSlice"
 // Other
 import { Formik } from "formik"
 import { clubSchema } from "../../../static/validationSchema"
@@ -25,6 +25,7 @@ import { clubTags } from "../../../static/multiSelectOptions"
 
 export const EditAClubScreen = ({ navigation, route }) => {
   const params = route.params
+  const dispatch = useDispatch()
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [showMap, setShowMap] = useState(false)
@@ -34,9 +35,9 @@ export const EditAClubScreen = ({ navigation, route }) => {
     setIsSubmittingApi(true)
     try {
       const res = await axios.patch(`/clubs/${params?.club?._id}`, data)
-      console.log("data res ", res.data)
+
       if (res.status === 200) {
-        //dispatch(addAClub(res.data.club))
+        dispatch(updateAClub(res.data.club))
         navigation.goBack()
       }
     } catch (error) {
