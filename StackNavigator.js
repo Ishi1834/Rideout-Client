@@ -13,6 +13,7 @@ import { ClubDetailScreen } from "./screens/authenticatedScreens/clubs/ClubDetai
 import { RideDetailScreen } from "./screens/authenticatedScreens/rides/RideDetailScreen"
 import { CreateARideScreen } from "./screens/authenticatedScreens/rides/CreateARideScreen"
 import { EditARideScreen } from "./screens/authenticatedScreens/rides/EditARideScreen"
+import { EditAClubScreen } from "./screens/authenticatedScreens/clubs/EditAClubScreen"
 // Other
 import axios from "./axiosConfig"
 import * as SecureStore from "expo-secure-store"
@@ -121,6 +122,7 @@ export const StackNavigator = () => {
             component={DrawerScreens}
             options={{
               headerShown: false,
+              title: "",
             }}
           />
           <Stack.Screen
@@ -130,6 +132,13 @@ export const StackNavigator = () => {
               title: route.params?.clubName
                 ? `Create an ${route.params?.clubName} group ride`
                 : "Create an Open Ride",
+            })}
+          />
+          <Stack.Screen
+            name="EditAClub"
+            component={EditAClubScreen}
+            options={({ route }) => ({
+              title: `${route.params?.clubName}`,
             })}
           />
           <Stack.Screen
@@ -144,7 +153,6 @@ export const StackNavigator = () => {
             component={EditARideScreen}
             options={({ route }) => ({
               title: `${route.params?.rideName}`,
-              headerBackTitle: "",
             })}
           />
           <Stack.Screen
@@ -152,7 +160,6 @@ export const StackNavigator = () => {
             component={RideDetailScreen}
             options={({ route }) => ({
               title: `${route.params?.rideName}`,
-              headerBackTitle: "",
             })}
           />
         </>

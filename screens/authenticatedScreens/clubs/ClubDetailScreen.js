@@ -51,6 +51,9 @@ export const ClubDetailScreen = ({ route }) => {
       console.log(error)
     }
   }
+  const navigateToEditClub = (screen, club, clubName) => {
+    navigation.navigate(screen, { club, clubName })
+  }
 
   if (!club) {
     return <ActivityIndicator animating={true} color={MD2Colors.red800} />
@@ -135,12 +138,16 @@ export const ClubDetailScreen = ({ route }) => {
           </Card.Actions>
           <Card.Actions>
             <Button
-              mode="contained"
               onPress={() => {
                 setShowDeleteClub(true)
               }}
             >
               Delete Club
+            </Button>
+            <Button
+              onPress={() => navigateToEditClub("EditAClub", club, club.name)}
+            >
+              Edit Club
             </Button>
           </Card.Actions>
         </Card>
