@@ -25,3 +25,14 @@ export const sortRidesArray = [
     value: "startDistance",
   },
 ]
+
+export const clubTags = [
+  "Road Cycling",
+  "Mountain Biking",
+  "Touring",
+  "Casual",
+  "Weeked",
+  "Mid-week",
+  "Over 50",
+  "Women Only",
+]
