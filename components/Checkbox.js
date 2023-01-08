@@ -18,5 +18,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    margin: 6,
+    backgroundColor: "rgba(231, 224, 236, 1)",
+    borderColor: "rgba(125, 82, 96, 1)",
+  },
+  tick: {
+    backgroundColor: "yellow",
   },
 })
