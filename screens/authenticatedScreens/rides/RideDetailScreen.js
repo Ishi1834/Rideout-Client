@@ -16,7 +16,7 @@ import {
 import { PreviewMap } from "../../../components/PreviewMap"
 import { ListMembers } from "../../../components/ListMembers"
 // State
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { removeAClubRide, removeAUserRide } from "../../../state/ridesSlice"
 // Other
 import { format } from "date-fns"
@@ -27,6 +27,7 @@ const LeftContent = (props) => <Avatar.Icon {...props} icon="bike" />
 export const RideDetailScreen = ({ route }) => {
   const { ride } = route.params
   const navigation = useNavigation()
+  const userState = useSelector((state) => state.user)
   const dispatch = useDispatch()
   const [showDeleteride, setShowDeleteRide] = useState(false)
 
@@ -57,6 +58,20 @@ export const RideDetailScreen = ({ route }) => {
   const navigateToEdit = (screen, ride, rideName) => {
     navigation.navigate(screen, { ride, rideName })
   }
+
+  const joinRideApiCall = async () => {
+    console.log("join ride requested")
+  }
+
+  const leaveRideApiCall = async () => {
+    console.log("leave ride requested")
+  }
+
+  const rideCreatorId = ride.createdBy.userId
+  const currentUserId = userState.userId
+  const currentUserHasJoinedRide = ride.signedUpCyclists.find(
+    (cyclist) => cyclist.userId === currentUserId
+  )
 
   return (
     <ScrollView>
@@ -127,15 +142,41 @@ export const RideDetailScreen = ({ route }) => {
             <ListMembers members={ride.signedUpCyclists} label="Cyclists" />
           </Card.Content>
           <Divider style={styles.dividerHorizontal} />
-
-          <Card.Actions>
-            <Button onPress={() => setShowDeleteRide(true)}>Delete Ride</Button>
-            <Button
-              onPress={() => navigateToEdit("EditARide", ride, ride?.name)}
-            >
-              Edit Ride
-            </Button>
-          </Card.Actions>
+          {
+            // check user can join ride
+            rideCreatorId !== currentUserId && !currentUserHasJoinedRide && (
+              <Card.Actions>
+                <Button onPress={() => joinRideApiCall()}>
+                  Join this ride
+                </Button>
+              </Card.Actions>
+            )
+          }
+          {
+            // check user can leave ride
+            rideCreatorId !== currentUserId && currentUserHasJoinedRide && (
+              <Card.Actions>
+                <Button onPress={() => leaveRideApiCall()}>
+                  leave this ride
+                </Button>
+              </Card.Actions>
+            )
+          }
+          {
+            // check user has edit/delete permission
+            currentUserId === rideCreatorId && (
+              <Card.Actions>
+                <Button onPress={() => setShowDeleteRide(true)}>
+                  Delete Ride
+                </Button>
+                <Button
+                  onPress={() => navigateToEdit("EditARide", ride, ride?.name)}
+                >
+                  Edit Ride
+                </Button>
+              </Card.Actions>
+            )
+          }
         </Card>
       </View>
     </ScrollView>
