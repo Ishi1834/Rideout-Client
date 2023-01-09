@@ -159,7 +159,7 @@ export const StackNavigator = () => {
             name="RideDetail"
             component={RideDetailScreen}
             options={({ route }) => ({
-              title: `${route.params?.rideName}`,
+              title: `${route.params?.ride?.name}`,
             })}
           />
         </>
