@@ -130,7 +130,7 @@ export const StackNavigator = () => {
             component={CreateARideScreen}
             options={({ route }) => ({
               title: route.params?.clubName
-                ? `Create an ${route.params?.clubName} group ride`
+                ? `${route.params?.clubName}`
                 : "Create an Open Ride",
             })}
           />

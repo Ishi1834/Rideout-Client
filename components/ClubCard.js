@@ -11,12 +11,7 @@ import {
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
-export const ClubCard = ({
-  club,
-  clubClicked,
-  createRideClicked,
-  hideCreateRide = false,
-}) => {
+export const ClubCard = ({ club, clubClicked }) => {
   const distanceInKm = (club?.distanceToClub / 1000).toFixed(2)
 
   return (
@@ -48,15 +43,6 @@ export const ClubCard = ({
         </View>
       )}
       <Card.Actions>
-        {!hideCreateRide && (
-          <Button
-            onPress={() =>
-              createRideClicked("CreateARide", club.name, club._id)
-            }
-          >
-            Create a club ride
-          </Button>
-        )}
         <Button onPress={() => clubClicked("ClubDetail", club._id)}>
           View Club
         </Button>

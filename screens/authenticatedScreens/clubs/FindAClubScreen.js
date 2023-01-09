@@ -88,7 +88,7 @@ export const FindAClubScreen = () => {
   }
 
   const renderClubCard = ({ item }) => (
-    <ClubCard club={item} clubClicked={navigateToClub} hideCreateRide={true} />
+    <ClubCard club={item} clubClicked={navigateToClub} />
   )
 
   const navigateToClub = (screen, clubId) => {

@@ -51,8 +51,17 @@ export const ClubDetailScreen = ({ route }) => {
       console.log(error)
     }
   }
+
+  const navigateToCreateARide = (screen, clubName, clubId) => {
+    navigation.navigate(screen, { clubName, clubId })
+  }
+
   const navigateToEditClub = (screen, club, clubName) => {
     navigation.navigate(screen, { club, clubName })
+  }
+
+  const joinClubApiCall = async () => {
+    console.log("Club join requested")
   }
 
   if (!club) {
@@ -131,6 +140,20 @@ export const ClubDetailScreen = ({ route }) => {
             </View>
             <ListMembers members={club.members} isEditMembers={isEditMembers} />
           </Card.Content>
+          <Card.Actions>
+            <Button
+              onPress={() =>
+                navigateToCreateARide("CreateARide", club.name, club._id)
+              }
+            >
+              Create a group ride
+            </Button>
+          </Card.Actions>
+          <Card.Actions>
+            <Button onPress={() => joinClubApiCall()}>
+              Request to Join this Club
+            </Button>
+          </Card.Actions>
           <Card.Actions>
             <Button onPress={() => setIsEditMembers(!isEditMembers)}>
               {isEditMembers ? "Cancel edit" : "Edit members"}{" "}
