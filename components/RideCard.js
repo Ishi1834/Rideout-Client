@@ -13,7 +13,7 @@ import {
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="bike" />
 
-export const RideCard = ({ ride, rideClicked, editClicked }) => {
+export const RideCard = ({ ride, rideClicked }) => {
   const [menuVisible, setMenuVisible] = useState(false)
 
   const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd/MM/yyyy")
@@ -76,9 +76,6 @@ export const RideCard = ({ ride, rideClicked, editClicked }) => {
         </View>
       )}
       <Card.Actions>
-        <Button onPress={() => editClicked("EditARide", ride, ride?.name)}>
-          Edit Ride
-        </Button>
         <Button onPress={() => rideClicked("RideDetail", ride, ride?.name)}>
           View Ride
         </Button>
