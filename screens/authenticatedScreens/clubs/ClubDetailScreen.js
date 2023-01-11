@@ -27,17 +27,15 @@ import axios from "../../../axiosConfig"
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
 export const ClubDetailScreen = ({ route }) => {
-  const { clubId } = route.params
+  const { club } = route.params
   const dispatch = useDispatch()
   const navigation = useNavigation()
-  const clubs = useSelector((state) => state.clubs.clubs)
   const userClubsAuthorization = useSelector(
     (state) => state.clubs.authorization
   )
   const [isEditMembers, setIsEditMembers] = useState(false)
   const [showDeleteClub, setShowDeleteClub] = useState(false)
 
-  const club = clubs.filter((club) => club._id === clubId)[0]
   const userRole = userClubsAuthorization.find(
     (obj) => obj.clubId === club._id
   )?.authorization

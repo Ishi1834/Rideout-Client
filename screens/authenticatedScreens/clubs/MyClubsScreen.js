@@ -26,8 +26,8 @@ export const MyClubsScreen = () => {
     }
   }, [params?.message])
 
-  const navigateToClub = (screen, clubId, clubName) => {
-    navigation.navigate(screen, { clubId, clubName })
+  const navigateToClub = (screen, club, clubName) => {
+    navigation.navigate(screen, { club, clubName })
   }
 
   const navigateToCreateARide = (screen, clubName, clubId) => {

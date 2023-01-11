@@ -91,8 +91,8 @@ export const FindAClubScreen = () => {
     <ClubCard club={item} clubClicked={navigateToClub} />
   )
 
-  const navigateToClub = (screen, clubId, clubName) => {
-    navigation.navigate(screen, { clubId, clubName })
+  const navigateToClub = (screen, club, clubName) => {
+    navigation.navigate(screen, { club, clubName })
   }
 
   const handleLocationSelect = (location) => {

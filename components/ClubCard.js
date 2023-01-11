@@ -43,7 +43,7 @@ export const ClubCard = ({ club, clubClicked }) => {
         </View>
       )}
       <Card.Actions>
-        <Button onPress={() => clubClicked("ClubDetail", club._id, club.name)}>
+        <Button onPress={() => clubClicked("ClubDetail", club, club.name)}>
           View Club
         </Button>
       </Card.Actions>
