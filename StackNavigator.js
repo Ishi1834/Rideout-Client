@@ -144,9 +144,9 @@ export const StackNavigator = () => {
           <Stack.Screen
             name="ClubDetail"
             component={ClubDetailScreen}
-            options={{
-              title: "Club",
-            }}
+            options={({ route }) => ({
+              title: `${route.params?.clubName}`,
+            })}
           />
           <Stack.Screen
             name="EditARide"
