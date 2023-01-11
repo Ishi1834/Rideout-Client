@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 // UI
 import { View, StyleSheet, ScrollView } from "react-native"
 import {
@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native-paper"
 import { SummaryText } from "../../../components/SummaryText"
+import { DropPinMap } from "../../../components/DropPinMap"
 // State
 import { useDispatch } from "react-redux"
 import { addAClub } from "../../../state/clubsSlice"
@@ -17,7 +18,6 @@ import { Formik } from "formik"
 import { clubSchema } from "../../../static/validationSchema"
 import { createAClubInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
-import { DropPinMap } from "../../../components/DropPinMap"
 
 export const CreateAClubScreen = () => {
   const navigation = useNavigation()
@@ -25,6 +25,16 @@ export const CreateAClubScreen = () => {
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [showMap, setShowMap] = useState(false)
+  const [screenIsFocussed, setScreenIsFocussed] = useState(false)
+
+  useFocusEffect(
+    useCallback(() => {
+      setScreenIsFocussed(true)
+      return () => {
+        setScreenIsFocussed(false)
+      }
+    }, [])
+  )
 
   const createClubApiCall = async (data) => {
     setErrorMessage("")
@@ -45,6 +55,9 @@ export const CreateAClubScreen = () => {
     setIsSubmittingApi(false)
   }
 
+  if (!screenIsFocussed) {
+    return <View></View>
+  }
   return (
     <Formik
       onSubmit={(values) => createClubApiCall(values)}

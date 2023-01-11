@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 // UI
 import { View, StyleSheet, FlatList } from "react-native"
 import { ActivityIndicator, Button } from "react-native-paper"
@@ -20,33 +20,36 @@ export const FindAClubScreen = () => {
   const [locationError, setLocationError] = useState(null)
   const [clubs, setClubs] = useState([])
 
-  useEffect(() => {
-    requestLocationAccess()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      requestLocationAccess()
+    }, [])
+  )
 
-  useEffect(() => {
-    setIsMakingApiRequest(true)
+  useFocusEffect(
+    useCallback(() => {
+      setIsMakingApiRequest(true)
 
-    const findClubsNearLocation = async () => {
-      try {
-        const res = await axios.get(
-          `/clubs?lng=${userLocation.longitude}&lat=${userLocation.latitude}`
-        )
-        if (res.status === 200) {
-          setClubs(res.data)
-        }
-      } catch (error) {
-        console.log("Error - FindAClub.js ")
-        console.log(error.response.data.message)
+      if (userLocation) {
+        findClubsNearLocation()
       }
-      setIsMakingApiRequest(false)
-    }
+    }, [userLocation?.latitude, userLocation?.longitude])
+  )
 
-    if (userLocation) {
-      setClubs([])
-      findClubsNearLocation()
+  const findClubsNearLocation = async () => {
+    try {
+      const res = await axios.get(
+        `/clubs?lng=${userLocation.longitude}&lat=${userLocation.latitude}`
+      )
+      if (res.status === 200) {
+        setClubs(res.data)
+      }
+    } catch (error) {
+      console.log("Error - FindAClub.js ")
+      console.log(error.response.data.message)
     }
-  }, [userLocation?.latitude, userLocation?.longitude])
+    setIsMakingApiRequest(false)
+  }
 
   const requestLocationAccess = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync()
