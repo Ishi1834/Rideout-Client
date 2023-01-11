@@ -10,8 +10,12 @@ export const ProfileScreen = () => {
   const clubsAuthorization = state.clubs.authorization
   const userDetails = state.user
 
+  const userName = userDetails.name
+
   const avatarLabel =
-    userDetails.name.split(" ")[0][0] + userDetails.name.split(" ")[1][0]
+    userName.split(" ").length === 1
+      ? userName.split(" ")[0][0] + userName.split(" ")[0][1]
+      : userName.split(" ")[0][0] + userName.split(" ")[1][0]
 
   return (
     <View style={styles.container}>
