@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux"
 import { signOut } from "../../state/authSlice"
 // Other
 import * as SecureStore from "expo-secure-store"
+import { clearClubs } from "../../state/clubsSlice"
+import { clearRides } from "../../state/ridesSlice"
 
 const Drawer = createDrawerNavigator()
 
@@ -23,6 +25,8 @@ const CustomDrawerContent = (props) => {
 
   const logout = async () => {
     await SecureStore.deleteItemAsync("refreshToken")
+    dispatch(clearClubs())
+    dispatch(clearRides())
     dispatch(signOut())
   }
 
