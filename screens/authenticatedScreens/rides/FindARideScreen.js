@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { useNavigation } from "@react-navigation/native"
+import { useCallback, useEffect, useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 // UI
 import { View, StyleSheet, FlatList } from "react-native"
 import { ActivityIndicator, Button } from "react-native-paper"
@@ -45,47 +45,72 @@ export const FindARideScreen = () => {
     selected: null,
   })
 
-  useEffect(() => {
-    requestLocationAccess()
-  }, [])
-
-  useEffect(() => {
-    // for changes in clubRides, openRides length
-    setAllRides([...clubRides, ...openRides])
-  }, [clubRides.length, openRides.length])
-
-  useEffect(() => {
-    // re-calculate distance to start location whenever user location changes
-    const getAllOpenRides = async (updatedDistanceClubRides) => {
-      try {
-        const maxDistanceInM = maxDistance * 1000
-        const res = await axios.get(
-          `/rides?lng=${userLocation.longitude}&lat=${userLocation.latitude}&maxDistance=${maxDistanceInM}`
-        )
-        if (res.status === 200) {
-          dispatch(setUpOpenRides({ range: null, rides: res.data }))
-          dispatch(setUpClubRides(updatedDistanceClubRides))
-          setAllRides([...updatedDistanceClubRides, ...res.data])
-        }
-      } catch (error) {
-        dispatch(setUpOpenRides({ range: null, rides: [] }))
-        dispatch(setUpClubRides(updatedDistanceClubRides))
-        setAllRides([...updatedDistanceClubRides])
-        console.log(error.response.data.message)
+  useFocusEffect(
+    useCallback(() => {
+      requestLocationAccess()
+      // Check club state exists
+      if (clubs?.clubs) {
+        const allClubRidesArray = []
+        setIsMakingApiRequest(true)
+        Promise.all(clubs.clubs.map((club) => axios.get(`rides/${club._id}`)))
+          .then((allGetRidesRequestsArray) => {
+            allGetRidesRequestsArray.forEach((clubResponse) => {
+              const clubRides = clubResponse.data
+              // check if club has rides or message
+              if (!clubRides?.message) {
+                clubRides.forEach((ride) => allClubRidesArray.push(ride))
+              }
+            })
+            dispatch(setUpClubRides(allClubRidesArray))
+          })
+          .catch((error) => {
+            console.log("Error - ClubScreen.js")
+            console.log(error)
+          })
+        setIsMakingApiRequest(false)
       }
-    }
-    if (userLocation) {
-      const updatedDistanceClubRides = clubRides.map((ride) => {
-        const [longitude, latitude] = ride.startLocation.coordinates
-        const distanceToStart = getDistance(
-          { longitude, latitude },
-          userLocation
-        )
-        return { ...ride, distanceToStart }
-      })
-      getAllOpenRides(updatedDistanceClubRides)
-    }
-  }, [userLocation?.latitude, userLocation?.longitude, maxDistance])
+    }, [clubs?.clubs?.length])
+  )
+
+  useFocusEffect(
+    useCallback(() => {
+      // re-calculate distance to start location whenever user location changes
+      const getAllOpenRides = async (updatedDistanceClubRides) => {
+        try {
+          const maxDistanceInM = maxDistance * 1000
+          const res = await axios.get(
+            `/rides?lng=${userLocation.longitude}&lat=${userLocation.latitude}&maxDistance=${maxDistanceInM}`
+          )
+          if (res.status === 200) {
+            dispatch(setUpOpenRides({ range: maxDistance, rides: res.data }))
+            dispatch(setUpClubRides(updatedDistanceClubRides))
+            setAllRides([...updatedDistanceClubRides, ...res.data])
+          }
+        } catch (error) {
+          dispatch(setUpOpenRides({ range: null, rides: [] }))
+          dispatch(setUpClubRides(updatedDistanceClubRides))
+          setAllRides([...updatedDistanceClubRides])
+          console.log(error.response.data.message)
+        }
+      }
+
+      if (userLocation) {
+        const updatedDistanceClubRides = clubRides.map((ride) => {
+          const [longitude, latitude] = ride.startLocation.coordinates
+          const distanceToStart = getDistance(
+            { longitude, latitude },
+            userLocation
+          )
+          return { ...ride, distanceToStart }
+        })
+        getAllOpenRides(updatedDistanceClubRides)
+      }
+    }, [userLocation?.latitude, userLocation?.longitude, maxDistance])
+  )
+
+  /**
+   * All the filtering can be moved into a single useEffect
+   */
 
   useEffect(() => {
     if (filterClubs.selected) {
@@ -153,42 +178,6 @@ export const FindARideScreen = () => {
       }
     })
     setFilterClubs({ ...filterClubs, data: clubsArray })
-  }, [])
-
-  useEffect(() => {
-    const getClubRides = async (clubId) => {
-      try {
-        const res = await axios.get(`rides/${clubId}`)
-        if (res.status === 200) {
-          return res.data
-        }
-      } catch (error) {
-        console.log("Error - FindARideScreen.js")
-        console.log(error.response.data.message)
-      }
-    }
-
-    const getAllClubRides = async () => {
-      setIsMakingApiRequest(true)
-      try {
-        const allClubRidesArray = []
-        const allRidesByClub = await Promise.all(
-          clubs.authorization.map((club) => getClubRides(club.clubId))
-        )
-        allRidesByClub.forEach((club) => {
-          if (!club?.message) {
-            club.forEach((ride) => allClubRidesArray.push(ride))
-          }
-        })
-        dispatch(setUpClubRides(allClubRidesArray))
-      } catch (error) {
-        console.log("Error - FindARideScreen.js")
-        console.log(error.response.data.message)
-      }
-      setIsMakingApiRequest(false)
-    }
-
-    getAllClubRides()
   }, [])
 
   const requestLocationAccess = async () => {
