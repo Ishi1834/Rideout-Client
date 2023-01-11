@@ -17,7 +17,11 @@ import { PreviewMap } from "../../../components/PreviewMap"
 import { ListMembers } from "../../../components/ListMembers"
 // State
 import { useDispatch, useSelector } from "react-redux"
-import { removeAClubRide, removeAUserRide } from "../../../state/ridesSlice"
+import {
+  addAUserRide,
+  removeAClubRide,
+  removeAUserRide,
+} from "../../../state/ridesSlice"
 // Other
 import { format } from "date-fns"
 import axios from "../../../axiosConfig"
@@ -60,11 +64,36 @@ export const RideDetailScreen = ({ route }) => {
   }
 
   const joinRideApiCall = async () => {
-    console.log("join ride requested")
+    const rideId = ride._id
+    try {
+      const res = await axios.patch("rides/join", { rideId })
+      if (res.status === 200) {
+        // if club ride then updated club ride state
+        dispatch(addAUserRide(res.data.ride))
+        navigation.navigate("MyRides")
+      }
+    } catch (error) {
+      console.log("Error - RideDetailScreen.js")
+      // handle error maybe use banner?
+      console.log(error.response.data.message)
+    }
   }
 
   const leaveRideApiCall = async () => {
-    console.log("leave ride requested")
+    const rideId = ride._id
+    try {
+      const res = await axios.patch("rides/leave", { rideId })
+      if (res.status === 200) {
+        console.log("data ", res.data)
+        // if club ride then updated club ride state
+        dispatch(removeAUserRide(rideId))
+        navigation.navigate("MyRides")
+      }
+    } catch (error) {
+      console.log("Error - RideDetailScreen.js")
+      // handle error maybe use banner?
+      console.log(error.response.data.message)
+    }
   }
 
   const rideCreatorId = ride.createdBy.userId
