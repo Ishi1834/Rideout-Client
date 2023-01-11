@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
 import { View, ScrollView, StyleSheet } from "react-native"
@@ -16,12 +16,13 @@ import {
   Modal,
 } from "react-native-paper"
 import { ListMembers } from "../../../components/ListMembers"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { PreviewMap } from "../../../components/PreviewMap"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { removeAClub } from "../../../state/clubsSlice"
 // Other
 import axios from "../../../axiosConfig"
-import { PreviewMap } from "../../../components/PreviewMap"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
@@ -30,10 +31,32 @@ export const ClubDetailScreen = ({ route }) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const clubs = useSelector((state) => state.clubs.clubs)
+  const userClubsAuthorization = useSelector(
+    (state) => state.clubs.authorization
+  )
   const [isEditMembers, setIsEditMembers] = useState(false)
   const [showDeleteClub, setShowDeleteClub] = useState(false)
 
   const club = clubs.filter((club) => club._id === clubId)[0]
+  const userRole = userClubsAuthorization.find(
+    (obj) => obj.clubId === club._id
+  )?.authorization
+
+  useEffect(() => {
+    if (userRole === "admin" || userRole === "editor") {
+      navigation.setOptions({
+        headerRight: ({ tintColor }) => (
+          <MaterialCommunityIcons
+            name="plus"
+            style={{ marginRight: 15 }}
+            size={22}
+            color={tintColor}
+            onPress={() => navigateToCreateARide()}
+          />
+        ),
+      })
+    }
+  }, [navigation])
 
   const deleteClubApiCall = async () => {
     try {
@@ -44,7 +67,6 @@ export const ClubDetailScreen = ({ route }) => {
           message: res?.data?.message,
         })
         dispatch(removeAClub(club._id))
-        // dispatch call below to remove club rides
       }
     } catch (error) {
       console.log("Error - ClubDeatilScreen.js")
@@ -52,8 +74,11 @@ export const ClubDetailScreen = ({ route }) => {
     }
   }
 
-  const navigateToCreateARide = (screen, clubName, clubId) => {
-    navigation.navigate(screen, { clubName, clubId })
+  const navigateToCreateARide = () => {
+    navigation.navigate("CreateARide", {
+      clubName: club.name,
+      clubId: club._id,
+    })
   }
 
   const navigateToEditClub = (screen, club, clubName) => {
@@ -140,39 +165,40 @@ export const ClubDetailScreen = ({ route }) => {
             </View>
             <ListMembers members={club.members} isEditMembers={isEditMembers} />
           </Card.Content>
-          <Card.Actions>
-            <Button
-              onPress={() =>
-                navigateToCreateARide("CreateARide", club.name, club._id)
-              }
-            >
-              Create a group ride
-            </Button>
-          </Card.Actions>
-          <Card.Actions>
-            <Button onPress={() => joinClubApiCall()}>
-              Request to Join this Club
-            </Button>
-          </Card.Actions>
-          <Card.Actions>
-            <Button onPress={() => setIsEditMembers(!isEditMembers)}>
-              {isEditMembers ? "Cancel edit" : "Edit members"}{" "}
-            </Button>
-          </Card.Actions>
-          <Card.Actions>
-            <Button
-              onPress={() => {
-                setShowDeleteClub(true)
-              }}
-            >
-              Delete Club
-            </Button>
-            <Button
-              onPress={() => navigateToEditClub("EditAClub", club, club.name)}
-            >
-              Edit Club
-            </Button>
-          </Card.Actions>
+          {/* undefined userRole means user hasn't joined club */}
+          {!userRole && (
+            <Card.Actions>
+              <Button onPress={() => joinClubApiCall()}>
+                Request to Join this Club
+              </Button>
+            </Card.Actions>
+          )}
+
+          {userRole === "admin" && (
+            <>
+              <Card.Actions>
+                <Button onPress={() => setIsEditMembers(!isEditMembers)}>
+                  {isEditMembers ? "Cancel edit" : "Edit members"}{" "}
+                </Button>
+              </Card.Actions>
+              <Card.Actions>
+                <Button
+                  onPress={() => {
+                    setShowDeleteClub(true)
+                  }}
+                >
+                  Delete Club
+                </Button>
+                <Button
+                  onPress={() =>
+                    navigateToEditClub("EditAClub", club, club.name)
+                  }
+                >
+                  Edit Club
+                </Button>
+              </Card.Actions>
+            </>
+          )}
         </Card>
       </View>
     </ScrollView>
