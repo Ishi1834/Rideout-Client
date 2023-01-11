@@ -222,8 +222,8 @@ export const FindARideScreen = () => {
     <RideCard ride={item} rideClicked={navigateToRide} />
   )
 
-  const navigateToRide = (screen, ride, rideId) => {
-    navigation.navigate(screen, { ride, rideId })
+  const navigateToRide = (screen, ride, rideName) => {
+    navigation.navigate(screen, { ride, rideName })
   }
 
   const getLocationAndIdFromRides = (rides) => {
