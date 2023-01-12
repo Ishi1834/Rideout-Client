@@ -20,11 +20,13 @@ export const authSlice = createSlice({
       state.isSignout = false
       state.authToken = action.payload.authToken
       state.userId = action.payload.userId
+      state.isLoading = false
     },
     signOut: (state) => {
       state.isSignout = true
       state.authToken = null
       state.userId = null
+      state.isLoading = false
     },
   },
 })

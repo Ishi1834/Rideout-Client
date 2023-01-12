@@ -7,8 +7,8 @@ const axios = axiosBase.create({
 
 axios.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config
+  (error) => {
+    /* const originalRequest = error.config
 
     if (error.response.status === 403 && !originalRequest._retry) {
       // set to true to not causes infinite loop
@@ -27,7 +27,8 @@ axios.interceptors.response.use(
         console.log(error)
       }
     }
-    return Promise.reject(error)
+    return Promise.reject(error) */
+    return error
   }
 )
 export default axios
