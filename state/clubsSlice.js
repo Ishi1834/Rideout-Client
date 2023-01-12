@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
   clubs: [],
   authorization: [],
+  pendingJoinRequests: [],
 }
 
 export const clubsSlice = createSlice({
@@ -10,9 +11,10 @@ export const clubsSlice = createSlice({
   initialState,
   reducers: {
     setUpClubs: (state, action) => {
-      const { clubs, authorization } = action.payload
+      const { clubs, authorization, pendingJoinRequests } = action.payload
       state.clubs = clubs
       state.authorization = authorization
+      state.pendingJoinRequests = pendingJoinRequests
     },
     addAClub: (state, action) => {
       const club = action.payload
@@ -22,6 +24,10 @@ export const clubsSlice = createSlice({
         authorization: "admin",
         clubId: club._id,
       })
+    },
+    addPendingClubRequest: (state, action) => {
+      const clubInfo = action.payload
+      state.pendingJoinRequests.push(clubInfo)
     },
     updateAClub: (state, action) => {
       const updatedClub = action.payload
@@ -44,7 +50,13 @@ export const clubsSlice = createSlice({
   },
 })
 
-export const { setUpClubs, addAClub, updateAClub, removeAClub, resetClubs } =
-  clubsSlice.actions
+export const {
+  setUpClubs,
+  addAClub,
+  addPendingClubRequest,
+  updateAClub,
+  removeAClub,
+  resetClubs,
+} = clubsSlice.actions
 
 export default clubsSlice.reducer

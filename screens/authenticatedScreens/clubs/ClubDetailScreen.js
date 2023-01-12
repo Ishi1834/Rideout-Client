@@ -21,6 +21,7 @@ import { PreviewMap } from "../../../components/PreviewMap"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { removeAClub } from "../../../state/clubsSlice"
+import { addPendingClubRequest } from "../../../state/clubsSlice"
 // Other
 import axios from "../../../axiosConfig"
 
@@ -30,15 +31,18 @@ export const ClubDetailScreen = ({ route }) => {
   const { club } = route.params
   const dispatch = useDispatch()
   const navigation = useNavigation()
-  const userClubsAuthorization = useSelector(
-    (state) => state.clubs.authorization
-  )
+  const clubsState = useSelector((state) => state.clubs)
+  const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
   const [isEditMembers, setIsEditMembers] = useState(false)
   const [showDeleteClub, setShowDeleteClub] = useState(false)
 
-  const userRole = userClubsAuthorization.find(
+  const userRole = clubsState.authorization.find(
     (obj) => obj.clubId === club._id
   )?.authorization
+
+  const userRequestedToJoinJoinClub = !!clubsState.pendingJoinRequests.find(
+    (clubObj) => clubObj.clubId === club._id
+  )
 
   useEffect(() => {
     if (userRole === "admin" || userRole === "editor") {
@@ -57,6 +61,7 @@ export const ClubDetailScreen = ({ route }) => {
   }, [navigation])
 
   const deleteClubApiCall = async () => {
+    setIsMakingApiRequest(true)
     try {
       const res = await axios.delete(`/clubs/${club._id}`)
       if (res.status === 200) {
@@ -67,9 +72,10 @@ export const ClubDetailScreen = ({ route }) => {
         dispatch(removeAClub(club._id))
       }
     } catch (error) {
-      console.log("Error - ClubDeatilScreen.js")
+      console.log("Error - ClubDetailScreen.js")
       console.log(error)
     }
+    setIsMakingApiRequest(false)
   }
 
   const navigateToCreateARide = () => {
@@ -84,7 +90,22 @@ export const ClubDetailScreen = ({ route }) => {
   }
 
   const joinClubApiCall = async () => {
-    console.log("Club join requested")
+    setIsMakingApiRequest(true)
+    try {
+      const res = await axios.patch("/clubs/join", { clubId: club._id })
+      if (res.status === 200) {
+        dispatch(
+          addPendingClubRequest({
+            name: club.name,
+            clubId: club._id,
+          })
+        )
+      }
+    } catch (error) {
+      console.log("Error - ClubDetailScreen.js")
+      console.log(error.response.data.message)
+    }
+    setIsMakingApiRequest(false)
   }
 
   if (!club) {
@@ -104,13 +125,21 @@ export const ClubDetailScreen = ({ route }) => {
             </Text>
             <Card.Actions>
               <Button
+                loading={isMakingApiRequest && true}
+                disabled={isMakingApiRequest && true}
                 mode="contained"
                 buttonColor={MD2Colors.redA200}
                 onPress={deleteClubApiCall}
               >
                 Yes
               </Button>
-              <Button onPress={() => setShowDeleteClub(false)}>No</Button>
+              <Button
+                loading={isMakingApiRequest && true}
+                disabled={isMakingApiRequest && true}
+                onPress={() => setShowDeleteClub(false)}
+              >
+                No
+              </Button>
             </Card.Actions>
           </Modal>
         </Portal>
@@ -166,8 +195,22 @@ export const ClubDetailScreen = ({ route }) => {
           {/* undefined userRole means user hasn't joined club */}
           {!userRole && (
             <Card.Actions>
-              <Button onPress={() => joinClubApiCall()}>
-                Request to Join this Club
+              <Button
+                loading={
+                  userRequestedToJoinJoinClub
+                    ? false
+                    : isMakingApiRequest && true
+                }
+                disabled={
+                  userRequestedToJoinJoinClub
+                    ? true
+                    : isMakingApiRequest && true
+                }
+                onPress={() => joinClubApiCall()}
+              >
+                {userRequestedToJoinJoinClub
+                  ? "Join request is pending"
+                  : "Request to Join this Club"}
               </Button>
             </Card.Actions>
           )}
@@ -175,12 +218,18 @@ export const ClubDetailScreen = ({ route }) => {
           {userRole === "admin" && (
             <>
               <Card.Actions>
-                <Button onPress={() => setIsEditMembers(!isEditMembers)}>
+                <Button
+                  loading={isMakingApiRequest && true}
+                  disabled={isMakingApiRequest && true}
+                  onPress={() => setIsEditMembers(!isEditMembers)}
+                >
                   {isEditMembers ? "Cancel edit" : "Edit members"}{" "}
                 </Button>
               </Card.Actions>
               <Card.Actions>
                 <Button
+                  loading={isMakingApiRequest && true}
+                  disabled={isMakingApiRequest && true}
                   onPress={() => {
                     setShowDeleteClub(true)
                   }}
@@ -188,6 +237,8 @@ export const ClubDetailScreen = ({ route }) => {
                   Delete Club
                 </Button>
                 <Button
+                  loading={isMakingApiRequest && true}
+                  disabled={isMakingApiRequest && true}
                   onPress={() =>
                     navigateToEditClub("EditAClub", club, club.name)
                   }
