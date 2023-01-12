@@ -46,7 +46,6 @@ export const ClubDetailScreen = ({ route }) => {
   )
 
   const clubJoinRequests = club.userRequestingToJoinClub
-  console.log("requests ", clubJoinRequests)
 
   useEffect(() => {
     if (userRole === "admin" || userRole === "editor") {
@@ -194,7 +193,11 @@ export const ClubDetailScreen = ({ route }) => {
                 />
               </View>
             </View>
-            <ListMembers members={club.members} isEditMembers={isEditMembers} />
+            <ListMembers
+              members={club.members}
+              isEditMembers={isEditMembers}
+              joinRequests={clubJoinRequests}
+            />
           </Card.Content>
           {/* undefined userRole means user hasn't joined club */}
           {!userRole && (
