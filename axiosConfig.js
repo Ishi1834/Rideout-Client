@@ -26,9 +26,8 @@ axios.interceptors.response.use(
         console.log("Error - axiosConfig.js")
         console.log(error)
       }
-    }
-    return Promise.reject(error) */
-    return error
+    }*/
+    return Promise.reject(error)
   }
 )
 export default axios
