@@ -21,7 +21,7 @@ import { PreviewMap } from "../../../components/PreviewMap"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { removeAClub } from "../../../state/clubsSlice"
-import { addPendingClubRequest } from "../../../state/clubsSlice"
+import { addPendingClubRequest } from "../../../state/userSlice"
 // Other
 import axios from "../../../axiosConfig"
 
