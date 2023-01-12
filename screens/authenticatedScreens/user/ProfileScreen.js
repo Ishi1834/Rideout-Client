@@ -1,5 +1,5 @@
 // UI
-import { StyleSheet, View } from "react-native"
+import { ScrollView, StyleSheet, View } from "react-native"
 import { Avatar, Card, DataTable, Divider, Text } from "react-native-paper"
 // State
 import { useSelector } from "react-redux"
@@ -8,67 +8,80 @@ export const ProfileScreen = () => {
   const state = useSelector((state) => state)
 
   const clubsAuthorization = state.clubs.authorization
+  const clubsJoinRequestPending = state.clubs.pendingJoinRequests
   const userDetails = state.user
 
-  const userName = userDetails.name
+  const name = userDetails?.name
 
   const avatarLabel =
-    userName.split(" ").length === 1
-      ? userName.split(" ")[0][0] + userName.split(" ")[0][1]
-      : userName.split(" ")[0][0] + userName.split(" ")[1][0]
+    name &&
+    (name.split(" ").length === 1
+      ? name.slice(0, 2)
+      : `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`)
 
   return (
-    <View style={styles.container}>
-      <Card>
-        <Card.Title
-          title={userDetails.username}
-          titleVariant="headlineSmall"
-          left={() => (
-            <Avatar.Text size={60} label={avatarLabel.toUpperCase()} />
-          )}
-          style={styles.title}
-          leftStyle={styles.titleAvatar}
-        />
-        <Card.Content>
-          <View style={styles.detailsContainer}>
-            <View style={styles.details}>
-              <Text style={styles.detailLabel} variant="labelLarge">
-                Name
-              </Text>
-              <Text>{userDetails.name}</Text>
-            </View>
-            <View style={styles.details}>
-              <Text style={styles.detailLabel} variant="labelLarge">
-                Email
-              </Text>
-              <Text>{userDetails.email}</Text>
-            </View>
-            <Divider style={styles.divider} />
-          </View>
-          <View style={styles.tableContainer}>
-            <Text variant="titleLarge" style={styles.tableTitle}>
-              Clubs
-            </Text>
-            <DataTable>
-              <DataTable.Header>
-                <DataTable.Title style={styles.tableClubName}>
+    <ScrollView>
+      <View style={styles.container}>
+        <Card>
+          <Card.Title
+            title={userDetails.username}
+            titleVariant="headlineSmall"
+            left={() => (
+              <Avatar.Text size={60} label={avatarLabel?.toUpperCase()} />
+            )}
+            style={styles.title}
+            leftStyle={styles.titleAvatar}
+          />
+          <Card.Content>
+            <View style={styles.detailsContainer}>
+              <View style={styles.details}>
+                <Text style={styles.detailLabel} variant="labelLarge">
                   Name
-                </DataTable.Title>
-                <DataTable.Title>Permission</DataTable.Title>
-              </DataTable.Header>
-              {clubsAuthorization.map((club, index) => (
-                <DataTable.Row key={index}>
-                  <DataTable.Cell style={styles.tableClubName}>
-                    {club.clubName}
-                  </DataTable.Cell>
-                  <DataTable.Cell>{club.authorization}</DataTable.Cell>
-                </DataTable.Row>
-              ))}
-            </DataTable>
-          </View>
-        </Card.Content>
-      </Card>
-    </View>
+                </Text>
+                <Text>{userDetails.name}</Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.detailLabel} variant="labelLarge">
+                  Email
+                </Text>
+                <Text>{userDetails.email}</Text>
+              </View>
+              <Divider style={styles.divider} />
+            </View>
+            <View style={styles.tableContainer}>
+              <Text variant="titleLarge" style={styles.tableTitle}>
+                Clubs
+              </Text>
+
+              <DataTable>
+                <DataTable.Header>
+                  <DataTable.Title style={styles.tableClubName}>
+                    Name
+                  </DataTable.Title>
+                  <DataTable.Title>Permission</DataTable.Title>
+                </DataTable.Header>
+                {clubsAuthorization.map((club, index) => (
+                  <DataTable.Row key={index}>
+                    <DataTable.Cell style={styles.tableClubName}>
+                      {club.clubName}
+                    </DataTable.Cell>
+                    <DataTable.Cell>{club.authorization}</DataTable.Cell>
+                  </DataTable.Row>
+                ))}
+                {clubsJoinRequestPending.map((club, index) => (
+                  <DataTable.Row key={index}>
+                    <DataTable.Cell style={styles.tableClubName}>
+                      {club.name}
+                    </DataTable.Cell>
+                    <DataTable.Cell>Join Pending</DataTable.Cell>
+                  </DataTable.Row>
+                ))}
+              </DataTable>
+            </View>
+          </Card.Content>
+        </Card>
+      </View>
+    </ScrollView>
   )
 }
 
@@ -79,9 +92,10 @@ const styles = StyleSheet.create({
   },
   title: {
     flexDirection: "column",
-    marginTop: 20,
+    marginTop: 10,
   },
   titleAvatar: {
+    marginVertical: 10,
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
