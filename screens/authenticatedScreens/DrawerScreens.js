@@ -12,12 +12,12 @@ import { FindAClubScreen } from "./clubs/FindAClubScreen"
 import { CreateAClubScreen } from "./clubs/CreateAClubScreen"
 // State
 import { useDispatch } from "react-redux"
-import { signOut } from "../../state/authSlice"
+import { resetAuth } from "../../state/authSlice"
+import { resetUserDetails } from "../../state/userSlice"
+import { resetClubs } from "../../state/clubsSlice"
+import { resetRides } from "../../state/ridesSlice"
 // Other
 import * as SecureStore from "expo-secure-store"
-import { clearUserDetails } from "../../state/userSlice"
-import { clearClubs } from "../../state/clubsSlice"
-import { clearRides } from "../../state/ridesSlice"
 
 const Drawer = createDrawerNavigator()
 
@@ -26,10 +26,10 @@ const CustomDrawerContent = (props) => {
 
   const logout = async () => {
     await SecureStore.deleteItemAsync("refreshToken")
-    dispatch(clearUserDetails())
-    dispatch(clearClubs())
-    dispatch(clearRides())
-    dispatch(signOut())
+    dispatch(resetUserDetails())
+    dispatch(resetClubs())
+    dispatch(resetRides())
+    dispatch(resetAuth())
   }
 
   return (

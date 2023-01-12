@@ -17,16 +17,11 @@ export const userSlice = createSlice({
       state.email = action.payload.email
       state.userId = action.payload._id
     },
-    clearUserDetails: (state) => {
-      state.username = null
-      state.name = null
-      state.email = null
-      state.userId = null
-    },
+    resetUserDetails: () => initialState,
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setUpUserDetails, clearUserDetails } = userSlice.actions
+export const { setUpUserDetails, resetUserDetails } = userSlice.actions
 
 export default userSlice.reducer

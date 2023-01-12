@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { createStackNavigator } from "@react-navigation/stack"
 // State
 import { useSelector, useDispatch } from "react-redux"
-import { restoreToken, signOut } from "./state/authSlice"
+import { restoreToken, resetAuth } from "./state/authSlice"
 import { setUpUserDetails } from "./state/userSlice"
 // Screens
 import { SignInScreen } from "./screens/authScreens/SignInScreen"
@@ -41,7 +41,7 @@ export const StackNavigator = () => {
     if (refreshToken) {
       useRefreshToken(refreshToken)
     } else {
-      dispatch(signOut())
+      dispatch(resetAuth())
     }
   }
 
@@ -63,7 +63,7 @@ export const StackNavigator = () => {
     } catch (error) {
       console.log("Error - StackNavigator.js")
       console.log(error)
-      dispatch(signOut())
+      dispatch(resetAuth())
     }
   }
 
@@ -99,7 +99,7 @@ export const StackNavigator = () => {
     } catch (error) {
       console.log("Error - StackNavigator.js")
       console.log(error)
-      dispatch(signOut())
+      dispatch(resetAuth())
     }
   }
 

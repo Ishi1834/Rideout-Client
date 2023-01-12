@@ -22,16 +22,13 @@ export const authSlice = createSlice({
       state.userId = action.payload.userId
       state.isLoading = false
     },
-    signOut: (state) => {
-      state.isSignout = true
-      state.authToken = null
-      state.userId = null
-      state.isLoading = false
+    resetAuth: () => {
+      return { ...initialState, isLoading: false }
     },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { restoreToken, signIn, signOut } = authSlice.actions
+export const { restoreToken, signIn, resetAuth } = authSlice.actions
 
 export default authSlice.reducer

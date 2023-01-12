@@ -51,14 +51,7 @@ export const ridesSlice = createSlice({
       const rideId = action.payload
       state.clubRides = state.clubRides.filter((ride) => ride._id !== rideId)
     },
-    clearRides: (state) => {
-      state.userRides = []
-      state.clubRides = []
-      state.openRides = {
-        range: null,
-        rides: [],
-      }
-    },
+    resetRides: () => initialState,
   },
 })
 
@@ -72,7 +65,7 @@ export const {
   updateAClubRide,
   removeAUserRide,
   removeAClubRide,
-  clearRides,
+  resetRides,
 } = ridesSlice.actions
 
 export default ridesSlice.reducer

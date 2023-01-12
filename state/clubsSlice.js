@@ -40,14 +40,11 @@ export const clubsSlice = createSlice({
         (club) => clubId !== club.clubId
       )
     },
-    clearClubs: (state) => {
-      state.clubs = []
-      state.authorization = []
-    },
+    resetClubs: () => initialState,
   },
 })
 
-export const { setUpClubs, addAClub, updateAClub, removeAClub, clearClubs } =
+export const { setUpClubs, addAClub, updateAClub, removeAClub, resetClubs } =
   clubsSlice.actions
 
 export default clubsSlice.reducer
