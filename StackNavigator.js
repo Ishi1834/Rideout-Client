@@ -2,8 +2,8 @@ import { useEffect } from "react"
 import { createStackNavigator } from "@react-navigation/stack"
 // State
 import { useSelector, useDispatch } from "react-redux"
-import { restoreToken } from "./state/authSlice"
-import { addUserDetails } from "./state/userSlice"
+import { restoreToken, signOut } from "./state/authSlice"
+import { setUpUserDetails } from "./state/userSlice"
 // Screens
 import { SignInScreen } from "./screens/authScreens/SignInScreen"
 import { SignUpScreen } from "./screens/authScreens/SignUpScreen"
@@ -27,69 +27,80 @@ export const StackNavigator = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
-    const checkTokenExists = async () => {
-      let authToken
-      let userId
-      let refreshToken
-
-      try {
-        // Get refreshTokenfrom SecureStore
-        refreshToken = await SecureStore.getItemAsync("refreshToken")
-      } catch (error) {
-        console.log("Error - StackNavigator.js")
-        console.log(error)
-      }
-
-      try {
-        // Get new authToken from backend
-        const res = await axios.post("auth/refresh", { refreshToken })
-
-        if (res.status === 200) {
-          await SecureStore.setItemAsync("refreshToken", res.data.refreshToken)
-          authToken = res.data.authToken
-          userId = res.data.userId
-          // Set Token header for all axios requests
-          axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`
-        }
-      } catch (error) {
-        console.log("Error - StackNavigator.js")
-        console.log(error)
-      }
-
-      dispatch(restoreToken({ authToken, userId }))
-    }
-
-    checkTokenExists()
+    getRefreshTokenFromSecureStore()
   }, [])
 
   useEffect(() => {
-    if (authState.userId) {
-      try {
-        axios.get(`users/${authState.userId}`).then((res) => {
-          if (res.status === 200) {
-            dispatch(addUserDetails(res.data))
-            // Extract club, ride populated by MongoDB
-            const clubs = res.data.clubs.map((club) => club.clubId)
-            const rides = res.data.rides.map((ride) => ride.rideId)
-            // Get authorization for the clubs
-            const authorization = res.data.clubs.map((club) => {
-              return {
-                clubName: club.name,
-                authorization: club.authorization,
-                clubId: club.clubId._id,
-              }
-            })
-            dispatch(setUpClubs({ clubs, authorization }))
-            dispatch(setUpUserRides(rides))
+    if (authState?.userId && authState?.authToken) {
+      getUserData(authState.userId)
+    }
+  }, [authState?.authToken])
+
+  const getRefreshTokenFromSecureStore = async () => {
+    const refreshToken = await SecureStore.getItemAsync("refreshToken")
+    if (refreshToken) {
+      useRefreshToken(refreshToken)
+    } else {
+      dispatch(signOut())
+    }
+  }
+
+  const useRefreshToken = async (refreshToken) => {
+    try {
+      const res = await axios.post("auth/refresh", { refreshToken })
+      if (res.status === 200) {
+        await SecureStore.setItemAsync("refreshToken", res.data.refreshToken)
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${res.data.authToken}`
+        dispatch(
+          restoreToken({
+            authToken: res.data.authToken,
+            userId: res.data.userId,
+          })
+        )
+      }
+    } catch (error) {
+      console.log("Error - StackNavigator.js")
+      console.log(error)
+      dispatch(signOut())
+    }
+  }
+
+  const getUserData = async (userId) => {
+    try {
+      const res = await axios.get(`users/${userId}`)
+      if (res.status === 200) {
+        const { name, email, _id, username } = res.data
+        // Extract club and ride, populated by MongoDB
+        const clubs = res.data.clubs.map((club) => club.clubId)
+        const rides = res.data.rides.map((ride) => ride.rideId)
+        // Get authorization for the clubs
+        const authorization = res.data.clubs.map((club) => {
+          return {
+            clubName: club.name,
+            authorization: club.authorization,
+            clubId: club.clubId._id,
           }
         })
-      } catch (error) {
-        console.log("Error - StackNavigator.js")
-        console.log(error)
+        // Set up redux state
+        dispatch(
+          setUpUserDetails({
+            name,
+            email,
+            userId: _id,
+            username,
+          })
+        )
+        dispatch(setUpClubs({ clubs, authorization }))
+        dispatch(setUpUserRides(rides))
       }
+    } catch (error) {
+      console.log("Error - StackNavigator.js")
+      console.log(error)
+      dispatch(signOut())
     }
-  }, [authState.authToken])
+  }
 
   return (
     <Stack.Navigator>
