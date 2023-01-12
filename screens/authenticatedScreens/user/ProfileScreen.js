@@ -8,7 +8,7 @@ export const ProfileScreen = () => {
   const state = useSelector((state) => state)
 
   const clubsAuthorization = state.clubs.authorization
-  const clubsJoinRequestPending = state.clubs.pendingJoinRequests
+  const clubsJoinRequestPending = state.user.pendingJoinRequests
   const userDetails = state.user
 
   const name = userDetails?.name

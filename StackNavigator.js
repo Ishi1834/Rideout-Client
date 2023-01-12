@@ -92,9 +92,10 @@ export const StackNavigator = () => {
             email,
             userId: _id,
             username,
+            pendingJoinRequests,
           })
         )
-        dispatch(setUpClubs({ clubs, authorization, pendingJoinRequests }))
+        dispatch(setUpClubs({ clubs, authorization }))
         dispatch(setUpUserRides(rides))
       }
     } catch (error) {

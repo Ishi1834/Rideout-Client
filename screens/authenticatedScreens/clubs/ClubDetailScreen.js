@@ -32,6 +32,7 @@ export const ClubDetailScreen = ({ route }) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const clubsState = useSelector((state) => state.clubs)
+  const userState = useSelector((state) => state.user)
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
   const [isEditMembers, setIsEditMembers] = useState(false)
   const [showDeleteClub, setShowDeleteClub] = useState(false)
@@ -40,9 +41,12 @@ export const ClubDetailScreen = ({ route }) => {
     (obj) => obj.clubId === club._id
   )?.authorization
 
-  const userRequestedToJoinJoinClub = !!clubsState.pendingJoinRequests.find(
+  const userRequestedToJoinJoinClub = !!userState.pendingJoinRequests.find(
     (clubObj) => clubObj.clubId === club._id
   )
+
+  const clubJoinRequests = club.userRequestingToJoinClub
+  console.log("requests ", clubJoinRequests)
 
   useEffect(() => {
     if (userRole === "admin" || userRole === "editor") {
