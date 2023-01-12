@@ -32,7 +32,7 @@ export const StackNavigator = () => {
 
   useEffect(() => {
     if (authState?.userId && authState?.authToken) {
-      getUserData(authState.userId)
+      getUserData(authState.userId, authState.authToken)
     }
   }, [authState?.authToken])
 
@@ -67,7 +67,8 @@ export const StackNavigator = () => {
     }
   }
 
-  const getUserData = async (userId) => {
+  const getUserData = async (userId, authToken) => {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`
     try {
       const res = await axios.get(`users/${userId}`)
       if (res.status === 200) {
