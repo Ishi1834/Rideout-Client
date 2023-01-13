@@ -21,7 +21,7 @@ import { PreviewMap } from "../../../components/PreviewMap"
 import { RadioInput } from "../../../components/RadioInput"
 // State
 import { useSelector, useDispatch } from "react-redux"
-import { removeAClub } from "../../../state/clubsSlice"
+import { removeAClub, updateAClub } from "../../../state/clubsSlice"
 import { addPendingClubRequest } from "../../../state/userSlice"
 // Other
 import axios from "../../../axiosConfig"
@@ -152,10 +152,20 @@ export const ClubDetailScreen = ({ route }) => {
 
   const submitTableAction = async () => {
     const { action, userId } = tableModalData
+    setIsMakingApiRequest(true)
 
     if (action === "add") {
-      // add user api call
-      console.log("add user to club ", userId)
+      try {
+        const res = await axios.post(`/clubs/${club._id}/members`, {
+          userId,
+        })
+        if (res.status === 200) {
+          dispatch(updateAClub(res.data.updatedClub))
+        }
+      } catch (error) {
+        console.log("Error - ClubDetailScreen.js")
+        console.log(error.response.data.message)
+      }
     } else if (action === "edit") {
       const newRole = tableModalEditSelectedRole
       // edit role api call
@@ -164,6 +174,8 @@ export const ClubDetailScreen = ({ route }) => {
       // remove member api call
       console.log("remove user ", userId)
     }
+    setShowTableModal(false)
+    setIsMakingApiRequest(false)
   }
 
   if (!club) {
@@ -208,6 +220,7 @@ export const ClubDetailScreen = ({ route }) => {
             <Text style={styles.modalText}>{tableModalData.text}</Text>
             {tableModalData.action === "edit" && (
               <RadioInput
+                disabled={isMakingApiRequest && true}
                 radioData={tableModalData.radio}
                 itemSelected={(val) => setTableModalEditSelectedRole(val)}
                 radioLabel={tableModalData.radioLabel}
