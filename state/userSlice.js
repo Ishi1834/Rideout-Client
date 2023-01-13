@@ -16,7 +16,7 @@ export const userSlice = createSlice({
       state.username = action.payload.username
       state.name = action.payload.name
       state.email = action.payload.email
-      state.userId = action.payload._id
+      state.userId = action.payload.userId
       state.pendingJoinRequests = action.payload.pendingJoinRequests
     },
     addPendingClubRequest: (state, action) => {
