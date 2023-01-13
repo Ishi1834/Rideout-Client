@@ -30,7 +30,7 @@ import { authRoles } from "../../../static/multiSelectOptions"
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
 export const ClubDetailScreen = ({ route }) => {
-  const { club } = route.params
+  const { club: clubFromParams } = route.params
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const clubsState = useSelector((state) => state.clubs)
@@ -43,6 +43,8 @@ export const ClubDetailScreen = ({ route }) => {
   const [tableModalEditSelectedRole, setTableModalEditSelectedRole] =
     useState(null)
 
+  let club = clubFromParams
+
   const userRole = clubsState.authorization.find(
     (obj) => obj.clubId === club._id
   )?.authorization
@@ -51,6 +53,12 @@ export const ClubDetailScreen = ({ route }) => {
     (clubObj) => clubObj.clubId === club._id
   )
 
+  if (userRole) {
+    /**
+     * Changing using club from state so after every table action, the table updates correctly
+     */
+    club = clubsState.clubs.find((clubObj) => clubObj._id === club._id)
+  }
   const clubJoinRequests = club.userRequestingToJoinClub
 
   useEffect(() => {
