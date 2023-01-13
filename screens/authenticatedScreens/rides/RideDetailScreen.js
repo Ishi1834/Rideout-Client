@@ -25,6 +25,7 @@ import {
 // Other
 import { format } from "date-fns"
 import axios from "../../../axiosConfig"
+import { TableList } from "../../../components/TableList"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="bike" />
 
@@ -102,6 +103,10 @@ export const RideDetailScreen = ({ route }) => {
     (cyclist) => cyclist.userId === currentUserId
   )
 
+  const getCyclistName = (array) => {
+    return array.map((obj) => obj.name)
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -168,7 +173,12 @@ export const RideDetailScreen = ({ route }) => {
                 <Chip>{ride.rideType} ride</Chip>
               </View>
             </View>
-            <ListMembers members={ride.signedUpCyclists} label="Cyclists" />
+            <TableList
+              data={{
+                headersArray: ["Cyclist"],
+                rowsArray: getCyclistName(ride.signedUpCyclists),
+              }}
+            />
           </Card.Content>
           <Divider style={styles.dividerHorizontal} />
           {
