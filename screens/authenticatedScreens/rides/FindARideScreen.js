@@ -39,11 +39,7 @@ export const FindARideScreen = () => {
     { label: "Open Rides", isChecked: true },
     { label: "Club Rides", isChecked: true },
   ])
-  const [filterClubs, setFilterClubs] = useState({
-    label: "Filter rides by club",
-    data: null,
-    selected: null,
-  })
+  const [filterClubs, setFilterClubs] = useState(null)
 
   useFocusEffect(
     useCallback(() => {
@@ -113,28 +109,15 @@ export const FindARideScreen = () => {
    */
 
   useEffect(() => {
-    if (filterClubs.selected) {
-      const newFilterClubs = clubs?.authorization.map((club) => {
-        if (club.clubId !== filterClubs.selected) {
-          return {
-            label: club.clubName,
-            value: club.clubId,
-          }
-        } else {
-          return {
-            label: "Show all Clubs",
-            value: null,
-          }
-        }
-      })
-      setFilterClubs({ ...filterClubs, data: newFilterClubs })
-      // filterRides
+    if (filterClubs?.selected === "Show All Club rides") {
+      setAllRides(clubRides)
+    } else if (filterClubs?.selected) {
       const selectedClubRides = clubRides.filter(
         (club) => club.club.clubId === filterClubs.selected
       )
       setAllRides(selectedClubRides)
     }
-  }, [filterClubs.selected])
+  }, [filterClubs?.selected])
 
   useEffect(() => {
     // for change in showing open rides
@@ -177,7 +160,13 @@ export const FindARideScreen = () => {
         value: club.clubId,
       }
     })
-    setFilterClubs({ ...filterClubs, data: clubsArray })
+    setFilterClubs({
+      ...filterClubs,
+      data: [
+        ...clubsArray,
+        { label: "Show All Club rides", value: "Show All Club rides" },
+      ],
+    })
   }, [])
 
   const requestLocationAccess = async () => {
@@ -257,7 +246,6 @@ export const FindARideScreen = () => {
         setFilterClubs({
           label: "Filter rides by club",
           data: newFilterClubs,
-          selected: null,
         })
       }
     }

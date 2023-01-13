@@ -17,6 +17,11 @@ export const FilterRides = ({
   onMaxDistanceChange,
 }) => {
   const [selectedNumber, setSelectedNumber] = useState(null)
+
+  const getLabel = (array, value) => {
+    return array.find((obj) => obj.value === value).label
+  }
+
   return (
     <Portal>
       <Modal
@@ -50,11 +55,17 @@ export const FilterRides = ({
           />
         ))}
 
-        <RadioInput
-          radioData={filterClubs.data}
-          radioLabel={filterClubs.label}
-          itemSelected={(item) => setFilter("setClub", item)}
-        />
+        {filterClubs && (
+          <RadioInput
+            radioData={filterClubs.data}
+            preSelectedLabel={
+              filterClubs?.selected
+                ? getLabel(filterClubs.data, filterClubs.selected)
+                : "Show All Club rides"
+            }
+            itemSelected={(item) => setFilter("setClub", item)}
+          />
+        )}
       </Modal>
     </Portal>
   )
