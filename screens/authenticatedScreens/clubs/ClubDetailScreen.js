@@ -18,12 +18,14 @@ import {
 import { ListMembers } from "../../../components/ListMembers"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { PreviewMap } from "../../../components/PreviewMap"
+import { RadioInput } from "../../../components/RadioInput"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { removeAClub } from "../../../state/clubsSlice"
 import { addPendingClubRequest } from "../../../state/userSlice"
 // Other
 import axios from "../../../axiosConfig"
+import { authRoles } from "../../../static/multiSelectOptions"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="account-group" />
 
@@ -36,6 +38,10 @@ export const ClubDetailScreen = ({ route }) => {
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
   const [isEditMembers, setIsEditMembers] = useState(false)
   const [showDeleteClub, setShowDeleteClub] = useState(false)
+  const [showTableModal, setShowTableModal] = useState(false)
+  const [tableModalData, setTableModalData] = useState(false)
+  const [tableModalEditSelectedRole, setTableModalEditSelectedRole] =
+    useState(null)
 
   const userRole = clubsState.authorization.find(
     (obj) => obj.clubId === club._id
@@ -111,6 +117,55 @@ export const ClubDetailScreen = ({ route }) => {
     setIsMakingApiRequest(false)
   }
 
+  const handleTableAction = (action, user) => {
+    setTableModalData(null)
+    setTableModalEditSelectedRole(null)
+    const { name, userId } = user
+
+    if (action === "add") {
+      setTableModalData({
+        text: `Are you sure you want to add ${name} to this club?`,
+        userId,
+        action: "add",
+      })
+    } else if (action === "edit") {
+      const { authorization } = user
+      const roleOptions = authRoles.filter(
+        (role) => role.value !== authorization
+      )
+      setTableModalData({
+        text: `Are you sure you want to change ${name} permission?`,
+        userId,
+        action: "edit",
+        radio: roleOptions,
+        radioLabel: "Select new role",
+      })
+    } else if (action === "remove") {
+      setTableModalData({
+        text: `Are you sure you want to remove ${name} from this club?`,
+        userId,
+        action: "remove",
+      })
+    }
+    setShowTableModal(true)
+  }
+
+  const submitTableAction = async () => {
+    const { action, userId } = tableModalData
+
+    if (action === "add") {
+      // add user api call
+      console.log("add user to club ", userId)
+    } else if (action === "edit") {
+      const newRole = tableModalEditSelectedRole
+      // edit role api call
+      console.log("change role to ", newRole, " userid ", userId)
+    } else if (action === "remove") {
+      // remove member api call
+      console.log("remove user ", userId)
+    }
+  }
+
   if (!club) {
     return <ActivityIndicator animating={true} color={MD2Colors.red800} />
   }
@@ -142,6 +197,37 @@ export const ClubDetailScreen = ({ route }) => {
                 onPress={() => setShowDeleteClub(false)}
               >
                 No
+              </Button>
+            </Card.Actions>
+          </Modal>
+          <Modal
+            visible={showTableModal}
+            onDismiss={() => setShowTableModal(false)}
+            contentContainerStyle={styles.modalStyle}
+          >
+            <Text style={styles.modalText}>{tableModalData.text}</Text>
+            {tableModalData.action === "edit" && (
+              <RadioInput
+                radioData={tableModalData.radio}
+                itemSelected={(val) => setTableModalEditSelectedRole(val)}
+                radioLabel={tableModalData.radioLabel}
+              />
+            )}
+
+            <Card.Actions>
+              <Button
+                loading={isMakingApiRequest && true}
+                disabled={isMakingApiRequest && true}
+                onPress={() => setShowTableModal(false)}
+              >
+                No
+              </Button>
+              <Button
+                loading={isMakingApiRequest && true}
+                disabled={isMakingApiRequest && true}
+                onPress={submitTableAction}
+              >
+                Yes
               </Button>
             </Card.Actions>
           </Modal>
@@ -197,6 +283,7 @@ export const ClubDetailScreen = ({ route }) => {
               members={club.members}
               isEditMembers={isEditMembers}
               joinRequests={clubJoinRequests}
+              handleAction={handleTableAction}
             />
           </Card.Content>
           {/* undefined userRole means user hasn't joined club */}

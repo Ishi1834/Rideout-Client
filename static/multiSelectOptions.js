@@ -36,3 +36,9 @@ export const clubTags = [
   "Over 50",
   "Women Only",
 ]
+
+export const authRoles = [
+  { label: "Admin", value: "admin" },
+  { label: "Editor", value: "editor" },
+  { label: "User", value: "user" },
+]
