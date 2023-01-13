@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react"
 import { StyleSheet } from "react-native"
-import { DataTable, IconButton, MD3Colors } from "react-native-paper"
+import { Button, DataTable, IconButton, MD3Colors } from "react-native-paper"
 
 const numberOfItemsPerPageList = [2, 3, 4, 5, 6]
 
-export const ListMembers = ({
-  members,
-  label = "Member",
-  isEditMembers,
-  showPermission = false,
-  joinRequests,
-}) => {
+export const ListMembers = ({ members, isEditMembers, joinRequests }) => {
+  const [showJoinRequets, setShowJoinRequets] = useState(false)
   const [page, setPage] = useState(0)
   const [numberOfItemsPerPage, onItemsPerPageChange] = useState(
     numberOfItemsPerPageList[0]
@@ -21,27 +16,56 @@ export const ListMembers = ({
     setPage(0)
   }, [numberOfItemsPerPage])
 
-  let usersArray = [...members]
-  if (joinRequests.length !== 0) {
-    usersArray = [...members, ...joinRequests]
+  let usersArray = []
+  if (showJoinRequets) {
+    usersArray = [...joinRequests]
+  } else {
+    usersArray = [...members]
   }
+
+  const hasJoinRequests = joinRequests.length !== 0 ? true : false
 
   const to = Math.min((page + 1) * numberOfItemsPerPage, usersArray.length)
 
   return (
     <DataTable>
+      {isEditMembers && hasJoinRequests && (
+        <Button
+          mode="contained-tonal"
+          style={styles.tableButton}
+          onPress={() => setShowJoinRequets(!showJoinRequets)}
+        >
+          {showJoinRequets ? "View members" : "View Join requests"}
+        </Button>
+      )}
       <DataTable.Header>
-        <DataTable.Title style={styles.tableName}>{label}</DataTable.Title>
-        {showPermission && <DataTable.Title>Permission</DataTable.Title>}
-        {isEditMembers && joinRequests.length !== 0 && (
-          <DataTable.Title style={styles.tableAction}>Add</DataTable.Title>
-        )}
-        {isEditMembers && (
-          <DataTable.Title style={styles.tableAction}>Edit</DataTable.Title>
-        )}
-        {isEditMembers && (
-          <DataTable.Title style={styles.tableAction}>Remove</DataTable.Title>
-        )}
+        <DataTable.Title
+          style={
+            showJoinRequets
+              ? styles.tableJoinRequestName
+              : styles.tableMemberName
+          }
+        >
+          {showJoinRequets ? "Requests to Join" : "Members"}
+        </DataTable.Title>
+        {isEditMembers &&
+          (showJoinRequets ? (
+            <DataTable.Title style={styles.tableJoinRequestAction}>
+              Add
+            </DataTable.Title>
+          ) : (
+            <>
+              <DataTable.Title style={styles.tableMemberRole}>
+                Permission
+              </DataTable.Title>
+              <DataTable.Title style={styles.tableMemberAction}>
+                Edit
+              </DataTable.Title>
+              <DataTable.Title style={styles.tableMemberAction}>
+                Remove
+              </DataTable.Title>
+            </>
+          ))}
       </DataTable.Header>
 
       {usersArray.map((member, index) => {
@@ -53,49 +77,50 @@ export const ListMembers = ({
         ) {
           return (
             <DataTable.Row key={index}>
-              <DataTable.Cell style={styles.tableName}>
+              <DataTable.Cell
+                style={
+                  showJoinRequets
+                    ? styles.tableJoinRequestName
+                    : styles.tableMemberName
+                }
+              >
                 {member.name}
               </DataTable.Cell>
-              {showPermission && (
-                <DataTable.Cell>{member.authorization}</DataTable.Cell>
-              )}
 
-              {isEditMembers && (
-                <>
-                  <DataTable.Cell style={styles.tableAction}>
-                    {!member?.authorization && (
-                      <IconButton
-                        icon="account-plus-outline"
-                        iconColor={MD3Colors.error20}
-                        size={20}
-                        onPress={() => console.log("add ", member.userId)}
-                      />
-                    )}
+              {isEditMembers &&
+                (showJoinRequets ? (
+                  <DataTable.Cell style={styles.tableJoinRequestAction}>
+                    <IconButton
+                      icon="account-plus-outline"
+                      iconColor={MD3Colors.error20}
+                      size={20}
+                      onPress={() => console.log("add ", member.userId)}
+                    />
                   </DataTable.Cell>
-
-                  <DataTable.Cell style={styles.tableAction}>
-                    {member?.authorization && (
+                ) : (
+                  <>
+                    <DataTable.Cell style={styles.tableMemberRole}>
+                      {member.authorization}
+                    </DataTable.Cell>
+                    <DataTable.Cell style={styles.tableMemberAction}>
                       <IconButton
                         icon="account-edit-outline"
                         iconColor={MD3Colors.error20}
                         size={20}
                         onPress={() => console.log("edit ", member.userId)}
                       />
-                    )}
-                  </DataTable.Cell>
+                    </DataTable.Cell>
 
-                  <DataTable.Cell style={styles.tableAction}>
-                    {member?.authorization && (
+                    <DataTable.Cell style={styles.tableMemberAction}>
                       <IconButton
                         icon="account-remove-outline"
                         iconColor={MD3Colors.error50}
                         size={20}
                         onPress={() => console.log("remove ", member.userId)}
                       />
-                    )}
-                  </DataTable.Cell>
-                </>
-              )}
+                    </DataTable.Cell>
+                  </>
+                ))}
             </DataTable.Row>
           )
         }
@@ -117,10 +142,27 @@ export const ListMembers = ({
 }
 
 const styles = StyleSheet.create({
-  tableName: {
+  tableButton: {
+    alignSelf: "flex-end",
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  tableMemberName: {
     flex: 2,
   },
-  tableAction: {
+  tableMemberRole: {
+    flex: 1.5,
+    justifyContent: "center",
+  },
+  tableMemberAction: {
+    flex: 1.2,
+    justifyContent: "center",
+  },
+  tableJoinRequestName: {
+    flex: 1.5,
+  },
+  tableJoinRequestAction: {
     flex: 1,
+    justifyContent: "center",
   },
 })
