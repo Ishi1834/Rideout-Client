@@ -176,8 +176,18 @@ export const ClubDetailScreen = ({ route }) => {
       }
     } else if (action === "edit") {
       const newRole = tableModalEditSelectedRole
-      // edit role api call
-      console.log("change role to ", newRole, " userid ", userId)
+      try {
+        const res = await axios.patch(`/clubs/${club._id}/members`, {
+          userId,
+          changeTo: newRole,
+        })
+        if (res.status === 200) {
+          dispatch(updateAClub(res.data.updatedClub))
+        }
+      } catch (error) {
+        console.log("Error - ClubDetailScreen.js")
+        console.log(error.response.data.message)
+      }
     } else if (action === "remove") {
       try {
         const res = await axios.delete(`/clubs/${club._id}/members`, {
