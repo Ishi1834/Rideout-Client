@@ -171,8 +171,19 @@ export const ClubDetailScreen = ({ route }) => {
       // edit role api call
       console.log("change role to ", newRole, " userid ", userId)
     } else if (action === "remove") {
-      // remove member api call
-      console.log("remove user ", userId)
+      try {
+        const res = await axios.delete(`/clubs/${club._id}/members`, {
+          data: {
+            userId,
+          },
+        })
+        if (res.status === 200) {
+          dispatch(updateAClub(res.data.updatedClub))
+        }
+      } catch (error) {
+        console.log("Error - ClubDetailScreen.js")
+        console.log(error.response.data.message)
+      }
     }
     setShowTableModal(false)
     setIsMakingApiRequest(false)
