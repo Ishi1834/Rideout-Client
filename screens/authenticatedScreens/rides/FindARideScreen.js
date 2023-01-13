@@ -271,7 +271,7 @@ export const FindARideScreen = () => {
   }
   return (
     <View style={styles.container}>
-      {showFilter ? (
+      {showFilter && (
         <FilterRides
           visible={showFilter}
           hideModal={() => setShowFilter(false)}
@@ -282,11 +282,10 @@ export const FindARideScreen = () => {
           maxDistance={maxDistance}
           onMaxDistanceChange={(distance) => setMaxDistance(distance)}
         />
-      ) : (
-        <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>
-          Filter rides
-        </Button>
       )}
+      <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>
+        Filter rides
+      </Button>
 
       {locationError && (
         <Banner
