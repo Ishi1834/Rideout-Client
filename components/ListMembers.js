@@ -21,6 +21,12 @@ export const ListMembers = ({
     setPage(0)
   }, [numberOfItemsPerPage])
 
+  useEffect(() => {
+    if (joinRequests.length === 0) {
+      setShowJoinRequets(false)
+    }
+  }, [joinRequests?.length])
+
   let usersArray = []
   if (showJoinRequets) {
     usersArray = [...joinRequests]
