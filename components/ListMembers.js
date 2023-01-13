@@ -4,7 +4,12 @@ import { Button, DataTable, IconButton, MD3Colors } from "react-native-paper"
 
 const numberOfItemsPerPageList = [2, 3, 4, 5, 6]
 
-export const ListMembers = ({ members, isEditMembers, joinRequests }) => {
+export const ListMembers = ({
+  members,
+  isEditMembers,
+  joinRequests,
+  handleAction,
+}) => {
   const [showJoinRequets, setShowJoinRequets] = useState(false)
   const [page, setPage] = useState(0)
   const [numberOfItemsPerPage, onItemsPerPageChange] = useState(
@@ -94,7 +99,7 @@ export const ListMembers = ({ members, isEditMembers, joinRequests }) => {
                       icon="account-plus-outline"
                       iconColor={MD3Colors.error20}
                       size={20}
-                      onPress={() => console.log("add ", member.userId)}
+                      onPress={() => handleAction("add", member)}
                     />
                   </DataTable.Cell>
                 ) : (
@@ -107,7 +112,7 @@ export const ListMembers = ({ members, isEditMembers, joinRequests }) => {
                         icon="account-edit-outline"
                         iconColor={MD3Colors.error20}
                         size={20}
-                        onPress={() => console.log("edit ", member.userId)}
+                        onPress={() => handleAction("edit", member)}
                       />
                     </DataTable.Cell>
 
@@ -116,7 +121,7 @@ export const ListMembers = ({ members, isEditMembers, joinRequests }) => {
                         icon="account-remove-outline"
                         iconColor={MD3Colors.error50}
                         size={20}
-                        onPress={() => console.log("remove ", member.userId)}
+                        onPress={() => handleAction("remove", member)}
                       />
                     </DataTable.Cell>
                   </>
