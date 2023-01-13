@@ -20,6 +20,7 @@ export const FindARideScreen = () => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const clubs = useSelector((state) => state.clubs)
+  const userClubs = clubs.clubs
   const ridesState = useSelector((state) => state.rides)
   const clubRides = ridesState?.clubRides
   const openRides = ridesState?.openRides.rides
@@ -42,16 +43,26 @@ export const FindARideScreen = () => {
   const [filterClubs, setFilterClubs] = useState(null)
 
   useFocusEffect(
+    // location
     useCallback(() => {
+      // Get user location whenever screen gets focus
       requestLocationAccess()
-      // Check club state exists
-      if (clubs?.clubs) {
+      // set user location to null when screen looses focus
+      return () => setUserLocation(null)
+    }, [])
+  )
+
+  useFocusEffect(
+    // club rides
+    useCallback(() => {
+      // If user clubs exists
+      if (userClubs.length > 0) {
         const allClubRidesArray = []
         setIsMakingApiRequest(true)
-        Promise.all(clubs.clubs.map((club) => axios.get(`rides/${club._id}`)))
-          .then((allGetRidesRequestsArray) => {
-            allGetRidesRequestsArray.forEach((clubResponse) => {
-              const clubRides = clubResponse.data
+        Promise.all(userClubs.map((club) => axios.get(`rides/${club._id}`)))
+          .then((getClubRides) => {
+            getClubRides.forEach((response) => {
+              const clubRides = response.data
               // check if club has rides or message
               if (!clubRides?.message) {
                 clubRides.forEach((ride) => allClubRidesArray.push(ride))
@@ -65,10 +76,11 @@ export const FindARideScreen = () => {
           })
         setIsMakingApiRequest(false)
       }
-    }, [clubs?.clubs?.length])
+    }, [userClubs.length])
   )
 
   useFocusEffect(
+    // get open rides occurs after get club rides
     useCallback(() => {
       // re-calculate distance to start location whenever user location changes
       const getAllOpenRides = async (updatedDistanceClubRides) => {
@@ -91,69 +103,19 @@ export const FindARideScreen = () => {
       }
 
       if (userLocation) {
-        const updatedDistanceClubRides = clubRides.map((ride) => {
-          const [longitude, latitude] = ride.startLocation.coordinates
-          const distanceToStart = getDistance(
-            { longitude, latitude },
-            userLocation
-          )
-          return { ...ride, distanceToStart }
-        })
+        const updatedDistanceClubRides = addDistanceToClubRides(clubRides)
         getAllOpenRides(updatedDistanceClubRides)
       }
-    }, [userLocation?.latitude, userLocation?.longitude, maxDistance])
+    }, [
+      userLocation?.latitude,
+      userLocation?.longitude,
+      maxDistance,
+      clubRides?.length,
+    ])
   )
 
-  /**
-   * All the filtering can be moved into a single useEffect
-   */
-
   useEffect(() => {
-    if (filterClubs?.selected === "Show All Club rides") {
-      setAllRides(clubRides)
-    } else if (filterClubs?.selected) {
-      const selectedClubRides = clubRides.filter(
-        (club) => club.club.clubId === filterClubs.selected
-      )
-      setAllRides(selectedClubRides)
-    }
-  }, [filterClubs?.selected])
-
-  useEffect(() => {
-    // for change in showing open rides
-    if (filterRides[0].isChecked) {
-      if (filterRides[1].isChecked) {
-        setAllRides([...clubRides, ...openRides])
-      } else {
-        setAllRides(openRides)
-      }
-    } else {
-      if (filterRides[1].isChecked) {
-        setAllRides(clubRides)
-      } else {
-        setAllRides([])
-      }
-    }
-  }, [filterRides[0].isChecked])
-
-  useEffect(() => {
-    // for change in showing club rides
-    if (filterRides[1].isChecked) {
-      if (filterRides[0].isChecked) {
-        setAllRides([...clubRides, ...openRides])
-      } else {
-        setAllRides(clubRides)
-      }
-    } else {
-      if (filterRides[0].isChecked) {
-        setAllRides(openRides)
-      } else {
-        setAllRides([])
-      }
-    }
-  }, [filterRides[1].isChecked])
-
-  useEffect(() => {
+    // Sets up RadioInput
     const clubsArray = clubs.authorization.map((club) => {
       return {
         label: club.clubName,
@@ -168,6 +130,51 @@ export const FindARideScreen = () => {
       ],
     })
   }, [])
+
+  useEffect(() => {
+    // runs whenever filter is closed
+    if (!showFilter) {
+      let allFilteredRides = [...openRides, ...clubRides]
+      // check distance
+      const maxDistanceInM = maxDistance * 1000
+      allFilteredRides = allFilteredRides.filter(
+        (ride) => ride.distanceToStart < maxDistanceInM
+      )
+      // check if open rides is unchecked
+      if (!filterRides[0].isChecked) {
+        // remove open rides
+        allFilteredRides = allFilteredRides.filter(
+          (ride) => ride?.openRide === false
+        )
+      }
+      // check if club rides is unchecked
+      if (!filterRides[1].isChecked) {
+        allFilteredRides = allFilteredRides.filter(
+          (ride) => !!ride?.club === false
+        )
+      }
+
+      // check club has been selected
+      if (
+        filterClubs?.selected &&
+        filterClubs?.selected !== "Show All Club rides"
+      ) {
+        allFilteredRides = allRides.filter(
+          (ride) => ride?.club?.clubId === filterClubs?.selected
+        )
+      }
+
+      setAllRides(allFilteredRides)
+    }
+  }, [showFilter, openRides.length, clubRides.length])
+
+  const addDistanceToClubRides = (clubRides) => {
+    return clubRides.map((ride) => {
+      const [longitude, latitude] = ride.startLocation.coordinates
+      const distanceToStart = getDistance({ longitude, latitude }, userLocation)
+      return { ...ride, distanceToStart }
+    })
+  }
 
   const requestLocationAccess = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync()
@@ -220,13 +227,21 @@ export const FindARideScreen = () => {
     if (filter === "map") {
       setFilterMap({ ...filterMap, showMap: changes[0] })
     } else if (filter === "checkbox") {
-      const newRides = filterRides.map((ride, index) => {
+      const newRidesFilter = filterRides.map((ride, index) => {
         if (index === changes[0]) {
           ride.isChecked = changes[1]
         }
         return ride
       })
-      setFilterRides(newRides)
+      // remove club selected if open rides is true
+      if (newRidesFilter[0].isChecked) {
+        setFilterClubs({
+          ...filterClubs,
+          label: "Show All Club rides",
+          selected: "Show All Club rides",
+        })
+      }
+      setFilterRides(newRidesFilter)
     } else if (filter === "setClub") {
       const club = filterClubs.data.find((club) => club.value === changes[0])
       if (club) {
@@ -235,18 +250,13 @@ export const FindARideScreen = () => {
           label: club.label,
           selected: club.value,
         })
-      } else {
-        const newFilterClubs = clubs.authorization.map((club) => {
-          return {
-            label: club.clubName,
-            value: club.clubId,
-          }
-        })
-
-        setFilterClubs({
-          label: "Filter rides by club",
-          data: newFilterClubs,
-        })
+        // set open rides to false is club is selected
+        if (changes[0] !== "Show All Club rides") {
+          setFilterRides([
+            { label: "Open Rides", isChecked: false },
+            { label: "Club Rides", isChecked: true },
+          ])
+        }
       }
     }
   }
