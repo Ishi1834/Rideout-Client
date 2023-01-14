@@ -159,7 +159,7 @@ export const FindARideScreen = () => {
         filterClubs?.selected &&
         filterClubs?.selected !== "Show All Club rides"
       ) {
-        allFilteredRides = allRides.filter(
+        allFilteredRides = allFilteredRides.filter(
           (ride) => ride?.club?.clubId === filterClubs?.selected
         )
       }
