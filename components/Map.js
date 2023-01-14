@@ -9,6 +9,7 @@ export const Map = ({
   showMap,
   userLocation,
   userHasSelectedLocation = false,
+  mapSize = null,
 }) => {
   const [mapRegion, setMapRegion] = useState(null)
 
@@ -19,7 +20,15 @@ export const Map = ({
   }, [userLocation?.latitude, userLocation?.longitude])
 
   return (
-    <View style={showMap ? styles.mapContainer : styles.mapHiddenContainer}>
+    <View
+      style={
+        !showMap
+          ? styles.mapHiddenContainer
+          : !mapSize
+          ? styles.mapContainer
+          : mapSize
+      }
+    >
       {showMap && (
         <View style={styles.mapView}>
           <MapView

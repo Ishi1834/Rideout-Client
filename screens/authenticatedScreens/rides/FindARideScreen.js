@@ -41,6 +41,7 @@ export const FindARideScreen = () => {
     { label: "Club Rides", isChecked: true },
   ])
   const [filterClubs, setFilterClubs] = useState(null)
+  const [mapSize, setMapSize] = useState(null)
 
   useFocusEffect(
     // location
@@ -277,6 +278,20 @@ export const FindARideScreen = () => {
     setShowDropPinMap(false)
   }
 
+  const handleMapSizeReduce = (event) => {
+    const cardHeight = event.contentSize.height
+    const yOffset = event.contentOffset.y
+    const mapPerct = cardHeight / yOffset / 100
+    const mapHeight = parseInt(50 * mapPerct)
+    if (mapHeight > 0 && mapHeight < 50) {
+      const mapStyle = {
+        height: `${mapHeight}%`,
+        marginVertical: 10,
+      }
+      setMapSize(mapStyle)
+    }
+  }
+
   if (showDropPinMap) {
     return (
       <DropPinMap
@@ -328,6 +343,7 @@ export const FindARideScreen = () => {
         showMap={filterMap.showMap}
         userLocation={userLocation}
         userHasSelectedLocation={userHasSelectedLocation}
+        mapSize={mapSize}
       />
       {allRides?.length === 0 ? (
         isMakingApiRequest ? (
@@ -343,6 +359,9 @@ export const FindARideScreen = () => {
           data={allRides}
           renderItem={renderRideCard}
           keyExtractor={(item) => item._id}
+          style={styles.flatList}
+          onScroll={(event) => handleMapSizeReduce(event.nativeEvent)}
+          scrollEventThrottle={16}
           /* onMomentumScrollEnd={(event) => {
             const index = Math.floor(
               Math.floor(event.nativeEvent.contentOffset.x) /
