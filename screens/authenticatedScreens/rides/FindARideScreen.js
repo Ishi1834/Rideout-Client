@@ -91,7 +91,13 @@ export const FindARideScreen = () => {
           )
           if (res.status === 200) {
             dispatch(setUpOpenRides({ range: maxDistance, rides: res.data }))
-            dispatch(setUpClubRides(updatedDistanceClubRides))
+            if (updatedDistanceClubRides.length !== 0) {
+              /**
+               * getAllClubRides setsUp clubRides array
+               * setting cllubRides to [] causes an endless loop if clubRides exist
+               */
+              dispatch(setUpClubRides(updatedDistanceClubRides))
+            }
             setAllRides([...updatedDistanceClubRides, ...res.data])
           }
         } catch (error) {
