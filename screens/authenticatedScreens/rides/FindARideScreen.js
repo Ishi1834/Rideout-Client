@@ -48,7 +48,10 @@ export const FindARideScreen = () => {
       // Get user location whenever screen gets focus
       requestLocationAccess()
       // set user location to null when screen looses focus
-      return () => setUserLocation(null)
+      return () => {
+        setUserLocation(null)
+        setLocationError(null)
+      }
     }, [])
   )
 
@@ -68,7 +71,13 @@ export const FindARideScreen = () => {
                 clubRides.forEach((ride) => allClubRidesArray.push(ride))
               }
             })
-            dispatch(setUpClubRides(allClubRidesArray))
+            if (userLocation) {
+              const updatedDistanceClubRides =
+                addDistanceToClubRides(allClubRidesArray)
+              dispatch(setUpClubRides(updatedDistanceClubRides))
+            } else {
+              dispatch(setUpClubRides(allClubRidesArray))
+            }
           })
           .catch((error) => {
             console.log("Error - ClubScreen.js")
@@ -104,11 +113,11 @@ export const FindARideScreen = () => {
           dispatch(setUpOpenRides({ range: null, rides: [] }))
           dispatch(setUpClubRides(updatedDistanceClubRides))
           setAllRides([...updatedDistanceClubRides])
-          console.log(error.response.data.message)
+          console.log(error?.response?.data?.message)
         }
       }
 
-      if (userLocation) {
+      if (userLocation && filterRides[0].isChecked) {
         const updatedDistanceClubRides = addDistanceToClubRides(clubRides)
         getAllOpenRides(updatedDistanceClubRides)
       }
@@ -117,6 +126,7 @@ export const FindARideScreen = () => {
       userLocation?.longitude,
       maxDistance,
       clubRides?.length,
+      filterRides[0].isChecked,
     ])
   )
 
@@ -142,10 +152,14 @@ export const FindARideScreen = () => {
     if (!showFilter) {
       let allFilteredRides = [...openRides, ...clubRides]
       // check distance
-      const maxDistanceInM = maxDistance * 1000
-      allFilteredRides = allFilteredRides.filter(
-        (ride) => ride.distanceToStart < maxDistanceInM
-      )
+      if (userLocation) {
+        // distance for clubRides is calculated using user location
+        const maxDistanceInM = maxDistance * 1000
+        allFilteredRides = allFilteredRides.filter(
+          (ride) => ride.distanceToStart < maxDistanceInM
+        )
+      }
+
       // check if open rides is unchecked
       if (!filterRides[0].isChecked) {
         // remove open rides
