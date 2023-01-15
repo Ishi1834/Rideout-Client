@@ -43,12 +43,13 @@ export const FindAClubScreen = () => {
   )
 
   const findClubsNearLocation = async () => {
+    setLocationError(null)
     setIsMakingApiRequest(true)
     try {
       const res = await axios.get(
         `/clubs?lng=${userLocation.longitude}&lat=${userLocation.latitude}`
       )
-      if (res.status === 200) {
+      if (res.status === 200 && !res.data?.message) {
         setClubs(res.data)
       }
     } catch (error) {
@@ -168,7 +169,7 @@ export const FindAClubScreen = () => {
           <ActivityIndicator />
         ) : (
           <Banner
-            info="There are no clubs for the choosen distance"
+            info="There are no clubs for the choosen location"
             actions={[]}
           />
         )
