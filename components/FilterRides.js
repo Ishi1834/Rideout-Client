@@ -1,10 +1,12 @@
 import { useState } from "react"
-import { StyleSheet } from "react-native"
-import { Portal, Modal } from "react-native-paper"
+import { StyleSheet, View } from "react-native"
+import { Portal, Modal, Button } from "react-native-paper"
 import { Checkbox } from "./Checkbox"
 import { NumberSelector } from "./NumberSelector"
 import { RadioInput } from "./RadioInput"
 import { Switch } from "./Switch"
+import DateTimePicker from "@react-native-community/datetimepicker"
+import { formatDate } from "../utils/formatDate"
 
 export const FilterRides = ({
   visible,
@@ -21,9 +23,25 @@ export const FilterRides = ({
   setSortRidesSelected,
 }) => {
   const [selectedNumber, setSelectedNumber] = useState(null)
+  const [showDateRange, setShowDateRange] = useState(false)
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [fromDate, setFromDate] = useState(new Date())
+  const [toDate, setToDate] = useState(new Date())
 
   const getLabel = (array, value) => {
     return array.find((obj) => obj.value === value).label
+  }
+
+  const handleDateSelect = (date) => {
+    setShowDatePicker(false)
+    if (showDatePicker === "fromDate") {
+      setFromDate(date)
+      if (toDate < date) {
+        setToDate(date)
+      }
+    } else {
+      setToDate(date)
+    }
   }
 
   return (
@@ -58,14 +76,39 @@ export const FilterRides = ({
           }}
           disabled={userLocation ? false : true}
         />
-        {filterRides.map((item, index) => (
-          <Checkbox
-            label={item.label}
-            key={index}
-            isChecked={item.isChecked}
-            handleCheckChange={(val) => setFilter("checkbox", index, val)}
+        <Checkbox
+          label="Date range"
+          isChecked={showDateRange}
+          handleCheckChange={() => setShowDateRange(!showDateRange)}
+        />
+        <View style={styles.dateContainer}>
+          <Button mode="text" onPress={() => setShowDatePicker("fromDate")}>
+            From {formatDate(fromDate)}
+          </Button>
+          {showDateRange && (
+            <Button mode="text" onPress={() => setShowDatePicker("toDate")}>
+              To {formatDate(toDate)}
+            </Button>
+          )}
+        </View>
+        {showDatePicker && (
+          <DateTimePicker
+            value={showDatePicker === "fromDate" ? fromDate : toDate}
+            mode="date"
+            onChange={(e, date) => handleDateSelect(date)}
           />
-        ))}
+        )}
+
+        <View style={styles.rideType}>
+          {filterRides.map((item, index) => (
+            <Checkbox
+              label={item.label}
+              key={index}
+              isChecked={item.isChecked}
+              handleCheckChange={(val) => setFilter("checkbox", index, val)}
+            />
+          ))}
+        </View>
 
         {filterClubs && (
           <RadioInput
@@ -87,5 +130,15 @@ const styles = StyleSheet.create({
   modalStyle: {
     backgroundColor: "white",
     padding: 20,
+  },
+  rideType: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  dateContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginBottom: 10,
   },
 })
