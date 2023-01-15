@@ -157,8 +157,7 @@ export const FindARideScreen = () => {
         // distance for clubRides is calculated using user location
         const maxDistanceInM = maxDistance * 1000
         allFilteredRides = allFilteredRides.filter(
-          (ride) =>
-            ride.distanceToStart < maxDistanceInM && ride?.openRide === true
+          (ride) => ride.distanceToStart < maxDistanceInM
         )
       }
 
