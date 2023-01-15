@@ -16,6 +16,9 @@ export const FilterRides = ({
   maxDistance,
   onMaxDistanceChange,
   userLocation,
+  sortRides,
+  sortRidesSelected,
+  setSortRidesSelected,
 }) => {
   const [selectedNumber, setSelectedNumber] = useState(null)
 
@@ -40,6 +43,13 @@ export const FilterRides = ({
           value={filterMap.showMap}
           label={filterMap.name}
         />
+        {sortRides && (
+          <RadioInput
+            radioData={sortRides}
+            preSelectedLabel={getLabel(sortRides, sortRidesSelected)}
+            itemSelected={(val) => setSortRidesSelected(val)}
+          />
+        )}
         <NumberSelector
           label="Open Rides Max Distance"
           initialNumber={maxDistance}

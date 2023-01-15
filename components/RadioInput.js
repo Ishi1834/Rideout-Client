@@ -31,7 +31,7 @@ export const RadioInput = ({
   }, [selectedItem])
 
   return (
-    <View>
+    <View style={styles.container}>
       <Button
         icon="chevron-down"
         mode="contained-tonal"
@@ -64,6 +64,9 @@ export const RadioInput = ({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: 10,
+  },
   button: {
     borderRadius: 0,
   },

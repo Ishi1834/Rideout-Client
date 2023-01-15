@@ -4,7 +4,7 @@ import { Text, Switch as SwitchBase } from "react-native-paper"
 export const Switch = ({ handleChange, value, label }) => {
   return (
     <View style={styles.switch}>
-      <Text>{label}</Text>
+      <Text style={styles.text}>{label}</Text>
       <SwitchBase value={value} onChange={() => handleChange(!value)} />
     </View>
   )
@@ -15,5 +15,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  text: {
+    marginRight: 5,
   },
 })

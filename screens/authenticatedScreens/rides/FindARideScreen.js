@@ -15,6 +15,7 @@ import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
 import axios from "../../../axiosConfig"
 import * as Location from "expo-location"
 import { getDistance } from "geolib"
+import { sortRidesArray } from "../../../static/multiSelectOptions"
 
 export const FindARideScreen = () => {
   const dispatch = useDispatch()
@@ -37,10 +38,11 @@ export const FindARideScreen = () => {
     showMap: true,
   })
   const [filterRides, setFilterRides] = useState([
-    { label: "Open Rides", isChecked: true },
+    { label: "Open Rides", isChecked: false },
     { label: "Club Rides", isChecked: true },
   ])
   const [filterClubs, setFilterClubs] = useState(null)
+  const [sortRidesSelected, setSortRidesSelected] = useState("date")
 
   useFocusEffect(
     // location
@@ -52,6 +54,7 @@ export const FindARideScreen = () => {
         setUserLocation(null)
         setLocationError(null)
         setShowDropPinMap(false)
+        setSortRidesSelected("date")
       }
     }, [])
   )
@@ -121,6 +124,11 @@ export const FindARideScreen = () => {
       if (userLocation && filterRides[0].isChecked) {
         const updatedDistanceClubRides = addDistanceToClubRides(clubRides)
         getAllOpenRides(updatedDistanceClubRides)
+      } else if (userLocation) {
+        // add distance to clubRides if userlocation is selected
+        const updatedDistanceClubRides = addDistanceToClubRides(clubRides)
+        dispatch(setUpClubRides(updatedDistanceClubRides))
+        setAllRides(updatedDistanceClubRides)
       }
     }, [
       userLocation?.latitude,
@@ -142,8 +150,8 @@ export const FindARideScreen = () => {
     setFilterClubs({
       ...filterClubs,
       data: [
-        ...clubsArray,
         { label: "Show All Club rides", value: "Show All Club rides" },
+        ...clubsArray,
       ],
     })
   }, [])
@@ -182,6 +190,23 @@ export const FindARideScreen = () => {
       ) {
         allFilteredRides = allFilteredRides.filter(
           (ride) => ride?.club?.clubId === filterClubs?.selected
+        )
+      }
+
+      // sort rides
+      if (sortRidesSelected === "date") {
+        allFilteredRides = allFilteredRides.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        )
+      } else if (sortRidesSelected === "rideDistance") {
+        allFilteredRides = allFilteredRides.sort(
+          (a, b) => a.distance - b.distance
+        )
+      } else if (sortRidesSelected === "speed") {
+        allFilteredRides = allFilteredRides.sort((a, b) => a.speed - b.speed)
+      } else if (sortRidesSelected === "startDistance" && userLocation) {
+        allFilteredRides = allFilteredRides.sort(
+          (a, b) => a.distanceToStart - b.distanceToStart
         )
       }
 
@@ -339,10 +364,13 @@ export const FindARideScreen = () => {
           maxDistance={maxDistance}
           onMaxDistanceChange={(distance) => setMaxDistance(distance)}
           userlocation={userLocation}
+          sortRides={sortRidesArray}
+          sortRidesSelected={sortRidesSelected}
+          setSortRidesSelected={(val) => setSortRidesSelected(val)}
         />
       )}
       <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>
-        Filter rides
+        Sort and Filter rides
       </Button>
 
       <Button
