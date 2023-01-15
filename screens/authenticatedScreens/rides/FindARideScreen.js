@@ -152,12 +152,13 @@ export const FindARideScreen = () => {
     // runs whenever filter is closed
     if (!showFilter) {
       let allFilteredRides = [...openRides, ...clubRides]
-      // check distance
-      if (userLocation) {
+      // check distance for openRides
+      if (userLocation && filterRides[0].isChecked) {
         // distance for clubRides is calculated using user location
         const maxDistanceInM = maxDistance * 1000
         allFilteredRides = allFilteredRides.filter(
-          (ride) => ride.distanceToStart < maxDistanceInM
+          (ride) =>
+            ride.distanceToStart < maxDistanceInM && ride?.openRide === true
         )
       }
 
@@ -187,6 +188,7 @@ export const FindARideScreen = () => {
 
       setAllRides(allFilteredRides)
     }
+    // should filter run if location or max distance changes?
   }, [showFilter, openRides.length, clubRides.length])
 
   const addDistanceToClubRides = (clubRides) => {
@@ -337,6 +339,7 @@ export const FindARideScreen = () => {
           setFilter={setRidesFilter}
           maxDistance={maxDistance}
           onMaxDistanceChange={(distance) => setMaxDistance(distance)}
+          userlocation={userLocation}
         />
       )}
       <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>

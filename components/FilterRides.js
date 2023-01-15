@@ -15,6 +15,7 @@ export const FilterRides = ({
   setFilter,
   maxDistance,
   onMaxDistanceChange,
+  userLocation,
 }) => {
   const [selectedNumber, setSelectedNumber] = useState(null)
 
@@ -40,11 +41,12 @@ export const FilterRides = ({
           label={filterMap.name}
         />
         <NumberSelector
-          label="Max Distance"
+          label="Open Rides Max Distance"
           initialNumber={maxDistance}
           handleNumberChange={(number) => {
             setSelectedNumber(number)
           }}
+          disabled={userLocation ? false : true}
         />
         {filterRides.map((item, index) => (
           <Checkbox
