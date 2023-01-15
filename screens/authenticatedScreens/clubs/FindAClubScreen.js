@@ -23,13 +23,19 @@ export const FindAClubScreen = () => {
   useFocusEffect(
     useCallback(() => {
       requestLocationAccess()
+
+      return () => {
+        // clear state when user leaves screen
+        setUserHasSelectedLocation(false)
+        setUserLocation(null)
+        setLocationError(null)
+        setClubs([])
+      }
     }, [])
   )
 
   useFocusEffect(
     useCallback(() => {
-      setIsMakingApiRequest(true)
-
       if (userLocation) {
         findClubsNearLocation()
       }
@@ -37,6 +43,7 @@ export const FindAClubScreen = () => {
   )
 
   const findClubsNearLocation = async () => {
+    setIsMakingApiRequest(true)
     try {
       const res = await axios.get(
         `/clubs?lng=${userLocation.longitude}&lat=${userLocation.latitude}`
@@ -55,7 +62,9 @@ export const FindAClubScreen = () => {
     let { status } = await Location.requestForegroundPermissionsAsync()
 
     if (status !== "granted") {
-      setLocationError("Permission to access location was denied")
+      setLocationError(
+        "Permission to access location was denied. \n\nPlease grant location access in your setting or select a location on the map."
+      )
       return
     }
 
@@ -108,6 +117,13 @@ export const FindAClubScreen = () => {
     setShowDropPinMap(false)
   }
 
+  const handleBannerSelection = (val) => {
+    setLocationError(null)
+    if (val === "Location granted") {
+      requestLocationAccess()
+    }
+  }
+
   if (showDropPinMap) {
     return (
       <DropPinMap
@@ -123,10 +139,13 @@ export const FindAClubScreen = () => {
           info={locationError}
           actions={[
             {
-              label: "Get location",
+              label: "Ok",
+            },
+            {
+              label: "Location granted",
             },
           ]}
-          buttonClicked={requestLocationAccess}
+          buttonClicked={(val) => handleBannerSelection(val)}
         />
       )}
       <Button

@@ -51,6 +51,7 @@ export const FindARideScreen = () => {
       return () => {
         setUserLocation(null)
         setLocationError(null)
+        setShowDropPinMap(false)
       }
     }, [])
   )
@@ -197,10 +198,13 @@ export const FindARideScreen = () => {
   }
 
   const requestLocationAccess = async () => {
+    setLocationError(null)
     let { status } = await Location.requestForegroundPermissionsAsync()
 
     if (status !== "granted") {
-      setLocationError("Permission to access location was denied")
+      setLocationError(
+        "Permission to access location was denied. \n\nPlease grant location access in your setting or select a location on the map to find rides closest to you."
+      )
       return
     }
 
@@ -282,6 +286,7 @@ export const FindARideScreen = () => {
   }
 
   const handleLocationSelect = (location) => {
+    setLocationError(null)
     setUserLocation({
       ...location,
       latitudeDelta: 0.0922,
@@ -289,6 +294,13 @@ export const FindARideScreen = () => {
     })
     setUserHasSelectedLocation(true)
     setShowDropPinMap(false)
+  }
+
+  const handleBannerSelection = (val) => {
+    setLocationError(null)
+    if (val === "Location granted") {
+      requestLocationAccess()
+    }
   }
 
   if (showDropPinMap) {
@@ -301,6 +313,20 @@ export const FindARideScreen = () => {
   }
   return (
     <View style={styles.container}>
+      {locationError && (
+        <Banner
+          info={locationError}
+          actions={[
+            {
+              label: "Ok",
+            },
+            {
+              label: "Location granted",
+            },
+          ]}
+          buttonClicked={(val) => handleBannerSelection(val)}
+        />
+      )}
       {showFilter && (
         <FilterRides
           visible={showFilter}
@@ -317,17 +343,6 @@ export const FindARideScreen = () => {
         Filter rides
       </Button>
 
-      {locationError && (
-        <Banner
-          info={locationError}
-          actions={[
-            {
-              label: "Get location",
-            },
-          ]}
-          buttonClicked={requestLocationAccess}
-        />
-      )}
       <Button
         mode="contained"
         onPress={() => {

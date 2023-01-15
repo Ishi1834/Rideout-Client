@@ -1,4 +1,4 @@
-import { View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { Banner as BannerBase } from "react-native-paper"
 
 export const Banner = ({ info, actions, buttonClicked }) => {
@@ -12,9 +12,15 @@ export const Banner = ({ info, actions, buttonClicked }) => {
 
   return (
     <View>
-      <BannerBase visible={true} actions={actionsArray}>
+      <BannerBase visible={true} actions={actionsArray} style={styles.banner}>
         {info}
       </BannerBase>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  banner: {
+    marginBottom: 10,
+  },
+})
