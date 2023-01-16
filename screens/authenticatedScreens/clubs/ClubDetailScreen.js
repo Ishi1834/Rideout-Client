@@ -359,7 +359,7 @@ export const ClubDetailScreen = ({ route }) => {
                   disabled={isMakingApiRequest && true}
                   onPress={() => setIsEditMembers(!isEditMembers)}
                 >
-                  {isEditMembers ? "Cancel edit" : "Edit members"}{" "}
+                  {isEditMembers ? "Close edit" : "Edit members"}{" "}
                 </Button>
               </Card.Actions>
               <Card.Actions>
