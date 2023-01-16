@@ -75,12 +75,17 @@ export const FindARideScreen = () => {
                 clubRides.forEach((ride) => allClubRidesArray.push(ride))
               }
             })
+            // remove past rides
+            const todaysDate = new Date()
+            const allUpcomingClubRides = allClubRidesArray.filter(
+              (ride) => new Date(ride.date) > todaysDate
+            )
             if (userLocation) {
               const updatedDistanceClubRides =
-                addDistanceToClubRides(allClubRidesArray)
+                addDistanceToClubRides(allUpcomingClubRides)
               dispatch(setUpClubRides(updatedDistanceClubRides))
             } else {
-              dispatch(setUpClubRides(allClubRidesArray))
+              dispatch(setUpClubRides(allUpcomingClubRides))
             }
           })
           .catch((error) => {
@@ -103,7 +108,17 @@ export const FindARideScreen = () => {
             `/rides?lng=${userLocation.longitude}&lat=${userLocation.latitude}&maxDistance=${maxDistanceInM}`
           )
           if (res.status === 200) {
-            dispatch(setUpOpenRides({ range: maxDistance, rides: res.data }))
+            // remove past rides
+            const todaysDate = new Date()
+            const allUpcomingOpenRides = res.data.filter(
+              (ride) => new Date(ride.date) > todaysDate
+            )
+            dispatch(
+              setUpOpenRides({
+                range: maxDistance,
+                rides: allUpcomingOpenRides,
+              })
+            )
             if (updatedDistanceClubRides.length !== 0) {
               /**
                * getAllClubRides setsUp clubRides array
@@ -111,7 +126,7 @@ export const FindARideScreen = () => {
                */
               dispatch(setUpClubRides(updatedDistanceClubRides))
             }
-            setAllRides([...updatedDistanceClubRides, ...res.data])
+            setAllRides([...updatedDistanceClubRides, ...allUpcomingOpenRides])
           }
         } catch (error) {
           dispatch(setUpOpenRides({ range: null, rides: [] }))
@@ -159,7 +174,7 @@ export const FindARideScreen = () => {
   useEffect(() => {
     // runs whenever filter is closed
     if (!showFilter) {
-      let allFilteredRides = [...openRides, ...clubRides]
+      let allFilteredRides = [...openRides]
       // check distance for openRides
       if (userLocation && filterRides[0].isChecked) {
         // distance for clubRides is calculated using user location
@@ -168,6 +183,8 @@ export const FindARideScreen = () => {
           (ride) => ride.distanceToStart < maxDistanceInM
         )
       }
+      // club rides should be removed by distance limits
+      allFilteredRides = [...allFilteredRides, ...clubRides]
 
       // check if open rides is unchecked
       if (!filterRides[0].isChecked) {
@@ -356,7 +373,7 @@ export const FindARideScreen = () => {
           setFilter={setRidesFilter}
           maxDistance={maxDistance}
           onMaxDistanceChange={(distance) => setMaxDistance(distance)}
-          userlocation={userLocation}
+          userLocation={userLocation}
           sortRides={sortRidesArray}
           sortRidesSelected={sortRidesSelected}
           setSortRidesSelected={(val) => setSortRidesSelected(val)}
