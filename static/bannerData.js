@@ -13,14 +13,17 @@ export const noClubsBanner = {
 }
 
 export const noRidesBanner = {
-  info: "You have not joined any rides, create or join a ride by clicking below",
+  infoNoUpcomingRides:
+    "You have no upcoming rides, create or find a ride by clicking below.",
+  infoNoPastRides:
+    "You have not previously joined a ride, create or find a ride by clicking below.",
   actions: [
     {
       label: "Create a Ride",
       screen: "CreateARide",
     },
     {
-      label: "Join a Ride",
+      label: "Find a Ride",
       screen: "FindARide",
     },
   ],
