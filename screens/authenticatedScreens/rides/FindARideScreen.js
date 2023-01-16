@@ -200,10 +200,10 @@ export const FindARideScreen = () => {
         )
       } else if (sortRidesSelected === "rideDistance") {
         allFilteredRides = allFilteredRides.sort(
-          (a, b) => a.distance - b.distance
+          (a, b) => b.distance - a.distance
         )
       } else if (sortRidesSelected === "speed") {
-        allFilteredRides = allFilteredRides.sort((a, b) => a.speed - b.speed)
+        allFilteredRides = allFilteredRides.sort((a, b) => b.speed - a.speed)
       } else if (sortRidesSelected === "startDistance" && userLocation) {
         allFilteredRides = allFilteredRides.sort(
           (a, b) => a.distanceToStart - b.distanceToStart
