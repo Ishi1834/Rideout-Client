@@ -238,19 +238,12 @@ export const FindARideScreen = () => {
 
     const { latitude, longitude } = location.coords
 
-    // remove below when done
     setUserLocation({
-      latitude: 51.464967,
-      longitude: -0.180209,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    })
-    /* setUserLocation({
       latitude,
       longitude,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
-    }) */
+    })
   }
 
   const renderRideCard = ({ item }) => (
