@@ -48,13 +48,13 @@ export const FindARideScreen = () => {
     // location
     useCallback(() => {
       // Get user location whenever screen gets focus
-      requestLocationAccess()
+      if (!userLocation) {
+        requestLocationAccess()
+      }
       // set user location to null when screen looses focus
       return () => {
-        setUserLocation(null)
         setLocationError(null)
         setShowDropPinMap(false)
-        setSortRidesSelected("date")
       }
     }, [])
   )
