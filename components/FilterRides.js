@@ -51,7 +51,7 @@ export const FilterRides = ({
           />
         )}
         <NumberSelector
-          label="Open Rides Max Distance"
+          label="Open Rides Max Distance km"
           initialNumber={maxDistance}
           handleNumberChange={(number) => {
             setSelectedNumber(number)

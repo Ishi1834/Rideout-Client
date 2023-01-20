@@ -160,14 +160,14 @@ export const RideDetailScreen = ({ route }) => {
                 <View style={styles.stats}>
                   <View style={styles.statsItem}>
                     <Text variant="labelMedium">Distance</Text>
-                    <Text variant="bodyMedium">{ride?.distance}</Text>
+                    <Text variant="bodyMedium">{ride?.distance} km</Text>
                   </View>
                   <Divider
                     style={[styles.statsItem, { width: 1, height: "100%" }]}
                   />
                   <View style={styles.statsItem}>
                     <Text variant="labelMedium">Speed</Text>
-                    <Text variant="bodyMedium">{ride?.speed}</Text>
+                    <Text variant="bodyMedium">{ride?.speed} km/h</Text>
                   </View>
                 </View>
                 <Chip>{ride.rideType} ride</Chip>

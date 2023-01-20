@@ -193,7 +193,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
                     max={500}
                     min={0}
                     noValadationRequired={true}
-                    label="Distance"
+                    label="Distance km"
                     initialNumber={values.distance}
                     disabled={isSubmittingApi && true}
                     error={touched.distance && errors.distance}
@@ -205,7 +205,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
                     max={60}
                     min={0}
                     noValadationRequired={true}
-                    label="Speed"
+                    label="Speed km/h"
                     initialNumber={values.speed}
                     disabled={isSubmittingApi && true}
                     error={touched.speed && errors.speed}
