@@ -109,7 +109,11 @@ export const StackNavigator = () => {
     <Stack.Navigator>
       {authState.isLoading ? (
         // We haven't finished checking for the token yet
-        <Stack.Screen name="Splash" component={SplashScreen} />
+        <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{ title: "Preparing application" }}
+        />
       ) : authState.authToken == null ? (
         <>
           <Stack.Screen
