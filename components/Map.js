@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 // UI
 import { View, StyleSheet } from "react-native"
 // Other
-import MapView, { Marker } from "react-native-maps"
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
 export const Map = ({
   allLocations,
@@ -30,6 +30,7 @@ export const Map = ({
             zoomControlEnabled={true}
             showsUserLocation={userHasSelectedLocation ? false : true}
             loadingEnabled={true}
+            provider={PROVIDER_GOOGLE}
           >
             {userHasSelectedLocation && (
               <Marker coordinate={userLocation} pinColor={"green"} />

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { View, StyleSheet } from "react-native"
 import { FAB } from "react-native-paper"
 // Other
-import MapView, { Marker } from "react-native-maps"
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
 export const DropPinMap = ({ onSelectLocation, preselectedLocation }) => {
   const [pinLocation, setPinLocation] = useState(null)
@@ -28,6 +28,7 @@ export const DropPinMap = ({ onSelectLocation, preselectedLocation }) => {
         region={region}
         zoomControlEnabled={true}
         onPress={(e) => setPinLocation(e.nativeEvent.coordinate)}
+        provider={PROVIDER_GOOGLE}
       >
         {pinLocation && (
           <Marker

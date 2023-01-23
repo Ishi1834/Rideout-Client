@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native"
 // Other
-import MapView, { Marker } from "react-native-maps"
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
 export const PreviewMap = ({ location }) => {
   const [longitude, latitude] = location
@@ -15,6 +15,7 @@ export const PreviewMap = ({ location }) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        provider={PROVIDER_GOOGLE}
       >
         <Marker coordinate={{ latitude, longitude }} />
       </MapView>
