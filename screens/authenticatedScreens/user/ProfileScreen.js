@@ -13,10 +13,18 @@ import {
   Text,
 } from "react-native-paper"
 // State
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+// Other
+import axios from "../../../axiosConfig"
+import * as SecureStore from "expo-secure-store"
+import { resetUserDetails } from "../../../state/userSlice"
+import { resetClubs } from "../../../state/clubsSlice"
+import { resetRides } from "../../../state/ridesSlice"
+import { resetAuth } from "../../../state/authSlice"
 
 export const ProfileScreen = () => {
   const state = useSelector((state) => state)
+  const dispatch = useDispatch()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
 
@@ -33,7 +41,20 @@ export const ProfileScreen = () => {
       : `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`)
 
   const deleteUserApiCall = async () => {
-    console.log("delete requested")
+    setIsMakingApiRequest(true)
+    try {
+      const res = await axios.delete("/users")
+      if (res.status === 200) {
+        await SecureStore.deleteItemAsync("refreshToken")
+        dispatch(resetUserDetails())
+        dispatch(resetClubs())
+        dispatch(resetRides())
+        dispatch(resetAuth())
+      }
+    } catch (error) {
+      console.log("error", error)
+    }
+    setIsMakingApiRequest(false)
   }
 
   return (
@@ -45,8 +66,12 @@ export const ProfileScreen = () => {
             onDismiss={() => setShowDeleteModal(false)}
             contentContainerStyle={styles.modalStyle}
           >
-            <Text style={styles.modalText}>
+            <Text style={styles.modalTitle}>
               Are you sure you want to delete your account?
+            </Text>
+            <Text style={styles.modalText}>
+              This action is in-reversible and you will be logged out
+              immediately.
             </Text>
 
             <Card.Actions>
@@ -143,9 +168,15 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   modalStyle: { backgroundColor: "white", padding: 20, marginHorizontal: 20 },
+  modalTitle: {
+    paddingHorizontal: 10,
+    paddingTop: 15,
+    fontSize: 15,
+    fontWeight: "700",
+  },
   modalText: {
     paddingHorizontal: 10,
-    paddingVertical: 15,
+    paddingVertical: 10,
     fontSize: 15,
   },
   title: {
