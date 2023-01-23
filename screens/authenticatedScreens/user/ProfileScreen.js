@@ -1,11 +1,24 @@
+import { useState } from "react"
 // UI
 import { ScrollView, StyleSheet, View } from "react-native"
-import { Avatar, Card, DataTable, Divider, Text } from "react-native-paper"
+import {
+  Avatar,
+  Button,
+  Card,
+  DataTable,
+  Divider,
+  Modal,
+  MD2Colors,
+  Portal,
+  Text,
+} from "react-native-paper"
 // State
 import { useSelector } from "react-redux"
 
 export const ProfileScreen = () => {
   const state = useSelector((state) => state)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
 
   const clubsAuthorization = state.clubs.authorization
   const clubsJoinRequestPending = state.user.pendingJoinRequests
@@ -19,9 +32,43 @@ export const ProfileScreen = () => {
       ? name.slice(0, 2)
       : `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`)
 
+  const deleteUserApiCall = async () => {
+    console.log("delete requested")
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
+        <Portal>
+          <Modal
+            visible={showDeleteModal}
+            onDismiss={() => setShowDeleteModal(false)}
+            contentContainerStyle={styles.modalStyle}
+          >
+            <Text style={styles.modalText}>
+              Are you sure you want to delete your account?
+            </Text>
+
+            <Card.Actions>
+              <Button
+                loading={isMakingApiRequest && true}
+                disabled={isMakingApiRequest && true}
+                mode="contained"
+                buttonColor={MD2Colors.redA200}
+                onPress={deleteUserApiCall}
+              >
+                Yes
+              </Button>
+              <Button
+                loading={isMakingApiRequest && true}
+                disabled={isMakingApiRequest && true}
+                onPress={() => setShowDeleteModal(false)}
+              >
+                No
+              </Button>
+            </Card.Actions>
+          </Modal>
+        </Portal>
         <Card>
           <Card.Title
             title={userDetails.username}
@@ -79,6 +126,11 @@ export const ProfileScreen = () => {
               </DataTable>
             </View>
           </Card.Content>
+          <Card.Actions>
+            <Button onPress={() => setShowDeleteModal(true)}>
+              Delete your account
+            </Button>
+          </Card.Actions>
         </Card>
       </View>
     </ScrollView>
@@ -89,6 +141,12 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+  },
+  modalStyle: { backgroundColor: "white", padding: 20, marginHorizontal: 20 },
+  modalText: {
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    fontSize: 15,
   },
   title: {
     flexDirection: "column",
