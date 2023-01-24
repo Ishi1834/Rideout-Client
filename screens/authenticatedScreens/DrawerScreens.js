@@ -18,6 +18,7 @@ import { resetClubs } from "../../state/clubsSlice"
 import { resetRides } from "../../state/ridesSlice"
 // Other
 import * as SecureStore from "expo-secure-store"
+import * as MailComposer from "expo-mail-composer"
 
 const Drawer = createDrawerNavigator()
 
@@ -32,9 +33,14 @@ const CustomDrawerContent = (props) => {
     dispatch(resetAuth())
   }
 
+  const openMail = () => {
+    MailComposer.composeAsync({ recipients: ["clubrideout@gmail.com"] })
+  }
+
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
+      <DrawerItem label="Contact us" onPress={() => openMail()} />
       <DrawerItem label="Log out" onPress={() => logout()} />
     </DrawerContentScrollView>
   )
