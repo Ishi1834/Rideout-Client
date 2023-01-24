@@ -21,7 +21,7 @@
       "config": {
         "googleMapsApiKey": "AIzaSyCwtwv4FFMAS-10JuCA5BS4gD_mxWUnM_8"
       },
-      "buildNumber": "1.0.1"
+      "buildNumber": "1.0.2"
     },
     "android": {
       "adaptiveIcon": {
@@ -34,7 +34,7 @@
           "apiKey": "AIzaSyCSxx7Kqej2-pSuAF3Pcg9hgNSNZvnDAKo"
         }
       },
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"
