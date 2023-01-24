@@ -2,7 +2,7 @@
   "expo": {
     "name": "RideOut",
     "slug": "RideOut",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -20,7 +20,8 @@
       "bundleIdentifier": "com.imohamad.RideOut",
       "config": {
         "googleMapsApiKey": "AIzaSyCwtwv4FFMAS-10JuCA5BS4gD_mxWUnM_8"
-      }
+      },
+      "buildNumber": "1.0.1"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,7 +33,8 @@
         "googleMaps": {
           "apiKey": "AIzaSyCSxx7Kqej2-pSuAF3Pcg9hgNSNZvnDAKo"
         }
-      }
+      },
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
