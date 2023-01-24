@@ -282,6 +282,11 @@ export const ClubDetailScreen = ({ route }) => {
             left={LeftContent}
           />
           <Card.Content>
+            {club?.description && (
+              <Text style={styles.description} variant="labelLarge">
+                {club.description}
+              </Text>
+            )}
             <Text>The rides we do</Text>
             <View style={styles.tagContainer}>
               {club.tags.map((tag, index) => (
@@ -403,6 +408,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 15,
     fontSize: 15,
+  },
+  description: {
+    marginBottom: 10,
   },
   tagContainer: {
     flexDirection: "row",

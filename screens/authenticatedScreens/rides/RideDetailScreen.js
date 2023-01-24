@@ -208,11 +208,15 @@ export const RideDetailScreen = ({ route }) => {
                 <Button onPress={() => setShowDeleteRide(true)}>
                   Delete Ride
                 </Button>
-                <Button
-                  onPress={() => navigateToEdit("EditARide", ride, ride?.name)}
-                >
-                  Edit Ride
-                </Button>
+                {new Date() < new Date(ride.date) && (
+                  <Button
+                    onPress={() =>
+                      navigateToEdit("EditARide", ride, ride?.name)
+                    }
+                  >
+                    Edit Ride
+                  </Button>
+                )}
               </Card.Actions>
             )
           }
