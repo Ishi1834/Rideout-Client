@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 // UI
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, Platform } from "react-native"
 // Other
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
@@ -22,32 +22,60 @@ export const Map = ({
     <View style={showMap ? styles.mapContainer : styles.mapHiddenContainer}>
       {showMap && (
         <View style={styles.mapView}>
-          <MapView
-            style={styles.map}
-            region={mapRegion}
-            onRegionChangeComplete={(region) => setMapRegion(region)}
-            zoomEnabled={true}
-            zoomControlEnabled={true}
-            showsUserLocation={userHasSelectedLocation ? false : true}
-            loadingEnabled={true}
-            provider={PROVIDER_GOOGLE}
-          >
-            {userHasSelectedLocation && (
-              <Marker coordinate={userLocation} pinColor={"green"} />
-            )}
+          {Platform.OS === "android" ? (
+            <MapView
+              style={styles.map}
+              region={mapRegion}
+              onRegionChangeComplete={(region) => setMapRegion(region)}
+              zoomEnabled={true}
+              zoomControlEnabled={true}
+              showsUserLocation={userHasSelectedLocation ? false : true}
+              loadingEnabled={true}
+              provider={PROVIDER_GOOGLE}
+            >
+              {userHasSelectedLocation && (
+                <Marker coordinate={userLocation} pinColor={"green"} />
+              )}
 
-            {allLocations &&
-              allLocations.map((ride, index) => (
-                <Marker
-                  key={index}
-                  coordinate={{
-                    longitude: ride.location[0],
-                    latitude: ride.location[1],
-                  }}
-                  title={ride.name}
-                />
-              ))}
-          </MapView>
+              {allLocations &&
+                allLocations.map((ride, index) => (
+                  <Marker
+                    key={index}
+                    coordinate={{
+                      longitude: ride.location[0],
+                      latitude: ride.location[1],
+                    }}
+                    title={ride.name}
+                  />
+                ))}
+            </MapView>
+          ) : (
+            <MapView
+              style={styles.map}
+              region={mapRegion}
+              onRegionChangeComplete={(region) => setMapRegion(region)}
+              zoomEnabled={true}
+              zoomControlEnabled={true}
+              showsUserLocation={userHasSelectedLocation ? false : true}
+              loadingEnabled={true}
+            >
+              {userHasSelectedLocation && (
+                <Marker coordinate={userLocation} pinColor={"green"} />
+              )}
+
+              {allLocations &&
+                allLocations.map((ride, index) => (
+                  <Marker
+                    key={index}
+                    coordinate={{
+                      longitude: ride.location[0],
+                      latitude: ride.location[1],
+                    }}
+                    title={ride.name}
+                  />
+                ))}
+            </MapView>
+          )}
         </View>
       )}
     </View>

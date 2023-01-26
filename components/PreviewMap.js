@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, Platform } from "react-native"
 // Other
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
@@ -7,18 +7,32 @@ export const PreviewMap = ({ location }) => {
 
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        region={{
-          latitude,
-          longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-        provider={PROVIDER_GOOGLE}
-      >
-        <Marker coordinate={{ latitude, longitude }} />
-      </MapView>
+      {Platform.OS === "android" ? (
+        <MapView
+          style={styles.map}
+          region={{
+            latitude,
+            longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          provider={PROVIDER_GOOGLE}
+        >
+          <Marker coordinate={{ latitude, longitude }} />
+        </MapView>
+      ) : (
+        <MapView
+          style={styles.map}
+          region={{
+            latitude,
+            longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        >
+          <Marker coordinate={{ latitude, longitude }} />
+        </MapView>
+      )}
     </View>
   )
 }

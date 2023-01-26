@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 // UI
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, Platform } from "react-native"
 import { FAB } from "react-native-paper"
 // Other
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
@@ -21,23 +21,44 @@ export const DropPinMap = ({ onSelectLocation, preselectedLocation }) => {
       setPinLocation({ longitude, latitude })
     }
   }, [])
+  /**
+   * using conditional within provider prop as shown below causes error
+   * provider={Platrom.OS === 'android' && PROVIDER_GOOGLE}
+   */
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        region={region}
-        zoomControlEnabled={true}
-        onPress={(e) => setPinLocation(e.nativeEvent.coordinate)}
-        provider={PROVIDER_GOOGLE}
-      >
-        {pinLocation && (
-          <Marker
-            coordinate={pinLocation}
-            draggable={true}
-            onDragEnd={(e) => setPinLocation(e.nativeEvent.coordinate)}
-          />
-        )}
-      </MapView>
+      {Platform.OS === "android" ? (
+        <MapView
+          style={styles.map}
+          region={region}
+          zoomControlEnabled={true}
+          onPress={(e) => setPinLocation(e.nativeEvent.coordinate)}
+          provider={PROVIDER_GOOGLE}
+        >
+          {pinLocation && (
+            <Marker
+              coordinate={pinLocation}
+              draggable={true}
+              onDragEnd={(e) => setPinLocation(e.nativeEvent.coordinate)}
+            />
+          )}
+        </MapView>
+      ) : (
+        <MapView
+          style={styles.map}
+          region={region}
+          zoomControlEnabled={true}
+          onPress={(e) => setPinLocation(e.nativeEvent.coordinate)}
+        >
+          {pinLocation && (
+            <Marker
+              coordinate={pinLocation}
+              draggable={true}
+              onDragEnd={(e) => setPinLocation(e.nativeEvent.coordinate)}
+            />
+          )}
+        </MapView>
+      )}
       {pinLocation && (
         <FAB
           icon="plus"
