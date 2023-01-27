@@ -7,12 +7,13 @@ import {
   HelperText,
   ActivityIndicator,
 } from "react-native-paper"
-import { ErrorText } from "../../components/SummaryText"
+import { SummaryText } from "../../components/SummaryText"
 // Other
 import { Formik } from "formik"
 import { signUpSchema } from "../../static/validationSchema"
 import { signUpInitialValues } from "../../static/formValues"
 import axios from "../../axiosConfig"
+import { capitalizeFirstLetter } from "../../utils/generalUtils"
 
 export const SignUpScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState("")
@@ -30,7 +31,7 @@ export const SignUpScreen = ({ navigation }) => {
     } catch (error) {
       console.log("Error - SignUpScreen.js")
       if (error.response) {
-        setErrorMessage(error.response.data.message)
+        setErrorMessage(capitalizeFirstLetter(error?.response?.data?.message))
       } else if (error.request) {
         // Request made but no response is received from the server.
       } else {
@@ -144,7 +145,7 @@ export const SignUpScreen = ({ navigation }) => {
                 </HelperText>
               </View>
 
-              {errorMessage && <ErrorText errorMessage={errorMessage} />}
+              {errorMessage && <SummaryText message={errorMessage} />}
 
               {isSubmittingApi ? (
                 <ActivityIndicator animating={true} />

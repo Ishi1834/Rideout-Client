@@ -162,7 +162,7 @@ export const FindAClubScreen = () => {
           <ActivityIndicator />
         ) : (
           <Banner
-            info="There are no clubs for the choosen location"
+            info="There are no clubs within 10km of your location"
             actions={[]}
           />
         )

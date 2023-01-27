@@ -17,6 +17,7 @@ import { Formik } from "formik"
 import { signInSchema } from "../../static/validationSchema"
 import { signInInitialValues } from "../../static/formValues"
 import axios from "../../axiosConfig"
+import { capitalizeFirstLetter } from "../../utils/generalUtils"
 
 export const SignInScreen = ({ navigation, route }) => {
   const dispatch = useDispatch()
@@ -45,7 +46,7 @@ export const SignInScreen = ({ navigation, route }) => {
     } catch (error) {
       console.log("Error - SignInScreen.js")
       if (error.response) {
-        setErrorMessage(error.response.data.message)
+        setErrorMessage(capitalizeFirstLetter(error?.response?.data?.message))
       } else if (error.request) {
         // Request made but no response is received from the server.
       } else {

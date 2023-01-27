@@ -403,7 +403,7 @@ export const FindARideScreen = () => {
           <ActivityIndicator />
         ) : (
           <Banner
-            info="There are no rides for the chosen filters"
+            info="There are no rides for your selected filters"
             actions={[]}
           />
         )
