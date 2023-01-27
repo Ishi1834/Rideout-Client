@@ -102,6 +102,7 @@ export const EditARideScreen = ({ navigation, route }) => {
               <Portal>
                 <Modal
                   visible={showMap}
+                  style={styles.mapContainer}
                   contentContainerStyle={styles.mapModal}
                   onDismiss={() => setShowMap(false)}
                   dismissable={true}
@@ -298,9 +299,14 @@ const styles = StyleSheet.create({
   dateButton: {
     width: "45%",
   },
+  mapContainer: {
+    marginTop: 150,
+    marginBottom: 150,
+    marginHorizontal: 10,
+  },
   mapModal: {
-    height: 500,
-    padding: 10,
+    height: "100%",
+    padding: 5,
   },
   button: {
     marginTop: 10,

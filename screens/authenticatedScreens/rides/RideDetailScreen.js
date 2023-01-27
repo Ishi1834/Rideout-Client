@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
-import { StyleSheet, View, ScrollView } from "react-native"
+import { StyleSheet, View, ScrollView, Linking } from "react-native"
 import {
   Avatar,
   Button,
@@ -145,6 +145,17 @@ export const RideDetailScreen = ({ route }) => {
             <View style={styles.stats}>
               <Chip icon="calendar">{formatDate()}</Chip>
             </View>
+            {ride?.route && (
+              <View style={styles.routeContainer}>
+                <Text variant="headlineSmall">Route</Text>
+                <Text
+                  style={styles.routeText}
+                  onPress={() => Linking.openURL(ride.route)}
+                >
+                  {ride.route}
+                </Text>
+              </View>
+            )}
             <View style={styles.mapContainer}>
               {ride?.startLocation?.coordinates && (
                 <PreviewMap location={ride.startLocation.coordinates} />
@@ -248,6 +259,12 @@ export const styles = StyleSheet.create({
     borderColor: "black",
     borderWidth: 1,
     marginVertical: 10,
+  },
+  routeContainer: {
+    marginVertical: 5,
+  },
+  routeText: {
+    color: "blue",
   },
   statsTag: {
     flexDirection: "row",
