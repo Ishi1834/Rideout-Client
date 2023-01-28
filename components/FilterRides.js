@@ -9,7 +9,6 @@ import { Switch } from "./Switch"
 export const FilterRides = ({
   visible,
   hideModal,
-  filterMap,
   filterRides,
   filterClubs,
   setFilter,
@@ -38,11 +37,6 @@ export const FilterRides = ({
         }}
         contentContainerStyle={styles.modalStyle}
       >
-        <Switch
-          handleChange={(val) => setFilter("map", val)}
-          value={filterMap.showMap}
-          label={filterMap.name}
-        />
         {sortRides && (
           <RadioInput
             radioData={sortRides}
