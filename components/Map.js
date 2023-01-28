@@ -6,9 +6,10 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
 export const Map = ({
   allLocations,
-  showMap,
+  handleTouch,
   userLocation,
   userHasSelectedLocation = false,
+  fullScreenMap = false,
 }) => {
   const [mapRegion, setMapRegion] = useState(null)
 
@@ -19,78 +20,87 @@ export const Map = ({
   }, [userLocation?.latitude, userLocation?.longitude])
 
   return (
-    <View style={showMap ? styles.mapContainer : styles.mapHiddenContainer}>
-      {showMap && (
-        <View style={styles.mapView}>
-          {Platform.OS === "android" ? (
-            <MapView
-              style={styles.map}
-              region={mapRegion}
-              onRegionChangeComplete={(region) => setMapRegion(region)}
-              zoomEnabled={true}
-              zoomControlEnabled={true}
-              showsUserLocation={userHasSelectedLocation ? false : true}
-              loadingEnabled={true}
-              provider={PROVIDER_GOOGLE}
-            >
-              {userHasSelectedLocation && (
-                <Marker coordinate={userLocation} pinColor={"green"} />
-              )}
+    <View
+      style={
+        fullScreenMap
+          ? styles.mapFullScreenContainer
+          : styles.mapDefaultContainer
+      }
+      onTouchStart={handleTouch}
+    >
+      <View style={!fullScreenMap && styles.mapDefaultView}>
+        {Platform.OS === "android" ? (
+          <MapView
+            style={styles.map}
+            region={mapRegion}
+            onRegionChangeComplete={(region) => setMapRegion(region)}
+            zoomEnabled={true}
+            zoomControlEnabled={true}
+            showsUserLocation={userHasSelectedLocation ? false : true}
+            loadingEnabled={true}
+            provider={PROVIDER_GOOGLE}
+          >
+            {userHasSelectedLocation && (
+              <Marker coordinate={userLocation} pinColor={"green"} />
+            )}
 
-              {allLocations &&
-                allLocations.map((ride, index) => (
-                  <Marker
-                    key={index}
-                    coordinate={{
-                      longitude: ride.location[0],
-                      latitude: ride.location[1],
-                    }}
-                    title={ride.name}
-                  />
-                ))}
-            </MapView>
-          ) : (
-            <MapView
-              style={styles.map}
-              region={mapRegion}
-              onRegionChangeComplete={(region) => setMapRegion(region)}
-              zoomEnabled={true}
-              zoomControlEnabled={true}
-              showsUserLocation={userHasSelectedLocation ? false : true}
-              loadingEnabled={true}
-            >
-              {userHasSelectedLocation && (
-                <Marker coordinate={userLocation} pinColor={"green"} />
-              )}
+            {allLocations &&
+              allLocations.map((ride, index) => (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    longitude: ride.location[0],
+                    latitude: ride.location[1],
+                  }}
+                  title={ride.name}
+                />
+              ))}
+          </MapView>
+        ) : (
+          <MapView
+            style={styles.map}
+            region={mapRegion}
+            onRegionChangeComplete={(region) => setMapRegion(region)}
+            zoomEnabled={true}
+            zoomControlEnabled={true}
+            showsUserLocation={userHasSelectedLocation ? false : true}
+            loadingEnabled={true}
+          >
+            {userHasSelectedLocation && (
+              <Marker coordinate={userLocation} pinColor={"green"} />
+            )}
 
-              {allLocations &&
-                allLocations.map((ride, index) => (
-                  <Marker
-                    key={index}
-                    coordinate={{
-                      longitude: ride.location[0],
-                      latitude: ride.location[1],
-                    }}
-                    title={ride.name}
-                  />
-                ))}
-            </MapView>
-          )}
-        </View>
-      )}
+            {allLocations &&
+              allLocations.map((ride, index) => (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    longitude: ride.location[0],
+                    latitude: ride.location[1],
+                  }}
+                  title={ride.name}
+                />
+              ))}
+          </MapView>
+        )}
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  mapContainer: {
+  mapDefaultContainer: {
     height: "50%",
     marginVertical: 10,
   },
-  mapHiddenContainer: {
-    marginVertical: 10,
+  mapFullScreenContainer: {
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+    top: 0,
+    left: 0,
   },
-  mapView: {
+  mapDefaultView: {
     borderColor: "black",
     borderWidth: 1,
     marginTop: 5,
