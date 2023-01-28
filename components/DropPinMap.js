@@ -10,7 +10,7 @@ export const DropPinMap = ({ onSelectLocation, preselectedLocation }) => {
   const [region, setRegion] = useState(null)
 
   useEffect(() => {
-    if (preselectedLocation) {
+    if (preselectedLocation[0]) {
       const [longitude, latitude] = preselectedLocation
       setRegion({
         latitude,
