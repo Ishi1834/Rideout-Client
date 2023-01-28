@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useState, useMemo, useRef } from "react"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 // UI
 import { View, StyleSheet, FlatList } from "react-native"
@@ -7,6 +7,7 @@ import { Map } from "../../../components/Map"
 import { ClubCard } from "../../../components/ClubCard"
 import { Banner } from "../../../components/Banner"
 import { DropPinMap } from "../../../components/DropPinMap"
+import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet"
 // Other
 import axios from "../../../axiosConfig"
 import * as Location from "expo-location"
@@ -19,6 +20,7 @@ export const FindAClubScreen = () => {
   const [userLocation, setUserLocation] = useState(null)
   const [locationError, setLocationError] = useState(null)
   const [clubs, setClubs] = useState([])
+  const sheetRef = useRef(null)
 
   useFocusEffect(
     useCallback(() => {
@@ -37,6 +39,7 @@ export const FindAClubScreen = () => {
   useFocusEffect(
     useCallback(() => {
       if (userLocation) {
+        console.log("new loc selected")
         findClubsNearLocation()
       }
     }, [userLocation?.latitude, userLocation?.longitude])
@@ -53,6 +56,7 @@ export const FindAClubScreen = () => {
         setClubs(res.data)
       }
     } catch (error) {
+      setClubs([])
       console.log("Error - FindAClub.js ")
       console.log(error.response.data.message)
     }
@@ -93,8 +97,16 @@ export const FindAClubScreen = () => {
     }
   }
 
-  const renderClubCard = ({ item }) => (
-    <ClubCard club={item} clubClicked={navigateToClub} />
+  // Bottom Sheet
+  const snapPoints = useMemo(() => ["25%", "65%"], [])
+  // callbacks
+  const handleSnapPress = useCallback((index) => {
+    sheetRef.current?.snapToIndex(index)
+  }, [])
+
+  const renderClubCard = useCallback(
+    ({ item }) => <ClubCard club={item} clubClicked={navigateToClub} />,
+    []
   )
 
   const navigateToClub = (screen, club, clubName) => {
@@ -128,59 +140,68 @@ export const FindAClubScreen = () => {
   }
   return (
     <View style={styles.container}>
-      {locationError && (
-        <Banner
-          info={locationError}
-          actions={[
-            {
-              label: "Ok",
-            },
-            {
-              label: "Location granted",
-            },
-          ]}
-          buttonClicked={(val) => handleBannerSelection(val)}
-        />
-      )}
-      <Button
-        mode="contained-tonal"
-        onPress={() => {
-          setShowDropPinMap(true)
-        }}
-      >
-        Select Location on Map
-      </Button>
+      <View style={styles.contentContainer}>
+        {locationError && (
+          <Banner
+            info={locationError}
+            actions={[
+              {
+                label: "Ok",
+              },
+              {
+                label: "Location granted",
+              },
+            ]}
+            buttonClicked={(val) => handleBannerSelection(val)}
+          />
+        )}
+        <Button
+          mode="contained-tonal"
+          onPress={() => {
+            setShowDropPinMap(true)
+          }}
+        >
+          Select Location on Map
+        </Button>
+      </View>
+
       <Map
         allLocations={getLocationAndIdFromClubs(clubs)}
         showMap={true}
         userLocation={userLocation}
+        fullScreenMap={true}
+        handleTouch={() => handleSnapPress(0)}
         userHasSelectedLocation={userHasSelectedLocation}
       />
-
-      {clubs?.length === 0 ? (
-        isMakingApiRequest ? (
-          <ActivityIndicator />
+      <BottomSheet ref={sheetRef} snapPoints={snapPoints}>
+        {clubs?.length === 0 ? (
+          isMakingApiRequest ? (
+            <ActivityIndicator />
+          ) : (
+            <Banner
+              info="There are no clubs within 10km of your location"
+              actions={[]}
+            />
+          )
         ) : (
-          <Banner
-            info="There are no clubs within 10km of your location"
-            actions={[]}
+          <BottomSheetFlatList
+            data={clubs}
+            keyExtractor={(item) => item._id}
+            renderItem={renderClubCard}
           />
-        )
-      ) : (
-        <FlatList
-          data={clubs}
-          renderItem={renderClubCard}
-          keyExtractor={(item) => item._id}
-        />
-      )}
+        )}
+      </BottomSheet>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
     flex: 1,
+  },
+  contentContainer: {
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    zIndex: 1,
   },
 })

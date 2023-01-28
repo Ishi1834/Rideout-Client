@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 // UI
-import { View, StyleSheet, FlatList } from "react-native"
+import { View, StyleSheet } from "react-native"
 import { ActivityIndicator, Button } from "react-native-paper"
 import { RideCard } from "../../../components/RideCard"
 import { Map } from "../../../components/Map"
 import { Banner } from "../../../components/Banner"
 import { FilterRides } from "../../../components/FilterRides"
 import { DropPinMap } from "../../../components/DropPinMap"
+import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
@@ -33,16 +34,25 @@ export const FindARideScreen = () => {
   const [maxDistance, setMaxDistance] = useState(10)
   const [allRides, setAllRides] = useState([])
   const [showFilter, setShowFilter] = useState(false)
-  const [filterMap, setFilterMap] = useState({
-    name: "Show Map",
-    showMap: true,
-  })
   const [filterRides, setFilterRides] = useState([
     { label: "Open Rides", isChecked: false },
     { label: "Club Rides", isChecked: true },
   ])
   const [filterClubs, setFilterClubs] = useState(null)
   const [sortRidesSelected, setSortRidesSelected] = useState("date")
+  const sheetRef = useRef(null)
+
+  // Bottom Sheet
+  const snapPoints = useMemo(() => ["25%", "65%"], [])
+  // callbacks
+  const handleSnapPress = useCallback((index) => {
+    sheetRef.current?.snapToIndex(index)
+  }, [])
+
+  const renderRideItem = useCallback(
+    ({ item }) => <RideCard ride={item} rideClicked={navigateToRide} />,
+    []
+  )
 
   useFocusEffect(
     // location
@@ -55,6 +65,7 @@ export const FindARideScreen = () => {
       return () => {
         setLocationError(null)
         setShowDropPinMap(false)
+        handleSnapPress(0)
       }
     }, [])
   )
@@ -263,10 +274,6 @@ export const FindARideScreen = () => {
     })
   }
 
-  const renderRideCard = ({ item }) => (
-    <RideCard ride={item} rideClicked={navigateToRide} />
-  )
-
   const navigateToRide = (screen, ride, rideName) => {
     navigation.navigate(screen, { ride, rideName })
   }
@@ -284,9 +291,7 @@ export const FindARideScreen = () => {
   }
 
   const setRidesFilter = (filter, ...changes) => {
-    if (filter === "map") {
-      setFilterMap({ ...filterMap, showMap: changes[0] })
-    } else if (filter === "checkbox") {
+    if (filter === "checkbox") {
       const newRidesFilter = filterRides.map((ride, index) => {
         if (index === changes[0]) {
           ride.isChecked = changes[1]
@@ -349,25 +354,10 @@ export const FindARideScreen = () => {
   }
   return (
     <View style={styles.container}>
-      {locationError && (
-        <Banner
-          info={locationError}
-          actions={[
-            {
-              label: "Ok",
-            },
-            {
-              label: "Location granted",
-            },
-          ]}
-          buttonClicked={(val) => handleBannerSelection(val)}
-        />
-      )}
       {showFilter && (
         <FilterRides
           visible={showFilter}
           hideModal={() => setShowFilter(false)}
-          filterMap={filterMap}
           filterRides={filterRides}
           filterClubs={filterClubs}
           setFilter={setRidesFilter}
@@ -379,59 +369,72 @@ export const FindARideScreen = () => {
           setSortRidesSelected={(val) => setSortRidesSelected(val)}
         />
       )}
-      <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>
-        Sort and Filter rides
-      </Button>
+      <View style={styles.contentContainer}>
+        {locationError && (
+          <Banner
+            info={locationError}
+            actions={[
+              {
+                label: "Ok",
+              },
+              {
+                label: "Location granted",
+              },
+            ]}
+            buttonClicked={(val) => handleBannerSelection(val)}
+          />
+        )}
 
-      <Button
-        mode="contained"
-        onPress={() => {
-          setShowDropPinMap(true)
-        }}
-        style={{ marginTop: 10 }}
-      >
-        Select Location on Map
-      </Button>
+        <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>
+          Sort and Filter rides
+        </Button>
+
+        <Button
+          mode="contained"
+          onPress={() => {
+            setShowDropPinMap(true)
+          }}
+          style={{ marginTop: 10 }}
+        >
+          Select Location on Map
+        </Button>
+      </View>
       <Map
         allLocations={getLocationAndIdFromRides(allRides)}
-        showMap={filterMap.showMap}
         userLocation={userLocation}
         userHasSelectedLocation={userHasSelectedLocation}
+        fullScreenMap={true}
+        handleTouch={() => handleSnapPress(0)}
       />
-      {allRides?.length === 0 ? (
-        isMakingApiRequest ? (
-          <ActivityIndicator />
+      <BottomSheet ref={sheetRef} snapPoints={snapPoints}>
+        {allRides?.length === 0 ? (
+          isMakingApiRequest ? (
+            <ActivityIndicator />
+          ) : (
+            <Banner
+              info="There are no rides for your selected filters"
+              actions={[]}
+            />
+          )
         ) : (
-          <Banner
-            info="There are no rides for your selected filters"
-            actions={[]}
+          <BottomSheetFlatList
+            data={allRides}
+            keyExtractor={(item) => item._id}
+            renderItem={renderRideItem}
           />
-        )
-      ) : (
-        <FlatList
-          data={allRides}
-          renderItem={renderRideCard}
-          keyExtractor={(item) => item._id}
-          /* onMomentumScrollEnd={(event) => {
-            const index = Math.floor(
-              Math.floor(event.nativeEvent.contentOffset.x) /
-                Math.floor(event.nativeEvent.layoutMeasurement.width)
-            )
-            console.log("current index ", index)
-          }} */
-        />
-      )}
+        )}
+      </BottomSheet>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
     flex: 1,
   },
-  listRides: {
-    paddingVertical: 10,
+  contentContainer: {
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    zIndex: 1,
   },
 })
