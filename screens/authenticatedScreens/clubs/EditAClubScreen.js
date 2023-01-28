@@ -105,6 +105,7 @@ export const EditAClubScreen = ({ navigation, route }) => {
                   onBlur={handleBlur("description")}
                   error={touched.description && errors.description}
                   disabled={isSubmittingApi && true}
+                  autoCorrect={false}
                 />
                 <HelperText
                   type="error"
