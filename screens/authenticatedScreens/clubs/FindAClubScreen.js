@@ -32,6 +32,7 @@ export const FindAClubScreen = () => {
         setUserLocation(null)
         setLocationError(null)
         setClubs([])
+        handleSnapPress(0)
       }
     }, [])
   )
