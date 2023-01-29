@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
-import { View, ScrollView, StyleSheet } from "react-native"
+import { View, ScrollView, StyleSheet, Platform } from "react-native"
 import {
   Avatar,
   Card,
@@ -14,11 +14,14 @@ import {
   Text,
   Portal,
   Modal,
+  IconButton,
+  Menu,
 } from "react-native-paper"
 import { ListMembers } from "../../../components/ListMembers"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { PreviewMap } from "../../../components/PreviewMap"
 import { RadioInput } from "../../../components/RadioInput"
+import { ReportContentDialog } from "../../../components/ReportContentDialog"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { removeAClub, updateAClub } from "../../../state/clubsSlice"
@@ -42,6 +45,9 @@ export const ClubDetailScreen = ({ route }) => {
   const [tableModalData, setTableModalData] = useState(false)
   const [tableModalEditSelectedRole, setTableModalEditSelectedRole] =
     useState(null)
+  const [menuVisible, setMenuVisible] = useState(false)
+  const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 })
+  const [showReportContentModal, setShowReportContentModal] = useState(false)
 
   let club = clubFromParams
 
@@ -207,6 +213,17 @@ export const ClubDetailScreen = ({ route }) => {
     setIsMakingApiRequest(false)
   }
 
+  const onIconBtnPress = (event) => {
+    const { nativeEvent } = event
+    const anchor = {
+      x: nativeEvent.pageX,
+      y: nativeEvent.pageY,
+    }
+
+    setMenuAnchor(anchor)
+    setMenuVisible(true)
+  }
+
   if (!club) {
     return <ActivityIndicator animating={true} color={MD2Colors.red800} />
   }
@@ -273,13 +290,42 @@ export const ClubDetailScreen = ({ route }) => {
               </Button>
             </Card.Actions>
           </Modal>
+          <ReportContentDialog
+            reportDialogVisible={showReportContentModal}
+            hideReportDialog={() => setShowReportContentModal(false)}
+          />
         </Portal>
+
+        <Menu
+          visible={menuVisible}
+          onDismiss={() => setMenuVisible(false)}
+          anchor={menuAnchor}
+        >
+          <Menu.Item
+            onPress={() => {
+              setMenuVisible(false)
+              setShowReportContentModal(true)
+            }}
+            title="Report this club"
+          />
+        </Menu>
 
         <Card style={styles.card}>
           <Card.Title
             title={club.name}
             subtitle={club.city}
             left={LeftContent}
+            right={(props) => (
+              <IconButton
+                {...props}
+                icon={
+                  Platform.OS === "android"
+                    ? "dots-vertical"
+                    : "dots-horizontal"
+                }
+                onPress={onIconBtnPress}
+              />
+            )}
           />
           <Card.Content>
             {club?.description && (

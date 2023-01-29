@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
-import { StyleSheet, View, ScrollView, Linking } from "react-native"
+import { StyleSheet, View, ScrollView, Linking, Platform } from "react-native"
 import {
   Avatar,
   Button,
@@ -12,9 +12,12 @@ import {
   Text,
   Portal,
   Modal,
+  Menu,
+  IconButton,
 } from "react-native-paper"
 import { PreviewMap } from "../../../components/PreviewMap"
-import { ListMembers } from "../../../components/ListMembers"
+import { TableList } from "../../../components/TableList"
+import { ReportContentDialog } from "../../../components/ReportContentDialog"
 // State
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -25,7 +28,6 @@ import {
 // Other
 import { format } from "date-fns"
 import axios from "../../../axiosConfig"
-import { TableList } from "../../../components/TableList"
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="bike" />
 
@@ -35,6 +37,9 @@ export const RideDetailScreen = ({ route }) => {
   const userState = useSelector((state) => state.user)
   const dispatch = useDispatch()
   const [showDeleteride, setShowDeleteRide] = useState(false)
+  const [menuVisible, setMenuVisible] = useState(false)
+  const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 })
+  const [showReportContentModal, setShowReportContentModal] = useState(false)
 
   const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd/MM/yyyy")
 
@@ -107,6 +112,17 @@ export const RideDetailScreen = ({ route }) => {
     return array.map((obj) => obj.name)
   }
 
+  const onIconBtnPress = (event) => {
+    const { nativeEvent } = event
+    const anchor = {
+      x: nativeEvent.pageX,
+      y: nativeEvent.pageY,
+    }
+
+    setMenuAnchor(anchor)
+    setMenuVisible(true)
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -130,13 +146,42 @@ export const RideDetailScreen = ({ route }) => {
               <Button onPress={() => setShowDeleteRide(false)}>No</Button>
             </Card.Actions>
           </Modal>
+          <ReportContentDialog
+            reportDialogVisible={showReportContentModal}
+            hideReportDialog={() => setShowReportContentModal(false)}
+          />
         </Portal>
+
+        <Menu
+          visible={menuVisible}
+          onDismiss={() => setMenuVisible(false)}
+          anchor={menuAnchor}
+        >
+          <Menu.Item
+            onPress={() => {
+              setMenuVisible(false)
+              setShowReportContentModal(true)
+            }}
+            title="Report this ride"
+          />
+        </Menu>
 
         <Card style={styles.card}>
           <Card.Title
             title={ride?.name}
             subtitle={`Posted by ${ride?.createdBy?.name}`}
             left={LeftContent}
+            right={(props) => (
+              <IconButton
+                {...props}
+                icon={
+                  Platform.OS === "android"
+                    ? "dots-vertical"
+                    : "dots-horizontal"
+                }
+                onPress={onIconBtnPress}
+              />
+            )}
           />
           <Card.Content>
             <Text style={styles.description} variant="headlineSmall">
