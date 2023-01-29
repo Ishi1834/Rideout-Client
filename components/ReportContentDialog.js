@@ -26,15 +26,17 @@ export const ReportContentDialog = ({
       ...content,
       reportedReason: selectedReason,
     }
-    /* try {
-      const res = await axios.post("/report", {
-        selectedReason,
-      })
-      console.log(res)
+
+    try {
+      const res = await axios.post("/helpAndSupport/reportContent", data)
+      if (res.status === 201) {
+        setReportSubmitted(true)
+        const { reportId } = res.data
+      }
     } catch (error) {
-      console.log("error", error)
-    } */
-    setReportSubmitted(true)
+      console.log(error?.response?.data?.message)
+    }
+
     setIsMakingApiRequest(false)
   }
 
