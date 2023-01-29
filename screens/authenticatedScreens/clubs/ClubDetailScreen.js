@@ -293,6 +293,10 @@ export const ClubDetailScreen = ({ route }) => {
           <ReportContentDialog
             reportDialogVisible={showReportContentModal}
             hideReportDialog={() => setShowReportContentModal(false)}
+            content={{
+              contentId: club._id,
+              contentType: "Club",
+            }}
           />
         </Portal>
 

@@ -149,6 +149,10 @@ export const RideDetailScreen = ({ route }) => {
           <ReportContentDialog
             reportDialogVisible={showReportContentModal}
             hideReportDialog={() => setShowReportContentModal(false)}
+            content={{
+              contentId: ride._id,
+              contentType: "Ride",
+            }}
           />
         </Portal>
 
