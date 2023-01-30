@@ -2,7 +2,7 @@ import axiosBase from "axios"
 import * as SecureStore from "expo-secure-store"
 
 const axios = axiosBase.create({
-  baseURL: "https://club-rideout.com",
+  baseURL: "https://club-rideout.com", // "http://192.168.1.14:3500/"
 })
 
 const getNewToken = async () => {
