@@ -78,64 +78,59 @@ export const ListMembers = ({
             </>
           ))}
       </DataTable.Header>
+      {usersArray
+        .slice(
+          page * numberOfItemsPerPage,
+          page * numberOfItemsPerPage + numberOfItemsPerPage
+        )
+        .map((member, index) => (
+          <DataTable.Row key={index}>
+            <DataTable.Cell
+              style={
+                showJoinRequets
+                  ? styles.tableJoinRequestName
+                  : styles.tableMemberName
+              }
+            >
+              {member.name}
+            </DataTable.Cell>
 
-      {usersArray.map((member, index) => {
-        if (
-          usersArray.slice(
-            page * numberOfItemsPerPage,
-            page * numberOfItemsPerPage + numberOfItemsPerPage
-          )
-        ) {
-          return (
-            <DataTable.Row key={index}>
-              <DataTable.Cell
-                style={
-                  showJoinRequets
-                    ? styles.tableJoinRequestName
-                    : styles.tableMemberName
-                }
-              >
-                {member.name}
-              </DataTable.Cell>
-
-              {isEditMembers &&
-                (showJoinRequets ? (
-                  <DataTable.Cell style={styles.tableJoinRequestAction}>
+            {isEditMembers &&
+              (showJoinRequets ? (
+                <DataTable.Cell style={styles.tableJoinRequestAction}>
+                  <IconButton
+                    icon="account-plus-outline"
+                    iconColor={MD3Colors.error20}
+                    size={20}
+                    onPress={() => handleAction("add", member)}
+                  />
+                </DataTable.Cell>
+              ) : (
+                <>
+                  <DataTable.Cell style={styles.tableMemberRole}>
+                    {member.authorization}
+                  </DataTable.Cell>
+                  <DataTable.Cell style={styles.tableMemberAction}>
                     <IconButton
-                      icon="account-plus-outline"
+                      icon="account-edit-outline"
                       iconColor={MD3Colors.error20}
                       size={20}
-                      onPress={() => handleAction("add", member)}
+                      onPress={() => handleAction("edit", member)}
                     />
                   </DataTable.Cell>
-                ) : (
-                  <>
-                    <DataTable.Cell style={styles.tableMemberRole}>
-                      {member.authorization}
-                    </DataTable.Cell>
-                    <DataTable.Cell style={styles.tableMemberAction}>
-                      <IconButton
-                        icon="account-edit-outline"
-                        iconColor={MD3Colors.error20}
-                        size={20}
-                        onPress={() => handleAction("edit", member)}
-                      />
-                    </DataTable.Cell>
 
-                    <DataTable.Cell style={styles.tableMemberAction}>
-                      <IconButton
-                        icon="account-remove-outline"
-                        iconColor={MD3Colors.error50}
-                        size={20}
-                        onPress={() => handleAction("remove", member)}
-                      />
-                    </DataTable.Cell>
-                  </>
-                ))}
-            </DataTable.Row>
-          )
-        }
-      })}
+                  <DataTable.Cell style={styles.tableMemberAction}>
+                    <IconButton
+                      icon="account-remove-outline"
+                      iconColor={MD3Colors.error50}
+                      size={20}
+                      onPress={() => handleAction("remove", member)}
+                    />
+                  </DataTable.Cell>
+                </>
+              ))}
+          </DataTable.Row>
+        ))}
 
       <DataTable.Pagination
         page={page}
