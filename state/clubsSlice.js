@@ -33,6 +33,32 @@ export const clubsSlice = createSlice({
         }
       })
     },
+    incrementClubActivitiesCount: (state, action) => {
+      const clubId = action.payload
+      state.clubs = state.clubs.map((club) => {
+        if (club._id === clubId) {
+          return {
+            ...club,
+            activitiesCount: club.activitiesCount + 1,
+          }
+        } else {
+          return club
+        }
+      })
+    },
+    decrementClubActivitiesCount: (state, action) => {
+      const clubId = action.payload
+      state.clubs = state.clubs.map((club) => {
+        if (club._id === clubId) {
+          return {
+            ...club,
+            activitiesCount: club.activitiesCount - 1,
+          }
+        } else {
+          return club
+        }
+      })
+    },
     removeAClub: (state, action) => {
       const clubId = action.payload
       state.clubs = state.clubs.filter((club) => clubId !== club._id)
@@ -44,7 +70,14 @@ export const clubsSlice = createSlice({
   },
 })
 
-export const { setUpClubs, addAClub, updateAClub, removeAClub, resetClubs } =
-  clubsSlice.actions
+export const {
+  setUpClubs,
+  addAClub,
+  updateAClub,
+  incrementClubActivitiesCount,
+  decrementClubActivitiesCount,
+  removeAClub,
+  resetClubs,
+} = clubsSlice.actions
 
 export default clubsSlice.reducer

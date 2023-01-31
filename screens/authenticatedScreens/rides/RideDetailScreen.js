@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 // UI
 import { StyleSheet, View, ScrollView, Linking, Platform } from "react-native"
@@ -25,6 +25,7 @@ import {
   removeAClubRide,
   removeAUserRide,
 } from "../../../state/ridesSlice"
+import { decrementClubActivitiesCount } from "../../../state/clubsSlice"
 // Other
 import { format } from "date-fns"
 import axios from "../../../axiosConfig"
@@ -35,6 +36,7 @@ export const RideDetailScreen = ({ route }) => {
   const { ride } = route.params
   const navigation = useNavigation()
   const userState = useSelector((state) => state.user)
+  const clubsState = useSelector((state) => state.clubs)
   const dispatch = useDispatch()
   const [showDeleteride, setShowDeleteRide] = useState(false)
   const [menuVisible, setMenuVisible] = useState(false)
@@ -54,8 +56,9 @@ export const RideDetailScreen = ({ route }) => {
       })
       if (res.status === 200) {
         dispatch(removeAUserRide(ride._id))
-        if (!clubId) {
+        if (clubId && clubId !== "") {
           dispatch(removeAClubRide(ride._id))
+          dispatch(decrementClubActivitiesCount(clubId))
         }
         navigation.goBack()
       }
@@ -80,8 +83,6 @@ export const RideDetailScreen = ({ route }) => {
       }
     } catch (error) {
       console.log("Error - RideDetailScreen.js")
-      // handle error maybe use banner?
-      console.log(error.response.data.message)
     }
   }
 
@@ -90,7 +91,6 @@ export const RideDetailScreen = ({ route }) => {
     try {
       const res = await axios.patch("rides/leave", { rideId })
       if (res.status === 200) {
-        console.log("data ", res.data)
         // if club ride then updated club ride state
         dispatch(removeAUserRide(rideId))
         navigation.navigate("MyRides")
@@ -107,6 +107,10 @@ export const RideDetailScreen = ({ route }) => {
   const currentUserHasJoinedRide = ride.signedUpCyclists.find(
     (cyclist) => cyclist.userId === currentUserId
   )
+  // check user is club admin
+  const userClubRole = clubsState.authorization.find(
+    (obj) => obj.clubId === ride?.club?.clubId
+  )?.authorization
 
   const getCyclistName = (array) => {
     return array.map((obj) => obj.name)
@@ -279,6 +283,18 @@ export const RideDetailScreen = ({ route }) => {
                 )}
               </Card.Actions>
             )
+          }
+          {
+            // check user is club admin
+            userClubRole &&
+              userClubRole === "admin" &&
+              currentUserId !== rideCreatorId && (
+                <Card.Actions>
+                  <Button onPress={() => setShowDeleteRide(true)}>
+                    Delete Ride
+                  </Button>
+                </Card.Actions>
+              )
           }
         </Card>
       </View>
