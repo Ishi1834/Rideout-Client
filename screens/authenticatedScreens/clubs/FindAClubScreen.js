@@ -27,9 +27,6 @@ export const FindAClubScreen = () => {
       requestLocationAccess()
 
       return () => {
-        // clear state when user leaves screen
-        setUserHasSelectedLocation(false)
-        setUserLocation(null)
         setLocationError(null)
         setClubs([])
         handleSnapPress(0)
@@ -40,7 +37,6 @@ export const FindAClubScreen = () => {
   useFocusEffect(
     useCallback(() => {
       if (userLocation) {
-        console.log("new loc selected")
         findClubsNearLocation()
       }
     }, [userLocation?.latitude, userLocation?.longitude])
@@ -66,6 +62,11 @@ export const FindAClubScreen = () => {
 
   const requestLocationAccess = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync()
+
+    // don't show no location error if location has been selected
+    if (userLocation) {
+      return
+    }
 
     if (status !== "granted") {
       setLocationError(

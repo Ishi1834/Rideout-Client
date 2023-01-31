@@ -53,7 +53,8 @@ export const FindARideScreen = () => {
     ({ item }) => <RideCard ride={item} rideClicked={navigateToRide} />,
     []
   )
-
+  console.log("userLoc ", userLocation)
+  console.log("error ", locationError)
   useFocusEffect(
     // location
     useCallback(() => {
@@ -61,7 +62,6 @@ export const FindARideScreen = () => {
       if (!userLocation) {
         requestLocationAccess()
       }
-      // set user location to null when screen looses focus
       return () => {
         setLocationError(null)
         setShowDropPinMap(false)
@@ -254,6 +254,11 @@ export const FindARideScreen = () => {
   const requestLocationAccess = async () => {
     setLocationError(null)
     let { status } = await Location.requestForegroundPermissionsAsync()
+
+    // don't show no location error if location has been selected
+    if (userLocation) {
+      return
+    }
 
     if (status !== "granted") {
       setLocationError(
