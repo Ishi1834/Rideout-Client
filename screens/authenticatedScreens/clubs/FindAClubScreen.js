@@ -8,6 +8,7 @@ import { ClubCard } from "../../../components/ClubCard"
 import { Banner } from "../../../components/Banner"
 import { DropPinMap } from "../../../components/DropPinMap"
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet"
+import { NoLocationModal } from "../../../components/NoLocationModal"
 // Other
 import axios from "../../../axiosConfig"
 import * as Location from "expo-location"
@@ -122,6 +123,7 @@ export const FindAClubScreen = () => {
       longitudeDelta: 0.0421,
     })
     setUserHasSelectedLocation(true)
+    setLocationError(null)
     setShowDropPinMap(false)
   }
 
@@ -143,20 +145,10 @@ export const FindAClubScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        {locationError && (
-          <Banner
-            info={locationError}
-            actions={[
-              {
-                label: "Ok",
-              },
-              {
-                label: "Location granted",
-              },
-            ]}
-            buttonClicked={(val) => handleBannerSelection(val)}
-          />
-        )}
+        <NoLocationModal
+          locationError={locationError}
+          handleBannerSelection={handleBannerSelection}
+        />
         <Button
           mode="contained-tonal"
           onPress={() => {

@@ -9,6 +9,7 @@ import { Banner } from "../../../components/Banner"
 import { FilterRides } from "../../../components/FilterRides"
 import { DropPinMap } from "../../../components/DropPinMap"
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet"
+import { NoLocationModal } from "../../../components/NoLocationModal"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { setUpClubRides, setUpOpenRides } from "../../../state/ridesSlice"
@@ -53,8 +54,7 @@ export const FindARideScreen = () => {
     ({ item }) => <RideCard ride={item} rideClicked={navigateToRide} />,
     []
   )
-  console.log("userLoc ", userLocation)
-  console.log("error ", locationError)
+
   useFocusEffect(
     // location
     useCallback(() => {
@@ -255,11 +255,6 @@ export const FindARideScreen = () => {
     setLocationError(null)
     let { status } = await Location.requestForegroundPermissionsAsync()
 
-    // don't show no location error if location has been selected
-    if (userLocation) {
-      return
-    }
-
     if (status !== "granted") {
       setLocationError(
         "Permission to access location was denied. \n\nPlease grant location access in your setting or select a location on the map to find rides closest to you."
@@ -375,20 +370,10 @@ export const FindARideScreen = () => {
         />
       )}
       <View style={styles.contentContainer}>
-        {locationError && (
-          <Banner
-            info={locationError}
-            actions={[
-              {
-                label: "Ok",
-              },
-              {
-                label: "Location granted",
-              },
-            ]}
-            buttonClicked={(val) => handleBannerSelection(val)}
-          />
-        )}
+        <NoLocationModal
+          locationError={locationError}
+          handleBannerSelection={handleBannerSelection}
+        />
 
         <Button mode="contained-tonal" onPress={() => setShowFilter(true)}>
           Sort and Filter rides
