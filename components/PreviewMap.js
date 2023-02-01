@@ -9,7 +9,8 @@ export const PreviewMap = ({
   routeMapPolyline,
   showMapRoute = false,
 }) => {
-  const [longitude, latitude] = location
+  const longitude = location?.[0]
+  const latitude = location?.[1]
 
   const mapRef = useRef()
 
@@ -39,7 +40,7 @@ export const PreviewMap = ({
   return (
     <View style={styles.container}>
       {Platform.OS === "android" ? (
-        <MapView style={styles.map} provider={PROVIDER_GOOGLE}>
+        <MapView style={styles.map} ref={mapRef} provider={PROVIDER_GOOGLE}>
           {routeMapPolyline && showMapRoute ? (
             <Polyline
               coordinates={routeMapPolyline}
@@ -74,12 +75,5 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
-  },
-  fab: {
-    position: "absolute",
-    //margin: 16,
-    right: 0,
-    left: 0,
-    top: 0,
   },
 })
