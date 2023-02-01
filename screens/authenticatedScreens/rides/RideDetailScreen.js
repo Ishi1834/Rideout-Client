@@ -43,11 +43,14 @@ export const RideDetailScreen = ({ route }) => {
   const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 })
   const [showReportContentModal, setShowReportContentModal] = useState(false)
   const [routeMapPolyline, setRouteMapPolyline] = useState(null)
+  const [showMapRoute, setShowMapRoute] = useState(false)
 
   const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd/MM/yyyy")
 
   useEffect(() => {
-    getRouteFromDB("https://www.strava.com/routes/2842327428719173608")
+    if (ride?.route) {
+      getRouteFromDB(ride.route)
+    }
   }, [])
 
   const getRouteFromDB = async (url) => {
@@ -58,6 +61,7 @@ export const RideDetailScreen = ({ route }) => {
     try {
       const res = await axios.get(`/mapRoute/${routeId}`)
       setRouteMapPolyline(res?.data?.polyline)
+      setShowMapRoute(true)
     } catch (error) {
       console.log("Error ", error.response.data)
     }
@@ -217,14 +221,18 @@ export const RideDetailScreen = ({ route }) => {
               <Chip icon="calendar">{formatDate()}</Chip>
             </View>
             {ride?.route && (
-              <View style={styles.routeContainer}>
-                <Text variant="headlineSmall">Route</Text>
-                <Text
-                  style={styles.routeText}
-                  onPress={() => Linking.openURL(ride.route)}
-                >
-                  {ride.route}
-                </Text>
+              <View style={styles.routeBtnContainer}>
+                <Button onPress={() => Linking.openURL(ride.route)}>
+                  Open route
+                </Button>
+                {routeMapPolyline && (
+                  <Button
+                    mode="contained-tonal"
+                    onPress={() => setShowMapRoute(!showMapRoute)}
+                  >
+                    {showMapRoute ? "Show start" : "Show route"}
+                  </Button>
+                )}
               </View>
             )}
             <View style={styles.mapContainer}>
@@ -232,7 +240,7 @@ export const RideDetailScreen = ({ route }) => {
                 <PreviewMap
                   location={ride.startLocation.coordinates}
                   routeMapPolyline={routeMapPolyline}
-                  showRoute={true}
+                  showMapRoute={showMapRoute}
                 />
               )}
             </View>
@@ -347,11 +355,11 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 10,
   },
-  routeContainer: {
+  routeBtnContainer: {
     marginVertical: 5,
-  },
-  routeText: {
-    color: "blue",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   statsTag: {
     flexDirection: "row",

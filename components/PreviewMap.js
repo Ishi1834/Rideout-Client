@@ -1,15 +1,20 @@
 import { useEffect, useRef } from "react"
+// UI
 import { View, StyleSheet, Platform } from "react-native"
 // Other
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps"
 
-export const PreviewMap = ({ location, routeMapPolyline, showRoute }) => {
+export const PreviewMap = ({
+  location,
+  routeMapPolyline,
+  showMapRoute = false,
+}) => {
   const [longitude, latitude] = location
 
   const mapRef = useRef()
 
   useEffect(() => {
-    if (routeMapPolyline) {
+    if (routeMapPolyline && showMapRoute) {
       mapRef.current.fitToCoordinates(routeMapPolyline, {
         edgePadding: {
           top: 20,
@@ -18,39 +23,40 @@ export const PreviewMap = ({ location, routeMapPolyline, showRoute }) => {
           left: 20,
         },
       })
+    } else if (!showMapRoute) {
+      mapRef.current.animateToRegion(
+        {
+          latitude,
+          longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        },
+        1000
+      )
     }
-  }, [routeMapPolyline])
+  }, [showMapRoute, location])
 
   return (
     <View style={styles.container}>
       {Platform.OS === "android" ? (
-        <MapView
-          style={styles.map}
-          region={{
-            latitude,
-            longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          provider={PROVIDER_GOOGLE}
-        >
-          <Marker coordinate={{ latitude, longitude }} />
+        <MapView style={styles.map} provider={PROVIDER_GOOGLE}>
+          {routeMapPolyline && showMapRoute ? (
+            <Polyline
+              coordinates={routeMapPolyline}
+              strokeColor="red"
+              strokeWidth={2}
+            />
+          ) : (
+            <Marker coordinate={{ latitude, longitude }} />
+          )}
         </MapView>
       ) : (
         <MapView style={styles.map} ref={mapRef}>
-          {routeMapPolyline ? (
+          {routeMapPolyline && showMapRoute ? (
             <Polyline
               coordinates={routeMapPolyline}
-              strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-              strokeColors={[
-                "#7F0000",
-                "#00000000", // no color, creates a "long" gradient between the previous and next coordinate
-                "#B24112",
-                "#E5845C",
-                "#238C23",
-                "#7F0000",
-              ]}
-              strokeWidth={6}
+              strokeColor="red"
+              strokeWidth={2}
             />
           ) : (
             <Marker coordinate={{ latitude, longitude }} />
@@ -68,5 +74,12 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
+  },
+  fab: {
+    position: "absolute",
+    //margin: 16,
+    right: 0,
+    left: 0,
+    top: 0,
   },
 })
