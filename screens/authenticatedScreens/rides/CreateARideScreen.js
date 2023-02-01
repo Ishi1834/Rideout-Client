@@ -24,6 +24,7 @@ import { rideSchema } from "../../../static/validationSchema"
 import { createARideInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
 import { NumberSelector } from "../../../components/NumberSelector"
+import { PreviewMap } from "../../../components/PreviewMap"
 
 export const CreateARideScreen = ({ navigation, route }) => {
   const dispatch = useDispatch()
@@ -33,6 +34,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
   const [mode, setMode] = useState("date")
   const [datepickerShow, setDatepickerShow] = useState(false)
   const [showMap, setShowMap] = useState(false)
+  const [routeMapPolyline, setRouteMapPolyline] = useState(null)
 
   const createARideApiCall = async (data) => {
     setErrorMessage("")
@@ -67,6 +69,21 @@ export const CreateARideScreen = ({ navigation, route }) => {
   const showTimepicker = () => {
     setMode("time")
     setDatepickerShow(true)
+  }
+
+  const postRoute = async (routeURL) => {
+    setIsSubmittingApi(true)
+    if (!routeURL.startsWith("https://www.strava.com/routes/")) {
+      return
+    }
+
+    try {
+      const res = await axios.post(`/mapRoute`, { routeURL })
+      setRouteMapPolyline(res?.data?.polyline)
+    } catch (error) {
+      setRouteMapPolyline(null)
+    }
+    setIsSubmittingApi(false)
   }
 
   return (
@@ -240,10 +257,21 @@ export const CreateARideScreen = ({ navigation, route }) => {
                 )}
               </View>
               <View style={styles.formInputs}>
+                {routeMapPolyline && (
+                  <View style={styles.routeMapContainer}>
+                    <PreviewMap
+                      routeMapPolyline={routeMapPolyline}
+                      showMapRoute={true}
+                    />
+                  </View>
+                )}
                 <TextInput
                   label="Route"
                   value={values.route}
-                  onChangeText={handleChange("route")}
+                  onChangeText={(value) => {
+                    postRoute(value)
+                    setFieldValue("route", value)
+                  }}
                   onBlur={handleBlur("route")}
                   error={touched.route && errors.route}
                   disabled={isSubmittingApi && true}
@@ -302,6 +330,11 @@ const styles = StyleSheet.create({
     marginTop: 150,
     marginBottom: 150,
     marginHorizontal: 10,
+  },
+  routeMapContainer: {
+    height: 300,
+    borderColor: "black",
+    borderWidth: 1,
   },
   mapModal: {
     height: "100%",
