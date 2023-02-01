@@ -2,7 +2,7 @@ import axiosBase from "axios"
 import * as SecureStore from "expo-secure-store"
 
 const axios = axiosBase.create({
-  baseURL: "https://club-rideout.com", // "http://192.168.1.14:3500/"
+  baseURL: "http://192.168.1.14:3500/", //"https://club-rideout.com"
 })
 
 const getNewToken = async () => {
@@ -40,6 +40,7 @@ axios.interceptors.response.use(
       const authToken = await getNewToken()
 
       if (authToken) {
+        // instead of axiosBase auth header should be attached to our axios instance?
         axiosBase.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${authToken}`

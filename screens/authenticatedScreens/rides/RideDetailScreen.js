@@ -42,8 +42,26 @@ export const RideDetailScreen = ({ route }) => {
   const [menuVisible, setMenuVisible] = useState(false)
   const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 })
   const [showReportContentModal, setShowReportContentModal] = useState(false)
+  const [routeMapPolyline, setRouteMapPolyline] = useState(null)
 
   const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd/MM/yyyy")
+
+  useEffect(() => {
+    getRouteFromDB("https://www.strava.com/routes/2842327428719173608")
+  }, [])
+
+  const getRouteFromDB = async (url) => {
+    if (!url.startsWith("https://www.strava.com/routes/")) {
+      return
+    }
+    const routeId = url.split("routes/")[1]
+    try {
+      const res = await axios.get(`/mapRoute/${routeId}`)
+      setRouteMapPolyline(res?.data?.polyline)
+    } catch (error) {
+      console.log("Error ", error.response.data)
+    }
+  }
 
   const deleteRideApiCall = async () => {
     let clubId = ""
@@ -211,7 +229,11 @@ export const RideDetailScreen = ({ route }) => {
             )}
             <View style={styles.mapContainer}>
               {ride?.startLocation?.coordinates && (
-                <PreviewMap location={ride.startLocation.coordinates} />
+                <PreviewMap
+                  location={ride.startLocation.coordinates}
+                  routeMapPolyline={routeMapPolyline}
+                  showRoute={true}
+                />
               )}
             </View>
             <View
