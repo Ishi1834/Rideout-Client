@@ -72,11 +72,10 @@ export const CreateARideScreen = ({ navigation, route }) => {
   }
 
   const postRoute = async (routeURL) => {
-    setIsSubmittingApi(true)
     if (!routeURL.startsWith("https://www.strava.com/routes/")) {
       return
     }
-
+    setIsSubmittingApi(true)
     try {
       const res = await axios.post(`/mapRoute`, { routeURL })
       setRouteMapPolyline(res?.data?.polyline)

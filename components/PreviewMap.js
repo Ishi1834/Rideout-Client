@@ -35,7 +35,7 @@ export const PreviewMap = ({
         1000
       )
     }
-  }, [showMapRoute, location])
+  }, [showMapRoute, longitude, latitude])
 
   return (
     <View style={styles.container}>
