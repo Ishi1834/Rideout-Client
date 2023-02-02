@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.imohamad.RideOut",
-      "buildNumber": "1.0.13"
+      "buildNumber": "1.0.14"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +31,7 @@
           "apiKey": "AIzaSyCSxx7Kqej2-pSuAF3Pcg9hgNSNZvnDAKo"
         }
       },
-      "versionCode": 13
+      "versionCode": 14
     },
     "web": {
       "favicon": "./assets/favicon.png"
