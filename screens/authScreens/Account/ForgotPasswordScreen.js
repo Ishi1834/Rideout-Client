@@ -15,15 +15,17 @@ const usernameSchema = yup.object().shape({
 export const ForgotPasswordScreen = ({ navigation }) => {
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [infoMessage, setInfoMessage] = useState("")
 
   const sendPasswordResetEmail = async (values) => {
     setIsMakingApiRequest(true)
     const { username } = values
     setErrorMessage("")
+    setInfoMessage("")
     try {
       const res = await axios.post("/account/resetPassword", { username })
       if (res.status === 200) {
-        navigation.navigate("ChangePassword")
+        setInfoMessage(res?.data?.message)
       }
     } catch (error) {
       setErrorMessage(error?.response?.data?.message)
@@ -61,6 +63,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
             >
               {errors.username}
             </HelperText>
+            {infoMessage && <SummaryText isInfo={true} message={infoMessage} />}
             {errorMessage && <SummaryText message={errorMessage} />}
             <View style={styles.buttonContainer}>
               <Button
