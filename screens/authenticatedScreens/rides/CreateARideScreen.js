@@ -127,7 +127,7 @@ export const CreateARideScreen = ({ navigation, route }) => {
               </Portal>
             )}
             <EmailNotVerifiedModal
-              textContent={email}
+              modalDismissable={false}
               emailVerified={emailVerified}
               handleDismiss={() => navigation.goBack()}
             />

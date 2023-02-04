@@ -87,6 +87,7 @@ export const CreateAClubScreen = () => {
           <ScrollView>
             <View style={styles.container}>
               <EmailNotVerifiedModal
+                modalDismissable={false}
                 emailVerified={emailVerified}
                 handleDismiss={() => navigation.goBack()}
               />

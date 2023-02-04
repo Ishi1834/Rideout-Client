@@ -3,14 +3,22 @@ import { StyleSheet } from "react-native"
 import { Button, Portal, Modal, Text, Card } from "react-native-paper"
 import { emailNotVerifiedContent } from "../static/modalContent"
 
-export const EmailNotVerifiedModal = ({ handleDismiss, emailVerified }) => {
+export const EmailNotVerifiedModal = ({
+  handleDismiss,
+  emailVerified,
+  modalDismissable,
+}) => {
   const [showModal, setShowModal] = useState(!emailVerified ? true : false)
   return (
     <Portal>
       <Modal
         visible={showModal}
         contentContainerStyle={styles.modalStyle}
-        dismissable={false}
+        onDismiss={() => {
+          setShowModal(false)
+          handleDismiss()
+        }}
+        dismissable={modalDismissable}
       >
         <Text style={styles.modalText}>{emailNotVerifiedContent}</Text>
         <Card.Actions>
