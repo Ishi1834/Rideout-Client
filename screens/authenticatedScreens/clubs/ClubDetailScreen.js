@@ -22,6 +22,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { PreviewMap } from "../../../components/PreviewMap"
 import { RadioInput } from "../../../components/RadioInput"
 import { ReportContentDialog } from "../../../components/ReportContentDialog"
+import { EmailNotVerifiedModal } from "../../../components/EmailNotVerifiedModal"
 // State
 import { useSelector, useDispatch } from "react-redux"
 import { removeAClub, updateAClub } from "../../../state/clubsSlice"
@@ -48,6 +49,8 @@ export const ClubDetailScreen = ({ route }) => {
   const [menuVisible, setMenuVisible] = useState(false)
   const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 })
   const [showReportContentModal, setShowReportContentModal] = useState(false)
+  const [showEmailNotVerifiedModal, setShowEmailNotVerifiedModal] =
+    useState(false)
 
   let club = clubFromParams
 
@@ -113,6 +116,11 @@ export const ClubDetailScreen = ({ route }) => {
   }
 
   const joinClubApiCall = async () => {
+    const emailVerified = userState.emailVerified
+    if (!emailVerified) {
+      setShowEmailNotVerifiedModal(true)
+      return
+    }
     setIsMakingApiRequest(true)
     try {
       const res = await axios.patch("/clubs/join", { clubId: club._id })
@@ -299,7 +307,13 @@ export const ClubDetailScreen = ({ route }) => {
             }}
           />
         </Portal>
-
+        {showEmailNotVerifiedModal && (
+          <EmailNotVerifiedModal
+            emailVerified={userState.emailVerified}
+            handleDismiss={() => setShowEmailNotVerifiedModal(false)}
+            modalDismissable={true}
+          />
+        )}
         <Menu
           visible={menuVisible}
           onDismiss={() => setMenuVisible(false)}

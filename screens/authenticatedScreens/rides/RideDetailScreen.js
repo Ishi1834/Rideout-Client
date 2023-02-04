@@ -18,6 +18,7 @@ import {
 import { PreviewMap } from "../../../components/PreviewMap"
 import { TableList } from "../../../components/TableList"
 import { ReportContentDialog } from "../../../components/ReportContentDialog"
+import { EmailNotVerifiedModal } from "../../../components/EmailNotVerifiedModal"
 // State
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -44,6 +45,8 @@ export const RideDetailScreen = ({ route }) => {
   const [showReportContentModal, setShowReportContentModal] = useState(false)
   const [routeMapPolyline, setRouteMapPolyline] = useState(null)
   const [showMapRoute, setShowMapRoute] = useState(false)
+  const [showEmailNotVerifiedModal, setShowEmailNotVerifiedModal] =
+    useState(false)
 
   const formatDate = () => format(new Date(ride.date), "h:mm b, EE dd/MM/yyyy")
 
@@ -95,6 +98,11 @@ export const RideDetailScreen = ({ route }) => {
   }
 
   const joinRideApiCall = async () => {
+    const emailVerified = userState.emailVerified
+    if (!emailVerified) {
+      setShowEmailNotVerifiedModal(true)
+      return
+    }
     const rideId = ride._id
     try {
       const res = await axios.patch("rides/join", { rideId })
@@ -181,7 +189,13 @@ export const RideDetailScreen = ({ route }) => {
             }}
           />
         </Portal>
-
+        {showEmailNotVerifiedModal && (
+          <EmailNotVerifiedModal
+            emailVerified={userState.emailVerified}
+            handleDismiss={() => setShowEmailNotVerifiedModal(false)}
+            modalDismissable={true}
+          />
+        )}
         <Menu
           visible={menuVisible}
           onDismiss={() => setMenuVisible(false)}
