@@ -5,6 +5,7 @@ const initialState = {
   name: null,
   email: null,
   userId: null,
+  emailVerified: null,
   pendingJoinRequests: [],
 }
 
@@ -17,6 +18,7 @@ export const userSlice = createSlice({
       state.name = action.payload.name
       state.email = action.payload.email
       state.userId = action.payload.userId
+      state.emailVerified = action.payload.emailVerified
       state.pendingJoinRequests = action.payload.pendingJoinRequests
     },
     addPendingClubRequest: (state, action) => {

@@ -72,7 +72,7 @@ export const StackNavigator = () => {
     try {
       const res = await axios.get(`users/${userId}`)
       if (res.status === 200) {
-        const { name, email, _id, username } = res.data
+        const { name, email, _id, username, emailVerified } = res.data
         // Extract club and ride, populated by MongoDB
         const clubs = res.data.clubs.map((club) => club.clubId)
         const rides = res.data.rides.map((ride) => ride.rideId)
@@ -93,6 +93,7 @@ export const StackNavigator = () => {
             userId: _id,
             username,
             pendingJoinRequests,
+            emailVerified,
           })
         )
         dispatch(setUpClubs({ clubs, authorization }))
