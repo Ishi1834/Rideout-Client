@@ -13,10 +13,11 @@ const usernameSchema = yup.object().shape({
 })
 
 export const ForgotPasswordScreen = ({ navigation }) => {
-  const [isMakingApiRequest, setIsMakingApiRequest] = useState(null)
+  const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
   const sendPasswordResetEmail = async (values) => {
+    setIsMakingApiRequest(true)
     const { username } = values
     setErrorMessage("")
     try {
@@ -27,6 +28,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
     } catch (error) {
       setErrorMessage(error?.response?.data?.message)
     }
+    setIsMakingApiRequest(false)
   }
 
   return (
@@ -61,7 +63,12 @@ export const ForgotPasswordScreen = ({ navigation }) => {
             </HelperText>
             {errorMessage && <SummaryText message={errorMessage} />}
             <View style={styles.buttonContainer}>
-              <Button mode="contained" onPress={handleSubmit}>
+              <Button
+                mode="contained"
+                onPress={handleSubmit}
+                disabled={isMakingApiRequest && true}
+                loading={isMakingApiRequest && true}
+              >
                 Reset password
               </Button>
             </View>
