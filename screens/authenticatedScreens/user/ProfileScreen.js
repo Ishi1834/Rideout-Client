@@ -11,6 +11,7 @@ import {
   MD2Colors,
   Portal,
   Text,
+  HelperText,
 } from "react-native-paper"
 // State
 import { useDispatch, useSelector } from "react-redux"
@@ -143,6 +144,9 @@ export const ProfileScreen = () => {
                   >
                     Resend Verification Email
                   </Button>
+                  <HelperText type="error" visible={sendEmailError}>
+                    {sendEmailError}
+                  </HelperText>
                 </View>
               )}
               <Divider style={styles.divider} />
