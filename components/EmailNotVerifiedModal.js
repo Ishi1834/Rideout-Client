@@ -20,7 +20,9 @@ export const EmailNotVerifiedModal = ({
         }}
         dismissable={modalDismissable}
       >
-        <Text style={styles.modalText}>{emailNotVerifiedContent}</Text>
+        <Text style={styles.modalText} variant="labelSmall">
+          {emailNotVerifiedContent}
+        </Text>
         <Card.Actions>
           <Button
             onPress={() => {
