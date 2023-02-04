@@ -8,7 +8,10 @@ import { Button, HelperText, TextInput } from "react-native-paper"
 
 const passwordSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
-  newPassword: yup.string().required("New password is a required field"),
+  newPassword: yup
+    .string()
+    .min(6, "New password must be atleast 6 characters")
+    .required("New password is a required field"),
   confirmNewPassword: yup
     .string()
     .required("Corfirm new password is a required field")
@@ -103,7 +106,7 @@ export const ChangePasswordScreen = () => {
             </View>
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={handleSubmit}>
-                Reset password
+                Submit
               </Button>
             </View>
           </>

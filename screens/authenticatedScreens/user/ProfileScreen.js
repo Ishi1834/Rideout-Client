@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigation } from "@react-navigation/native"
 // UI
 import { ScrollView, StyleSheet, View } from "react-native"
 import {
@@ -26,6 +27,7 @@ import { resetAuth } from "../../../state/authSlice"
 export const ProfileScreen = () => {
   const state = useSelector((state) => state)
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
   const [sendEmailError, setSendEmailError] = useState(null)
@@ -182,6 +184,14 @@ export const ProfileScreen = () => {
               </DataTable>
             </View>
           </Card.Content>
+          <Card.Actions>
+            <Button
+              mode="contained"
+              onPress={() => navigation.navigate("ChangePassword")}
+            >
+              Change password
+            </Button>
+          </Card.Actions>
           <Card.Actions>
             <Button onPress={() => setShowDeleteModal(true)}>
               Delete your account
