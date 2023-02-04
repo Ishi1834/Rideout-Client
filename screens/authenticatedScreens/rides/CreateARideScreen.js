@@ -14,7 +14,7 @@ import DateTimePicker from "@react-native-community/datetimepicker"
 import { SummaryText } from "../../../components/SummaryText"
 import { DropPinMap } from "../../../components/DropPinMap"
 // State
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { addAClubRide, addAUserRide } from "../../../state/ridesSlice"
 // Other
 import { formatTime, formatDate } from "../../../utils/formatDate"
@@ -25,9 +25,11 @@ import { createARideInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
 import { NumberSelector } from "../../../components/NumberSelector"
 import { PreviewMap } from "../../../components/PreviewMap"
+import { EmailNotVerifiedModal } from "../../../components/EmailNotVerifiedModal"
 
 export const CreateARideScreen = ({ navigation, route }) => {
   const dispatch = useDispatch()
+  const emailVerified = useSelector((state) => state.user.emailVerified)
   const params = route.params
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -124,6 +126,11 @@ export const CreateARideScreen = ({ navigation, route }) => {
                 </Modal>
               </Portal>
             )}
+            <EmailNotVerifiedModal
+              textContent={email}
+              emailVerified={emailVerified}
+              handleDismiss={() => navigation.goBack()}
+            />
             <View style={styles.form}>
               <View style={styles.formInputs}>
                 <TextInput

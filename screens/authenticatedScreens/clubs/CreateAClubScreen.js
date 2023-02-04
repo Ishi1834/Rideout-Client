@@ -11,17 +11,19 @@ import {
 import { SummaryText } from "../../../components/SummaryText"
 import { DropPinMap } from "../../../components/DropPinMap"
 // State
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { addAClub } from "../../../state/clubsSlice"
 // Other
 import { Formik } from "formik"
 import { clubSchema } from "../../../static/validationSchema"
 import { createAClubInitialValues } from "../../../static/formValues"
 import axios from "../../../axiosConfig"
+import { EmailNotVerifiedModal } from "../../../components/EmailNotVerifiedModal"
 
 export const CreateAClubScreen = () => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
+  const emailVerified = useSelector((state) => state.user.emailVerified)
   const [isSubmittingApi, setIsSubmittingApi] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [showMap, setShowMap] = useState(false)
@@ -84,6 +86,10 @@ export const CreateAClubScreen = () => {
         ) : (
           <ScrollView>
             <View style={styles.container}>
+              <EmailNotVerifiedModal
+                emailVerified={emailVerified}
+                handleDismiss={() => navigation.goBack()}
+              />
               <View style={styles.form}>
                 <View style={styles.formInputs}>
                   <TextInput
