@@ -109,6 +109,10 @@ export const SignInScreen = ({ navigation, route }) => {
                   {errors.password}
                 </HelperText>
               </View>
+              <Button onPress={() => navigation.navigate("ForgotPassword")}>
+                Forgot password?
+              </Button>
+
               {errorMessage && <SummaryText message={errorMessage} />}
 
               {isSubmittingApi ? (
