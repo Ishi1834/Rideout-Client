@@ -10,7 +10,10 @@ export const signUpSchema = yup.object().shape({
   name: yup.string().required("Name is a required field"),
   username: yup.string().required("Username is a required field"),
   email: yup.string().email().required("Email is a required field"),
-  password: yup.string().required("Password is a required field"),
+  password: yup
+    .string()
+    .min(6, "Password must have atleast 6 characters")
+    .required("Password is a required field"),
   confirmPassword: yup
     .string()
     .required("Corfirm Password is a required field")
