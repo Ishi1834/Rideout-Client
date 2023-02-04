@@ -27,6 +27,7 @@ export const ProfileScreen = () => {
   const dispatch = useDispatch()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
+  const [sendEmailError, setSendEmailError] = useState(null)
 
   const clubsAuthorization = state.clubs.authorization
   const clubsJoinRequestPending = state.user.pendingJoinRequests
@@ -53,6 +54,17 @@ export const ProfileScreen = () => {
       }
     } catch (error) {
       console.log("error", error)
+    }
+    setIsMakingApiRequest(false)
+  }
+
+  const resendVerificationEmail = async () => {
+    setIsMakingApiRequest(true)
+    setSendEmailError(null)
+    try {
+      await axios.get("/account/resend-verification")
+    } catch (error) {
+      setSendEmailError(error?.response?.data?.message)
     }
     setIsMakingApiRequest(false)
   }
@@ -118,6 +130,21 @@ export const ProfileScreen = () => {
                 </Text>
                 <Text>{userDetails.email}</Text>
               </View>
+              {!state.user.emailVerified && (
+                <View style={styles.details}>
+                  <Text style={styles.detailLabel} variant="titleMedium">
+                    Verify Your Email for Full Access
+                  </Text>
+                  <Button
+                    mode="outlined"
+                    loading={isMakingApiRequest && true}
+                    disabled={isMakingApiRequest && true}
+                    onPress={resendVerificationEmail}
+                  >
+                    Resend Verification Email
+                  </Button>
+                </View>
+              )}
               <Divider style={styles.divider} />
             </View>
             <View style={styles.tableContainer}>
