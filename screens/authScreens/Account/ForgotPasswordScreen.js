@@ -5,6 +5,8 @@ import { TextInput, Button, HelperText } from "react-native-paper"
 // Other
 import * as yup from "yup"
 import { Formik } from "formik"
+import axios from "../../../axiosConfig"
+import { SummaryText } from "../../../components/SummaryText"
 
 const usernameSchema = yup.object().shape({
   username: yup.string().required("Username is required"),
@@ -12,10 +14,19 @@ const usernameSchema = yup.object().shape({
 
 export const ForgotPasswordScreen = ({ navigation }) => {
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(null)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const sendPasswordResetEmail = async (values) => {
     const { username } = values
-    navigation.navigate("ChangePassword")
+    setErrorMessage("")
+    try {
+      const res = await axios.post("/account/resetPassword", { username })
+      if (res.status === 200) {
+        navigation.navigate("ChangePassword")
+      }
+    } catch (error) {
+      setErrorMessage(error?.response?.data?.message)
+    }
   }
 
   return (
@@ -48,6 +59,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
             >
               {errors.username}
             </HelperText>
+            {errorMessage && <SummaryText message={errorMessage} />}
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={handleSubmit}>
                 Reset password
