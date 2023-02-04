@@ -14,6 +14,8 @@ import { RideDetailScreen } from "./screens/authenticatedScreens/rides/RideDetai
 import { CreateARideScreen } from "./screens/authenticatedScreens/rides/CreateARideScreen"
 import { EditARideScreen } from "./screens/authenticatedScreens/rides/EditARideScreen"
 import { EditAClubScreen } from "./screens/authenticatedScreens/clubs/EditAClubScreen"
+import { ForgotPasswordScreen } from "./screens/authScreens/Account/ForgotPasswordScreen"
+import { ChangePasswordScreen } from "./screens/authScreens/Account/ChangePasswordScreen"
 // Other
 import axios from "./axiosConfig"
 import * as SecureStore from "expo-secure-store"
@@ -131,6 +133,20 @@ export const StackNavigator = () => {
             component={SignUpScreen}
             options={{
               title: "Sign up",
+            }}
+          />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+            options={{
+              title: "Forgot Password",
+            }}
+          />
+          <Stack.Screen
+            name="ChangePassword"
+            component={ChangePasswordScreen}
+            options={{
+              title: "Change your password",
             }}
           />
         </>
