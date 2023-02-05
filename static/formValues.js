@@ -25,3 +25,9 @@ export const createAClubInitialValues = {
   city: "",
   location: null,
 }
+
+export const changePasswordInitialValues = {
+  password: "",
+  newPassword: "",
+  confirmNewPassword: "",
+}

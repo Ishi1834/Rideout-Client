@@ -52,3 +52,18 @@ export const clubSchema = yup.object().shape({
     .typeError("Club location is a required field"),
   description: yup.string(),
 })
+
+export const changePasswordSchema = yup.object().shape({
+  password: yup.string().required("Password is required"),
+  newPassword: yup
+    .string()
+    .min(6, "New password must be atleast 6 characters")
+    .required("New password is a required field"),
+  confirmNewPassword: yup
+    .string()
+    .required("Corfirm new password is a required field")
+    .oneOf(
+      [yup.ref("newPassword")],
+      "Confirm new password should match new password field"
+    ),
+})
