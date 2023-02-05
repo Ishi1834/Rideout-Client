@@ -6,14 +6,32 @@ import { Button, HelperText, TextInput } from "react-native-paper"
 import { Formik } from "formik"
 import { changePasswordInitialValues } from "../../../static/formValues"
 import { changePasswordSchema } from "../../../static/validationSchema"
+import axios from "../../../axiosConfig"
+import { SummaryText } from "../../../components/SummaryText"
 
-export const ChangePasswordScreen = () => {
+export const ChangePasswordScreen = ({ navigation }) => {
   const [isMakingApiRequest, setIsMakingApiRequest] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
 
   const changePasswordRequest = async (values) => {
-    console.log("values ", values)
+    setIsMakingApiRequest(true)
+    setErrorMessage("")
+    setSuccessMessage("")
+    try {
+      const res = await axios.post("/account/changePassword", values)
+      if (res.status === 200) {
+        setSuccessMessage(res.data.message)
+        setTimeout(() => {
+          navigation.goBack()
+        }, 2000)
+      }
+    } catch (error) {
+      setErrorMessage(error?.response?.data?.message)
+    }
+    setIsMakingApiRequest(false)
   }
-  console.log("re-render")
+
   return (
     <Formik
       onSubmit={(values) => changePasswordRequest(values)}
@@ -27,7 +45,6 @@ export const ChangePasswordScreen = () => {
         values,
         errors,
         touched,
-        setFieldValue,
       }) => (
         <View style={styles.container}>
           <View style={styles.inputContainer}>
@@ -85,8 +102,17 @@ export const ChangePasswordScreen = () => {
               {errors.confirmNewPassword}
             </HelperText>
           </View>
+          {errorMessage && <SummaryText message={errorMessage} />}
+          {successMessage && (
+            <SummaryText message={successMessage} isInfo={true} />
+          )}
           <View style={styles.buttonContainer}>
-            <Button mode="contained" onPress={() => handleSubmit()}>
+            <Button
+              mode="contained"
+              onPress={() => handleSubmit()}
+              disabled={isMakingApiRequest && true}
+              loading={isMakingApiRequest && true}
+            >
               Submit
             </Button>
           </View>
